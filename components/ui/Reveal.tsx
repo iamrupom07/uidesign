@@ -77,3 +77,60 @@ export function RevealItem({
     </motion.div>
   );
 }
+
+export function MaskedTextReveal({
+  text,
+  className = "",
+  delay = 0,
+}: {
+  text: string;
+  className?: string;
+  delay?: number;
+}) {
+  const words = text.split(" ");
+  return (
+    <span className={`inline-flex flex-wrap ${className}`}>
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden mr-[0.2em] py-[0.05em] leading-none">
+          <motion.span
+            className="inline-block"
+            initial={{ y: "105%" }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.75,
+              ease: [0.16, 1, 0.3, 1],
+              delay: delay + i * 0.03,
+            }}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+export function LineReveal({
+  className = "",
+  delay = 0,
+}: {
+  className?: string;
+  delay?: number;
+}) {
+  return (
+    <div className={`w-full ${className}`}>
+      <motion.div
+        className="h-[1px] bg-border w-full origin-left"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 0.9,
+          ease: [0.16, 1, 0.3, 1],
+          delay,
+        }}
+      />
+    </div>
+  );
+}

@@ -1,10 +1,27 @@
+import type { ComponentType } from "react";
 import Link from "next/link";
 import { services } from "@/lib/constants";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Magnetic } from "@/components/ui/Magnetic";
+import {
+  IconProcessEngineering,
+  IconSystemIntegration,
+  IconOperationalSupport,
+  IconDesignSupport,
+  IconProjectManagement,
+  IconTraining,
+} from "@/components/ui/Icons";
 
 const codes = ["PE", "SI", "PO", "PD", "PM", "TR"];
+const serviceIcons: Record<string, ComponentType<{ className?: string }>> = {
+  "process-engineering": IconProcessEngineering,
+  "system-integration-solutions": IconSystemIntegration,
+  "plant-operational-support": IconOperationalSupport,
+  "process-design-development-support": IconDesignSupport,
+  "project-management": IconProjectManagement,
+  "training-for-industry-professionals": IconTraining,
+};
 
 export default function ServicesOverview() {
   const sorted = [...services].sort((a, b) => a.order - b.order);
@@ -35,18 +52,24 @@ export default function ServicesOverview() {
 
         <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-lg" stagger={0.06}>
           {sorted.map((service, i) => {
+            const Icon = serviceIcons[service.slug] ?? IconProcessEngineering;
             const card = (
               <SpotlightCard className="h-full p-lg flex flex-col justify-between cursor-pointer group/card">
                 <div>
                   <div className="relative flex items-start justify-between mb-8">
-                    <span className="font-mono text-[10px] font-bold text-primary bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-none">
-                      {codes[i % codes.length]}&#8209;{String(service.order).padStart(2, "0")}
+                    <span className="w-10 h-10 flex items-center justify-center bg-rose-50 border border-rose-100 text-primary rounded-none">
+                      <Icon className="w-5 h-5" />
                     </span>
-                    {!service.published && (
-                      <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-none">
-                        Coming soon
+                    <div className="flex flex-col items-end gap-1.5">
+                      <span className="font-mono text-[10px] font-bold text-secondary tracking-wider">
+                        {codes[i % codes.length]}&#8209;{String(service.order).padStart(2, "0")}
                       </span>
-                    )}
+                      {!service.published && (
+                        <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-none">
+                          Coming soon
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <p className="relative font-display font-extrabold text-base text-foreground group-hover/card:text-primary transition-colors leading-snug uppercase">
                     {service.title}

@@ -5,14 +5,19 @@ import { Reveal } from "@/components/ui/Reveal";
 export default function Testimonials() {
   const list = [
     {
-      quote: "MacProtec's team optimized our cement kiln's alternative fuel combustion, resolving recurring thermal blocks and increasing throughput by 12%. Their process simulation results were highly accurate.",
+      quote: "MacProtec's alternative fuel kiln simulation allowed us to bypass multiple field trials and safely implement alternative fuels. Our thermal combustion efficiency increased by 14%.",
       author: "Robert Miller",
-      role: "Operations Manager, Cement Solutions",
+      role: "Operations Director, Cement Operations",
     },
     {
-      quote: "We partnered with MacProtec for 3D laser scanning and retrofit drawings. Their clash detection scanning prevented piping issues during construction. Absolute engineering precision.",
+      quote: "Their 3D scanning and clash-detection audits were a lifesaver during our brownfield expansion. We identified over 20 interference points in our bulk material feed layouts before any metal was cut.",
       author: "David Lee",
       role: "Project Director, Heavy Process Co.",
+    },
+    {
+      quote: "The process design and CFD flow modeling on our boiler's combustion chamber was exceptional. It completely resolved a localized hot-spot issue that had plagued our power unit for years.",
+      author: "Sarah Thompson",
+      role: "Lead Systems Engineer, Energy Plants",
     },
   ];
 
@@ -31,21 +36,21 @@ export default function Testimonials() {
           </p>
         </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-lg lg:gap-xl">
+        <div className="grid md:grid-cols-3 gap-lg">
           {list.map((item, index) => (
             <Reveal key={item.author} delay={index * 0.1}>
               <div className="bg-white border border-border p-8 rounded-none relative h-full flex flex-col justify-between overflow-hidden">
-                <p className="text-base text-foreground font-sans italic leading-relaxed relative z-10">
+                <p className="text-xs text-foreground font-sans italic leading-relaxed relative z-10">
                   &ldquo;{item.quote}&rdquo;
                 </p>
                 <div className="mt-8 flex items-center gap-3 relative z-10">
                   {/* Square placeholder avatar block */}
-                  <div className="w-8 h-8 bg-rose-50 border border-rose-100 flex items-center justify-center font-mono text-xs font-bold text-primary rounded-none">
+                  <div className="w-8 h-8 bg-rose-50 border border-rose-100 flex items-center justify-center font-mono text-xs font-bold text-primary rounded-none shrink-0">
                     {item.author[0]}
                   </div>
                   <div>
-                    <p className="font-sans font-bold text-xs text-foreground uppercase">{item.author}</p>
-                    <p className="font-sans text-[10px] text-secondary uppercase tracking-wider">{item.role}</p>
+                    <p className="font-sans font-bold text-[10px] text-foreground uppercase">{item.author}</p>
+                    <p className="font-sans text-[9px] text-secondary uppercase tracking-wider">{item.role}</p>
                   </div>
                 </div>
 

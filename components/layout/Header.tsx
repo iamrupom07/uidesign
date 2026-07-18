@@ -5,8 +5,76 @@ import { useEffect, useState } from "react";
 import { primaryNav, companyInfo } from "@/lib/constants";
 import { Magnetic } from "@/components/ui/Magnetic";
 
+function getSubmenuIcon(label: string) {
+  const l = label.toLowerCase();
+  
+  // Factory / Industrial
+  if (l.includes("cement") || l.includes("kiln") || l.includes("mill") || l.includes("burner") || l.includes("clinker") || l.includes("lime") || l.includes("plant")) {
+    return (
+      <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    );
+  }
+  // High-tech Simulation / Digital Twin
+  if (l.includes("cfd") || l.includes("simulation") || l.includes("twin") || l.includes("virtual") || l.includes("analytics") || l.includes("predictive") || l.includes("ai")) {
+    return (
+      <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    );
+  }
+  // Mining / Heavy Material / Conveyor
+  if (l.includes("mining") || l.includes("aggregate") || l.includes("bulk") || l.includes("handling")) {
+    return (
+      <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+      </svg>
+    );
+  }
+  // Engineering / Design / Pipeline
+  if (l.includes("design") || l.includes("piping") || l.includes("mechanical") || l.includes("civil") || l.includes("structural") || l.includes("instrumentation") || l.includes("electrical") || l.includes("reverse") || l.includes("laser") || l.includes("scanning")) {
+    return (
+      <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      </svg>
+    );
+  }
+  // Training / LMS / Academics
+  if (l.includes("training") || l.includes("lms") || l.includes("online") || l.includes("corporate") || l.includes("workshop") || l.includes("catalogue")) {
+    return (
+      <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+      </svg>
+    );
+  }
+  // Overview / Mission / Strategy
+  if (l.includes("overview") || l.includes("mission") || l.includes("vision") || l.includes("philosophy") || l.includes("leadership") || l.includes("why")) {
+    return (
+      <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    );
+  }
+  // Resource / Document / Article
+  if (l.includes("blog") || l.includes("article") || l.includes("paper") || l.includes("guide") || l.includes("brochure") || l.includes("insight") || l.includes("video") || l.includes("webinar") || l.includes("download") || l.includes("faq") || l.includes("newsletter") || l.includes("profile")) {
+    return (
+      <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    );
+  }
+  // General Contact / Mail
+  return (
+    <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    </svg>
+  );
+}
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     function onScroll() {
@@ -37,6 +105,7 @@ export default function Header() {
             </span>
           </Link>
 
+          {/* Desktop Nav */}
           <nav className="hidden xl:flex items-center gap-5 text-[11px] font-mono font-bold text-secondary uppercase tracking-wider">
             {primaryNav.map((item) =>
               item.children ? (
@@ -65,9 +134,10 @@ export default function Header() {
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="group/item flex flex-col p-1 rounded-none hover:bg-muted transition-all duration-150 ease-standard border border-transparent"
+                          className="group/item flex items-center gap-2 p-1.5 rounded-none hover:bg-muted transition-all duration-150 ease-standard border border-transparent"
                         >
-                          <span className="text-[12px] font-sans font-semibold leading-tight text-foreground group-hover/item:text-primary transition-colors">
+                          {getSubmenuIcon(child.label)}
+                          <span className="text-[11px] font-sans font-semibold leading-tight text-foreground group-hover/item:text-primary transition-colors">
                             {child.label}
                           </span>
                         </Link>
@@ -83,18 +153,84 @@ export default function Header() {
             )}
           </nav>
 
-          <div className="hidden md:inline-block">
-            <Magnetic strength={0.05}>
-              <Link
-                href="/lets-connect"
-                className="button-primary"
-              >
-                Let&apos;s Connect
-              </Link>
-            </Magnetic>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:inline-block">
+              <Magnetic strength={0.05}>
+                <Link
+                  href="/lets-connect"
+                  className="button-primary"
+                >
+                  Let&apos;s Connect
+                </Link>
+              </Magnetic>
+            </div>
+
+            {/* Mobile menu trigger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="xl:hidden p-2 text-foreground hover:text-primary transition-colors focus:outline-none"
+              aria-label="Toggle Menu"
+            >
+              {mobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </header>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 top-[108px] bg-white z-40 overflow-y-auto border-t border-border flex flex-col p-6 xl:hidden">
+          <nav className="flex flex-col gap-6 text-xs font-mono font-bold text-foreground uppercase tracking-wider">
+            {primaryNav.map((item) => (
+              <div key={item.label} className="border-b border-border pb-4">
+                {item.children ? (
+                  <div className="flex flex-col gap-3">
+                    <span className="text-secondary font-extrabold flex items-center justify-between">
+                      {item.label}
+                    </span>
+                    <div className="pl-4 grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 border-l border-primary/20">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="text-[11px] font-sans text-muted-foreground hover:text-primary flex items-center gap-2 py-0.5"
+                        >
+                          {getSubmenuIcon(child.label)}
+                          <span>{child.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="hover:text-primary block py-1"
+                  >
+                    {item.label}
+                  </Link>
+                )}
+              </div>
+            ))}
+            <Link
+              href="/lets-connect"
+              onClick={() => setMobileMenuOpen(false)}
+              className="button-primary w-full text-center mt-4"
+            >
+              Let&apos;s Connect
+            </Link>
+          </nav>
+        </div>
+      )}
     </>
   );
 }

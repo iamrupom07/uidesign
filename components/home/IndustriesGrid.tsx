@@ -1,7 +1,25 @@
+import type { ComponentType } from "react";
 import Link from "next/link";
 import { expertiseAreas } from "@/lib/constants";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import {
+  IconIndustry40,
+  IconCement,
+  IconAggregate,
+  IconMining,
+  IconTailing,
+  IconPetrochem,
+} from "@/components/ui/Icons";
+
+const industryIcons: Record<string, ComponentType<{ className?: string }>> = {
+  "industry-40": IconIndustry40,
+  cement: IconCement,
+  "aggregate-and-scm": IconAggregate,
+  "mining-and-metals": IconMining,
+  "mine-tailing-management": IconTailing,
+  petrochemicals: IconPetrochem,
+};
 
 export default function IndustriesGrid() {
   return (
@@ -20,15 +38,17 @@ export default function IndustriesGrid() {
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-lg"
           stagger={0.06}
         >
-          {expertiseAreas.map((area, i) => (
+          {expertiseAreas.map((area) => {
+            const Icon = industryIcons[area.slug] ?? IconIndustry40;
+            return (
             <RevealItem key={area.slug}>
               <SpotlightCard className="h-full">
                 <Link
                   href={`/our-expertise/${area.slug}`}
                   className="relative flex items-center gap-4 p-6 sm:p-8 h-full group"
                 >
-                  <span className="font-mono text-[11px] font-bold text-primary bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-none shrink-0">
-                    {String(i + 1).padStart(2, "0")}
+                  <span className="w-10 h-10 flex items-center justify-center bg-rose-50 border border-rose-100 text-primary rounded-none shrink-0">
+                    <Icon className="w-5 h-5" />
                   </span>
                   <p className="font-display font-bold text-foreground text-[14px] uppercase group-hover:text-primary transition-colors">
                     {area.title}
@@ -47,7 +67,8 @@ export default function IndustriesGrid() {
                 </Link>
               </SpotlightCard>
             </RevealItem>
-          ))}
+            );
+          })}
         </RevealGroup>
       </div>
     </section>

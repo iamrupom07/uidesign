@@ -87,14 +87,27 @@ export default function ContactSection() {
         </Reveal>
 
         <Reveal delay={0.15} className="h-full">
-          <div className="relative rounded-none h-full min-h-[22rem] flex flex-col justify-end p-lg text-foreground bg-white border border-border overflow-hidden">
+          <div className="relative rounded-none h-full min-h-[26rem] flex flex-col justify-between p-lg text-foreground bg-white border border-border overflow-hidden">
             <div className="grain" />
-            <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-4 relative font-bold label-caps">
-              <span className="text-primary font-bold mr-1">┌</span> Houston, TX &nbsp;·&nbsp; 29.76°N 95.37°W
-            </p>
-            <p className="font-display font-extrabold text-2xl mb-2 relative text-foreground uppercase">Contact Us</p>
-            <p className="font-mono text-xs text-secondary relative mb-0.5">{companyInfo.email}</p>
-            <p className="font-mono text-xs text-secondary relative">{companyInfo.phone}</p>
+            
+            {/* Technical 3D scanning visualization image */}
+            <div className="relative w-full aspect-[16/9] border border-border bg-slate-50 overflow-hidden mb-6">
+              <img
+                src="/images/contact_plant.png"
+                alt="Plant laser scan point cloud"
+                className="w-full h-full object-cover grayscale opacity-95"
+              />
+              <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
+            </div>
+
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-4 relative font-bold label-caps">
+                <span className="text-primary font-bold mr-1">┌</span> Houston, TX &nbsp;·&nbsp; 29.76°N 95.37°W
+              </p>
+              <p className="font-display font-extrabold text-2xl mb-2 relative text-foreground uppercase">Contact Us</p>
+              <p className="font-mono text-xs text-secondary relative mb-0.5">{companyInfo.email}</p>
+              <p className="font-mono text-xs text-secondary relative">{companyInfo.phone}</p>
+            </div>
           </div>
         </Reveal>
       </div>

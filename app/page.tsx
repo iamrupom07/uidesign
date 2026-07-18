@@ -1,48 +1,47 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/home/Hero";
+import Marquee from "@/components/home/Marquee";
+import CapabilitiesStrip from "@/components/home/CapabilitiesStrip";
 import StatsBar from "@/components/home/StatsBar";
 import WelcomeSection from "@/components/home/WelcomeSection";
 import MissionVision from "@/components/home/MissionVision";
 import ProcessFlow from "@/components/home/ProcessFlow";
 import IndustriesGrid from "@/components/home/IndustriesGrid";
 import ServicesOverview from "@/components/home/ServicesOverview";
+import WhyChooseUs from "@/components/home/WhyChooseUs";
 import ValuesBand from "@/components/home/ValuesBand";
 import Testimonials from "@/components/home/Testimonials";
 import FeaturedResources from "@/components/home/FeaturedResources";
 import EngagementModels from "@/components/home/EngagementModels";
+import FAQ from "@/components/home/FAQ";
+import CTABanner from "@/components/home/CTABanner";
 import ContactSection from "@/components/home/ContactSection";
+import TechnicalCursor from "@/components/ui/TechnicalCursor";
 
 export default function Home() {
   return (
     <>
+      <TechnicalCursor />
       <Header />
-      <div className="hatch-divider" />
+     
       <main>
         <Hero />
-        <div className="hatch-divider" />
+        <CapabilitiesStrip />
         <StatsBar />
-        <div className="hatch-divider" />
         <WelcomeSection />
-        <div className="hatch-divider" />
         <MissionVision />
-        <div className="hatch-divider" />
         <ProcessFlow />
-        <div className="hatch-divider" />
         <IndustriesGrid />
-        <div className="hatch-divider" />
         <ServicesOverview />
-        <div className="hatch-divider" />
+        <WhyChooseUs />
         <ValuesBand />
-        <div className="hatch-divider" />
         <Testimonials />
-        <div className="hatch-divider" />
         <FeaturedResources />
-        <div className="hatch-divider" />
         <EngagementModels />
-        <div className="hatch-divider" />
+        <FAQ />
+        <CTABanner />
         <ContactSection />
-        <div className="hatch-divider" />
       </main>
       <Footer />
     </>

@@ -6,8 +6,14 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export default function Hero() {
   return (
-    <section className="bg-white py-xl px-4 sm:px-6 lg:px-8 overflow-hidden blueprint-mesh">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-white py-24 px-4 sm:px-6 lg:px-8 overflow-hidden blueprint-mesh relative">
+      {/* Drafting sheet border outlines representing engineering precision */}
+      <div className="absolute top-8 left-8 right-8 bottom-8 border border-slate-200/55 pointer-events-none select-none hidden md:block">
+        <div className="absolute top-2 left-3 font-mono text-[8px] text-slate-400/80 tracking-widest uppercase">DRAFTING DOSSIER / SHEET 01 / REV.A</div>
+        <div className="absolute bottom-2 right-3 font-mono text-[8px] text-slate-400/80 tracking-widest uppercase">MACPROTEC / Houston, TX</div>
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-lg lg:gap-xl items-center">
           {/* Left Column: Headline and CTAs */}
           <div>
@@ -24,7 +30,7 @@ export default function Hero() {
             <Reveal delay={0.08}>
               <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold tracking-tight text-foreground leading-[1.1] font-display uppercase">
                 Where process <br /> meets <span className="text-primary">innovation.</span>
-              </h1>
+            </h1>
             </Reveal>
 
             <Reveal delay={0.16}>
@@ -69,13 +75,10 @@ export default function Hero() {
               {/* Bounded Image wrapper */}
               <div className="relative rounded-none overflow-hidden border border-border bg-card aspect-[4/3] w-full">
                 <img
-                  src="/images/hero_industrial.png"
+                  src="/images/hero_plant.png"
                   alt="Process Engineering Facility"
-                  className="w-full h-full object-cover grayscale opacity-90"
+                  className="w-full h-full object-cover"
                 />
-                {/* Red accent color overlay */}
-                <div className="absolute inset-0 bg-primary/10 mix-blend-multiply pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent pointer-events-none" />
               </div>
             </div>
           </Reveal>
