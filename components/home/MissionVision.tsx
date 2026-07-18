@@ -7,7 +7,7 @@ export default function MissionVision() {
     <section className="py-xl bg-background border-t border-border blueprint-mesh">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 grid md:grid-cols-2 gap-lg lg:gap-xl">
         <Reveal>
-          <div className="bg-white border border-border p-8 rounded-none relative">
+          <div className="card relative">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> OUR MISSION
             </div>
@@ -21,7 +21,7 @@ export default function MissionVision() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="bg-white border border-border p-8 rounded-none relative">
+          <div className="card relative">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> OUR VISION
             </div>

@@ -52,7 +52,7 @@ export default function EngagementModels() {
         <div className="grid md:grid-cols-2 gap-lg lg:gap-xl max-w-4xl mx-auto">
           {models.map((model, idx) => (
             <Reveal key={model.title} delay={idx * 0.1}>
-              <div className="bg-white border border-border p-8 rounded-none flex flex-col justify-between h-full relative">
+              <div className="card relative flex flex-col justify-between h-full">
                 <div>
                   <h3 className="font-display font-extrabold text-xl text-foreground mb-1 uppercase">
                     {model.title}

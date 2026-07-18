@@ -39,7 +39,7 @@ export default function Testimonials() {
         <div className="grid md:grid-cols-3 gap-lg">
           {list.map((item, index) => (
             <Reveal key={item.author} delay={index * 0.1}>
-              <div className="bg-white border border-border p-8 rounded-none relative h-full flex flex-col justify-between overflow-hidden">
+              <div className="card relative h-full flex flex-col justify-between overflow-hidden">
                 <p className="text-xs text-foreground font-sans italic leading-relaxed relative z-10">
                   &ldquo;{item.quote}&rdquo;
                 </p>

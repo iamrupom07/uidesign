@@ -115,7 +115,7 @@ p {
 }
 
 .card {
-  @apply bg-white text-foreground rounded-none border border-border p-8 transition-all duration-100 hover:border-slate-400;
+  @apply bg-white text-foreground rounded-none border border-border p-8 transition-all duration-300 ease-emphasized hover:border-primary/45 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(225,29,72,0.05)];
 }
 
 .kpi-badge {

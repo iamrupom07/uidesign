@@ -66,7 +66,7 @@ export default function ProcessFlow() {
         <div className="space-y-4">
           {steps.map((item, index) => (
             <Reveal key={item.step} delay={index * 0.08}>
-              <div className="bg-white border border-border p-6 rounded-none relative">
+              <div className="card relative !p-6">
                 <div className="font-mono text-[10px] font-bold text-primary tracking-wider uppercase mb-1">
                   {item.step}
                 </div>
