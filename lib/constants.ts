@@ -5,14 +5,6 @@ export const primaryNav: NavItem[] = [
   {
     label: "About",
     href: "/about-us",
-    children: [
-      { label: "Company Overview", href: "/about-us/overview" },
-      { label: "Mission & Vision", href: "/about-us/mission-vision" },
-      { label: "Engineering Philosophy", href: "/about-us/philosophy" },
-      { label: "Industry Expertise", href: "/about-us/expertise" },
-      { label: "Leadership", href: "/about-us/leadership" },
-      { label: "Why MACPROTEC", href: "/about-us/why-macprotec" },
-    ],
   },
   {
     label: "Solutions",
@@ -43,23 +35,6 @@ export const primaryNav: NavItem[] = [
   {
     label: "Training",
     href: "/training",
-    children: [
-      { label: "Training Overview", href: "/training/overview" },
-      { label: "Cement Manufacturing", href: "/training/cement-manufacturing" },
-      { label: "Kiln Operation", href: "/training/kiln-operation" },
-      { label: "Grinding Technology", href: "/training/grinding-technology" },
-      { label: "Process Engineering", href: "/training/process-engineering" },
-      { label: "Maintenance Engineering", href: "/training/maintenance-engineering" },
-      { label: "Instrumentation & Process Control", href: "/training/instrumentation-control" },
-      { label: "CFD & Process Simulation", href: "/training/cfd-simulation" },
-      { label: "Digital Twin & AI", href: "/training/digital-twin-ai" },
-      { label: "Corporate Training", href: "/training/corporate-training" },
-      { label: "Plant-Specific Training", href: "/training/plant-specific-training" },
-      { label: "Online Training", href: "/training/online-training" },
-      { label: "On-Site Training", href: "/training/on-site-training" },
-      { label: "Workshops", href: "/training/workshops" },
-      { label: "Training Catalogue", href: "/training/catalogue" },
-    ],
   },
   {
     label: "Projects",
@@ -100,14 +75,6 @@ export const primaryNav: NavItem[] = [
   {
     label: "Contact",
     href: "/lets-connect",
-    children: [
-      { label: "Contact Form", href: "/lets-connect#form" },
-      { label: "Book Consultation", href: "/lets-connect#book" },
-      { label: "Request Proposal", href: "/lets-connect#proposal" },
-      { label: "Upload Project Files", href: "/lets-connect#upload" },
-      { label: "Office Locations", href: "/lets-connect#locations" },
-      { label: "General Enquiry", href: "/lets-connect#enquiry" },
-    ],
   },
 ];
 
