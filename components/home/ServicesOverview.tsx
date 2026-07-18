@@ -1,59 +1,76 @@
 import Link from "next/link";
 import { services } from "@/lib/constants";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Magnetic } from "@/components/ui/Magnetic";
 
-const gradients = [
-  "linear-gradient(135deg,#2B1B4E,#3E2A63)",
-  "linear-gradient(135deg,#D6266B,#A81C56)",
-  "linear-gradient(135deg,#7C8399,#5C6379)",
-  "#EDE9F7",
-  "linear-gradient(135deg,#3E2A63,#2B1B4E)",
-  "linear-gradient(135deg,#A81C56,#D6266B)",
-];
+const codes = ["PE", "SI", "PO", "PD", "PM", "TR"];
 
 export default function ServicesOverview() {
-  // Home shows all six offerings, even ones without a live detail page yet.
   const sorted = [...services].sort((a, b) => a.order - b.order);
 
   return (
-    <section id="our-services" className="py-20 lg:py-24">
+    <section id="our-services" className="py-xl bg-background blueprint-mesh border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6 mb-14">
-          <div className="max-w-xl">
-            <p className="text-sm font-semibold uppercase tracking-widest text-brand mb-3">What we do</p>
-            <h2 className="text-3xl sm:text-4xl font-bold">Our Services</h2>
-          </div>
-          <Link
-            href="/lets-connect"
-            className="px-6 py-3 rounded-full text-white font-semibold bg-brand hover:bg-brand-dark transition-colors text-sm"
-          >
-            Request a consultation
-          </Link>
+          <Reveal className="max-w-xl">
+            <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+              <span className="text-primary font-bold mr-1">┌</span> SERVICES
+            </div>
+            <h2 className="mb-4 font-display font-extrabold text-3xl text-foreground uppercase">
+              What we <span className="text-primary">do</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <Magnetic strength={0.05}>
+              <Link
+                href="/lets-connect"
+                className="button-outline inline-block"
+              >
+                Request a Consultation
+              </Link>
+            </Magnetic>
+          </Reveal>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-lg" stagger={0.06}>
           {sorted.map((service, i) => {
             const card = (
-              <div className="rounded-2xl overflow-hidden border border-gray-100 transition-transform hover:-translate-y-1 hover:shadow-lg h-full">
-                <div className="h-36" style={{ background: gradients[i % gradients.length] }} />
-                <div className="p-6">
-                  <p className="font-semibold text-lg">{service.title}</p>
-                  <p className="text-sm text-body mt-2">{service.summary}</p>
-                  {!service.published && (
-                    <span className="inline-block mt-3 text-xs text-body/70">Details coming soon</span>
-                  )}
+              <SpotlightCard className="h-full p-lg flex flex-col justify-between cursor-pointer group/card">
+                <div>
+                  <div className="relative flex items-start justify-between mb-8">
+                    <span className="font-mono text-[10px] font-bold text-primary bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-none">
+                      {codes[i % codes.length]}&#8209;{String(service.order).padStart(2, "0")}
+                    </span>
+                    {!service.published && (
+                      <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-none">
+                        Coming soon
+                      </span>
+                    )}
+                  </div>
+                  <p className="relative font-display font-extrabold text-base text-foreground group-hover/card:text-primary transition-colors leading-snug uppercase">
+                    {service.title}
+                  </p>
+                  <p className="relative text-xs text-secondary mt-3 leading-relaxed">
+                    {service.summary}
+                  </p>
                 </div>
-              </div>
+              </SpotlightCard>
             );
 
-            return service.published ? (
-              <Link key={service.slug} href={`/our-services/${service.slug}`}>
-                {card}
-              </Link>
-            ) : (
-              <div key={service.slug}>{card}</div>
+            return (
+              <RevealItem key={service.slug}>
+                {service.published ? (
+                  <Link href={`/our-services/${service.slug}`} className="block h-full">
+                    {card}
+                  </Link>
+                ) : (
+                  <div className="h-full">{card}</div>
+                )}
+              </RevealItem>
             );
           })}
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );

@@ -1,38 +1,41 @@
 import Link from "next/link";
 import { featuredArticles } from "@/lib/constants";
-
-const gradients = [
-  "linear-gradient(135deg,#7C8399,#4C5265)",
-  "linear-gradient(135deg,#2B1B4E,#D6266B)",
-];
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export default function FeaturedResources() {
   return (
-    <section className="py-20 lg:py-24">
+    <section className="py-xl bg-background blueprint-mesh border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="max-w-xl mb-14">
-          <p className="text-sm font-semibold uppercase tracking-widest text-brand mb-3">Resources</p>
-          <h2 className="text-3xl sm:text-4xl font-bold">Expert insights and analysis</h2>
-        </div>
+        <Reveal className="max-w-xl mb-14">
+          <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <span className="text-primary font-bold mr-1">┌</span> RESOURCES
+          </div>
+          <h2 className="mb-4 font-display font-extrabold text-3xl text-foreground uppercase">
+            Expert insights and <span className="text-primary">analysis</span>
+          </h2>
+        </Reveal>
 
-        <div className="grid sm:grid-cols-2 gap-8">
-          {featuredArticles.map((article, i) => (
-            <Link
-              key={article.slug}
-              href={`/resources/${article.slug}`}
-              className="rounded-2xl overflow-hidden border border-gray-100 transition-transform hover:-translate-y-1 hover:shadow-lg block"
-            >
-              <div className="h-52" style={{ background: gradients[i % gradients.length] }} />
-              <div className="p-7">
-                <p className="font-bold text-lg leading-snug">{article.title}</p>
-                <p className="text-sm text-body mt-3">{article.excerpt}</p>
-                <p className="text-xs text-body mt-5">
-                  {new Date(article.publishedAt).toLocaleDateString()} · {article.readingTimeMinutes} min read
-                </p>
-              </div>
-            </Link>
+        <RevealGroup className="grid sm:grid-cols-2 gap-lg" stagger={0.08}>
+          {featuredArticles.map((article) => (
+            <RevealItem key={article.slug}>
+              <SpotlightCard className="h-full p-lg flex flex-col justify-between cursor-pointer group">
+                <Link href={`/resources/${article.slug}`} className="relative block">
+                  <div className="inline-block bg-rose-50 text-primary border border-rose-100 rounded-none px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider mb-4">
+                    {article.category}
+                  </div>
+                  <p className="font-display font-extrabold text-base leading-snug mt-4 text-foreground group-hover:text-primary transition-colors uppercase">
+                    {article.title}
+                  </p>
+                  <p className="text-xs text-secondary mt-3 leading-relaxed font-sans">{article.excerpt}</p>
+                  <p className="font-mono text-[10px] text-secondary mt-6 tracking-wide uppercase">
+                    {new Date(article.publishedAt).toLocaleDateString()} · {article.readingTimeMinutes} min read
+                  </p>
+                </Link>
+              </SpotlightCard>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );

@@ -1,35 +1,54 @@
 import Link from "next/link";
 import { expertiseAreas } from "@/lib/constants";
+import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export default function IndustriesGrid() {
   return (
-    <section className="py-20 lg:py-24 bg-tint-2">
+    <section className="py-xl bg-background blueprint-mesh border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="max-w-2xl mb-14">
-          <p className="text-sm font-semibold uppercase tracking-widest text-brand mb-3">
-            Industries we&apos;re expert in
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold">
-            Deep experience across heavy-process sectors
+        <Reveal className="max-w-2xl mb-14">
+          <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <span className="text-primary font-bold mr-1">┌</span> INDUSTRIES
+          </div>
+          <h2 className="mb-4 font-display font-extrabold text-3xl text-foreground uppercase">
+            Deep experience across <span className="text-primary">heavy-process</span> sectors
           </h2>
-        </div>
+        </Reveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {expertiseAreas.map((area) => (
-            <Link
-              key={area.slug}
-              href={`/our-expertise/${area.slug}`}
-              className="flex items-center gap-4 bg-white rounded-xl p-5 border border-gray-100 transition-transform hover:-translate-y-1 hover:shadow-lg"
-            >
-              <div className="w-12 h-12 rounded-lg bg-tint flex items-center justify-center shrink-0">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D6266B" strokeWidth={1.6}>
-                  <circle cx="12" cy="12" r="9" />
-                </svg>
-              </div>
-              <p className="font-semibold">{area.title}</p>
-            </Link>
+        <RevealGroup
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-lg"
+          stagger={0.06}
+        >
+          {expertiseAreas.map((area, i) => (
+            <RevealItem key={area.slug}>
+              <SpotlightCard className="h-full">
+                <Link
+                  href={`/our-expertise/${area.slug}`}
+                  className="relative flex items-center gap-4 p-6 sm:p-8 h-full group"
+                >
+                  <span className="font-mono text-[11px] font-bold text-primary bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-none shrink-0">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="font-display font-bold text-foreground text-[14px] uppercase group-hover:text-primary transition-colors">
+                    {area.title}
+                  </p>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                    className="ml-auto text-secondary opacity-60 group-hover:text-primary group-hover:opacity-100 group-hover:translate-x-1 transition-all shrink-0"
+                  >
+                    <path d="M4 10h12M12 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              </SpotlightCard>
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );

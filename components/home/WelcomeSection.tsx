@@ -1,33 +1,64 @@
 import Link from "next/link";
 import { companyInfo } from "@/lib/constants";
+import { Reveal } from "@/components/ui/Reveal";
 
 export default function WelcomeSection() {
   return (
-    <section className="py-20 lg:py-24">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-widest text-brand mb-3">Welcome to</p>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-1">MACPROTEC</h2>
-          <p className="text-body text-lg mt-5 leading-relaxed">{companyInfo.description}</p>
+    <section className="py-xl bg-background overflow-hidden blueprint-mesh border-t border-border">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-lg lg:gap-xl items-stretch">
+        <Reveal>
+          <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <span className="text-primary font-bold mr-1">┌</span> ABOUT MACPROTEC
+          </div>
+          <h2 className="mb-4 font-display font-extrabold text-3xl sm:text-4xl text-foreground leading-[1.15] uppercase">
+            Built on process, not <span className="text-primary">promises</span>
+          </h2>
+          <p className="body-md mt-5 max-w-xl text-secondary">
+            {companyInfo.description}
+          </p>
           <Link
             href="/our-services"
-            className="inline-flex items-center gap-2 mt-7 font-semibold text-brand hover:gap-3 transition-all"
+            className="button-outline inline-block mt-8 text-center"
           >
-            Discover our services
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path d="M4 10h12M12 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            Discover Our Services
           </Link>
-        </div>
+        </Reveal>
 
-        <div
-          className="rounded-2xl h-80 lg:h-96 flex items-center justify-center"
-          style={{ background: "linear-gradient(135deg,#EDE9F7,#D8CFEF)" }}
-        >
-          <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#7A6AA0" strokeWidth={1}>
-            <path d="M4 21V9l8-6 8 6v12M9 21v-6h6v6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
+        <Reveal delay={0.15} className="h-full">
+          <div className="relative h-full rounded-none bg-white border border-border p-8 flex flex-col justify-between">
+            <div className="grain" />
+            <div>
+              <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+                <span className="text-primary font-bold mr-1">┌</span> PROGRESS METRIC
+              </div>
+              <p className="font-display font-extrabold text-lg text-foreground tracking-tight uppercase">
+                Plant Performance Progress
+              </p>
+              <p className="font-mono text-[9px] font-semibold text-secondary tracking-widest uppercase mt-0.5">
+                Infrastructure Protection
+              </p>
+              
+              <div className="mt-6 flex items-baseline gap-1">
+                <span className="font-display font-extrabold text-4xl sm:text-5xl text-foreground tracking-tight">99.98%</span>
+                <span className="font-mono text-[10px] font-bold text-emerald-600 ml-2 tracking-wide uppercase shrink-0">
+                  ↑ 0.05% IMPROVEMENT SINCE SCROLL
+                </span>
+              </div>
+            </div>
+
+            {/* Replicated Red vertical bar progress meter */}
+            <div className="flex gap-1 items-center mt-8">
+              {[...Array(20)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-12 w-2.5 sm:w-3 ${
+                    i < 16 ? "bg-primary" : "bg-slate-100"
+                  } transition-colors duration-300`}
+                />
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

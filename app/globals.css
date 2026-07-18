@@ -1,100 +1,157 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "Space Mono", monospace;
+  --radius: 0px;
+}
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  @apply text-ink bg-white;
+  @apply text-foreground bg-background font-sans;
+  background-color: #FFFFFF;
+  color: #0F172A;
 }
 
-h1,
-h2,
-h3,
-.font-display {
-  font-family: "Sora", sans-serif;
+/* Headings Typography (Space Grotesk technical layout) */
+h1 {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #0F172A;
+  text-transform: uppercase;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #0F172A;
+  text-transform: uppercase;
 }
 
-@keyframes float-delayed {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(8px);
-  }
+h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: #0F172A;
+  text-transform: uppercase;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+p {
+  font-family: var(--font-sans);
 }
 
-.animate-float-delayed {
-  animation: float-delayed 6s ease-in-out infinite;
+/* Typography Utility Classes */
+.body-md {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #334155;
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(214, 38, 107, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(214, 38, 107, 0);
-  }
+.body-sm {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #64748B;
 }
 
-@keyframes dash-flow {
-  to {
-    stroke-dashoffset: -20;
-  }
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748B;
 }
 
-@keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+.data-mono {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #0F172A;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s infinite;
+/* Diagonal Hatched Drafting Dividers from PDF */
+.hatch-divider {
+  height: 24px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    #E2E8F0,
+    #E2E8F0 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  border-top: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
 }
 
-.animate-dash-flow {
-  stroke-dasharray: 5;
-  animation: dash-flow 1s linear infinite;
+/* Cybreon Component Classes */
+.button-primary {
+  @apply bg-primary text-white rounded-none px-[28px] py-[14px] font-mono text-[11px] font-bold uppercase tracking-wider transition-all duration-100 hover:bg-rose-700 active:translate-x-[1px] active:translate-y-[1px];
 }
 
-.animate-gradient-shift {
-  background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
+.button-outline {
+  @apply bg-white text-foreground border border-border rounded-none px-[28px] py-[14px] font-mono text-[11px] font-bold uppercase tracking-wider transition-all duration-100 hover:bg-muted active:translate-x-[1px] active:translate-y-[1px];
 }
 
-@keyframes slide-in {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+.card {
+  @apply bg-white text-foreground rounded-none border border-border p-8 transition-all duration-100 hover:border-slate-400;
 }
 
-.animate-slide-in {
-  animation: slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.kpi-badge {
+  @apply bg-rose-50 text-primary rounded-none px-3 py-1 font-mono text-[11px] font-semibold tracking-normal inline-flex items-center gap-1.5 border border-rose-100;
 }
 
+.badge-success {
+  @apply bg-emerald-600 text-white rounded-none px-2.5 py-1 font-mono text-[11px] font-medium tracking-normal inline-flex items-center gap-1.5;
+}
 
+.badge-warning {
+  @apply bg-amber-500 text-foreground rounded-none px-2.5 py-1 font-mono text-[11px] font-medium tracking-normal inline-flex items-center gap-1.5;
+}
 
+.badge-destructive {
+  @apply bg-rose-600 text-white rounded-none px-2.5 py-1 font-mono text-[11px] font-medium tracking-normal inline-flex items-center gap-1.5;
+}
+
+.badge-secondary {
+  @apply bg-slate-100 text-secondary rounded-none px-2.5 py-1 font-mono text-[11px] font-medium tracking-normal inline-flex items-center gap-1.5 border border-slate-200;
+}
+
+.divider {
+  @apply bg-border h-[1px] w-full;
+}
+
+.blueprint-mesh {
+  background-image: linear-gradient(rgba(225,29,72,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(225,29,72,0.015) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Subtle noise grain overlay */
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.01;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}

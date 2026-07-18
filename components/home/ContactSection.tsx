@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { companyInfo } from "@/lib/constants";
+import { Reveal } from "@/components/ui/Reveal";
+import { Magnetic } from "@/components/ui/Magnetic";
 
 export default function ContactSection() {
   const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -16,19 +19,25 @@ export default function ContactSection() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(Object.fromEntries(form)),
       });
+      setSent(true);
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <section id="lets-connect" className="py-20 lg:py-24 bg-tint-2">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-14 items-start">
-        <div>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-8">Get in Touch</h2>
+    <section id="lets-connect" className="py-xl bg-background blueprint-mesh border-t border-border">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-lg lg:gap-xl items-stretch">
+        <Reveal>
+          <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <span className="text-primary font-bold mr-1">┌</span> CONTACT
+          </div>
+          <h2 className="mb-8 font-display font-extrabold text-3xl text-foreground uppercase">
+            Get in touch
+          </h2>
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-1.5">
+              <label htmlFor="name" className="block font-mono text-[10px] font-bold text-secondary tracking-widest uppercase mb-1.5 label-caps">
                 Full Name
               </label>
               <input
@@ -36,11 +45,11 @@ export default function ContactSection() {
                 name="name"
                 type="text"
                 placeholder="Enter your full name"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full px-5 py-3 rounded-none border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring transition-all duration-150 text-xs"
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1.5">
+              <label htmlFor="email" className="block font-mono text-[10px] font-bold text-secondary tracking-widest uppercase mb-1.5 label-caps">
                 Email Address*
               </label>
               <input
@@ -49,11 +58,11 @@ export default function ContactSection() {
                 type="email"
                 required
                 placeholder="Enter your email address"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full px-5 py-3 rounded-none border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring transition-all duration-150 text-xs"
               />
             </div>
             <div>
-              <label htmlFor="message" className="block text-sm font-medium mb-1.5">
+              <label htmlFor="message" className="block font-mono text-[10px] font-bold text-secondary tracking-widest uppercase mb-1.5 label-caps">
                 Message*
               </label>
               <textarea
@@ -62,27 +71,32 @@ export default function ContactSection() {
                 required
                 rows={4}
                 placeholder="Type your message here"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full px-5 py-4 rounded-none border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring transition-all duration-150 text-xs"
               />
             </div>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-7 py-3.5 rounded-full text-white font-semibold bg-brand hover:bg-brand-dark transition-colors disabled:opacity-60"
-            >
-              {submitting ? "Sending…" : "Submit Message"}
-            </button>
+            <Magnetic strength={0.05}>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="button-primary px-8 py-3.5 disabled:opacity-60"
+              >
+                {submitting ? "Sending…" : sent ? "Sent ✓" : "Submit Message"}
+              </button>
+            </Magnetic>
           </form>
-        </div>
+        </Reveal>
 
-        <div
-          className="rounded-2xl h-full min-h-[22rem] flex flex-col justify-end p-8 text-white"
-          style={{ background: "linear-gradient(135deg,#2B1B4E,#D6266B)" }}
-        >
-          <p className="font-semibold text-lg mb-1">Contact us</p>
-          <p className="text-white/85 text-sm">{companyInfo.email}</p>
-          <p className="text-white/85 text-sm">{companyInfo.phone}</p>
-        </div>
+        <Reveal delay={0.15} className="h-full">
+          <div className="relative rounded-none h-full min-h-[22rem] flex flex-col justify-end p-lg text-foreground bg-white border border-border overflow-hidden">
+            <div className="grain" />
+            <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-4 relative font-bold label-caps">
+              <span className="text-primary font-bold mr-1">┌</span> Houston, TX &nbsp;·&nbsp; 29.76°N 95.37°W
+            </p>
+            <p className="font-display font-extrabold text-2xl mb-2 relative text-foreground uppercase">Contact Us</p>
+            <p className="font-mono text-xs text-secondary relative mb-0.5">{companyInfo.email}</p>
+            <p className="font-mono text-xs text-secondary relative">{companyInfo.phone}</p>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
