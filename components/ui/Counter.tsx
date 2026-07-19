@@ -6,11 +6,11 @@ import { useInView } from "framer-motion";
 export function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const [display, setDisplay] = useState(0);
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!inView) return;
-    const duration = 450;
+    const duration = 600;
     const start = performance.now();
     let frame: number;
 
@@ -26,7 +26,7 @@ export function Counter({ value, suffix = "" }: { value: number; suffix?: string
   }, [inView, value]);
 
   return (
-    <span ref={ref}>
+    <span ref={ref} className="notranslate" translate="no">
       {display}
       {suffix}
     </span>

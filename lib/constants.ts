@@ -3,7 +3,7 @@ import type { NavItem, Service, Expertise, Article } from "@/types/content";
 export const primaryNav: NavItem[] = [
   { label: "Home", href: "/" },
   {
-    label: "About",
+    label: "About us",
     href: "/about-us",
   },
   {
@@ -37,6 +37,10 @@ export const primaryNav: NavItem[] = [
     href: "/training",
   },
   {
+    label: "Resources",
+    href: "/resources",
+  },
+  {
     label: "Projects",
     href: "/projects",
     children: [
@@ -55,25 +59,7 @@ export const primaryNav: NavItem[] = [
     ],
   },
   {
-    label: "Resources",
-    href: "/resources",
-    children: [
-      { label: "Technical Blogs", href: "/resources/blogs" },
-      { label: "White Papers", href: "/resources/white-papers" },
-      { label: "Engineering Guides", href: "/resources/guides" },
-      { label: "Technical Articles", href: "/resources/articles" },
-      { label: "Industry Insights", href: "/resources/insights" },
-      { label: "Brochures", href: "/resources/brochures" },
-      { label: "Company Profile", href: "/resources/profile" },
-      { label: "Videos", href: "/resources/videos" },
-      { label: "Webinars", href: "/resources/webinars" },
-      { label: "Downloads", href: "/resources/downloads" },
-      { label: "FAQs", href: "/resources/faqs" },
-      { label: "Newsletter", href: "/resources/newsletter" },
-    ],
-  },
-  {
-    label: "Contact",
+    label: "Contact us",
     href: "/lets-connect",
   },
 ];

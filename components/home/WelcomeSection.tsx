@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { companyInfo } from "@/lib/constants";
 import { Reveal } from "@/components/ui/Reveal";
 import { motion, useInView } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
@@ -9,7 +8,7 @@ import { useEffect, useState, useRef } from "react";
 function PercentCounter({ value }: { value: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const [display, setDisplay] = useState("0.00");
+  const [display, setDisplay] = useState(value.toFixed(2));
 
   useEffect(() => {
     if (!inView) return;
@@ -29,7 +28,11 @@ function PercentCounter({ value }: { value: number }) {
     return () => cancelAnimationFrame(frame);
   }, [inView, value]);
 
-  return <span ref={ref}>{display}%</span>;
+  return (
+    <span ref={ref} className="notranslate" translate="no">
+      {display}%
+    </span>
+  );
 }
 
 export default function WelcomeSection() {
@@ -41,16 +44,16 @@ export default function WelcomeSection() {
             <span className="text-primary font-bold mr-1">┌</span> ABOUT MACPROTEC
           </div>
           <h2 className="mb-4 font-display font-extrabold text-3xl sm:text-4xl text-foreground leading-[1.15] uppercase">
-            Built on process, not <span className="text-primary">promises</span>
+            Where Cement Expertise Meets Digital Engineering
           </h2>
           <p className="body-md mt-5 max-w-xl text-secondary">
-            {companyInfo.description}
+            MACPROTEC is a Houston-based engineering consulting and systems integration company serving the cement, aggregates, mining, chemicals, petrochemicals, and other heavy process industries. With over 65 years of combined experience, we deliver innovative solutions that improve plant performance and operational efficiency.
           </p>
           <Link
-            href="/our-services"
-            className="button-outline inline-block mt-8 text-center"
+            href="/about-us"
+            className="button-outline inline-block mt-8 text-center text-xs uppercase font-bold"
           >
-            Discover Our Services
+            Explore More
           </Link>
         </Reveal>
 
@@ -72,7 +75,7 @@ export default function WelcomeSection() {
                 <span className="font-display font-extrabold text-4xl sm:text-5xl text-foreground tracking-tight">
                   <PercentCounter value={99.98} />
                 </span>
-                <span className="font-mono text-[10px] font-bold text-emerald-600 tracking-wide uppercase">
+                <span className="font-mono text-[10px] font-bold text-emerald-600 tracking-wide uppercase notranslate" translate="no">
                   ↑ 0.05% IMPROVEMENT SINCE SCROLL
                 </span>
               </div>

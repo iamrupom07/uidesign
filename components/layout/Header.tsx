@@ -1,14 +1,117 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { primaryNav, companyInfo } from "@/lib/constants";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { useLanguage, LANGUAGES, LanguageOption } from "@/context/LanguageContext";
+import * as Flags from "country-flag-icons/react/3x2";
+
+function CountryFlag({
+  country,
+  className = "w-4 h-3 shrink-0 object-cover border border-slate-300 shadow-xs",
+}: {
+  country: string;
+  className?: string;
+}) {
+  const Flag = (Flags as Record<string, React.ComponentType<{ className?: string }>>)[country];
+  if (!Flag) return <span className="text-xs shrink-0">🌐</span>;
+  return <Flag className={className} />;
+}
+
+function LanguageSelectorDropdown() {
+  const { language, currentLangObj, setLanguage } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative inline-block text-left" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-mono text-[11px] font-bold py-1.5 px-2.5 transition-all duration-150 focus:outline-none uppercase tracking-wider"
+        aria-label="Select Language"
+      >
+        <CountryFlag country={currentLangObj.country} />
+        <span className="font-mono text-[10px] tracking-wide">{currentLangObj.code.toUpperCase()}</span>
+        <svg
+          className={`w-3 h-3 text-slate-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 shadow-xl z-50 py-1 max-h-80 overflow-y-auto rounded-none">
+          <div className="px-3 py-1.5 border-b border-slate-100 font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center justify-between">
+            <span>Select Language</span>
+            <span>{LANGUAGES.length} Available</span>
+          </div>
+          {LANGUAGES.map((lang: LanguageOption) => {
+            const isSelected =
+              language.toLowerCase() === lang.code.toLowerCase() ||
+              language.toLowerCase() === lang.code.split("-")[0].toLowerCase();
+            return (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  setLanguage(lang.code);
+                  setIsOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 text-left hover:bg-rose-50/60 transition-colors duration-120 group ${
+                  isSelected ? "bg-rose-50/80 font-bold text-primary" : "text-slate-700"
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <CountryFlag country={lang.country} className="w-5 h-3.5 object-cover border border-slate-300 shadow-xs" />
+                  <div className="truncate">
+                    <span className="block text-[11px] font-sans font-medium truncate group-hover:text-primary transition-colors">
+                      {lang.nativeName}
+                    </span>
+                    {lang.nativeName !== lang.name && (
+                      <span className="block text-[9px] font-mono text-slate-400 truncate leading-none">
+                        {lang.name}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                  <span className="font-mono text-[9px] font-semibold text-slate-400 bg-slate-100 px-1 py-0.5 uppercase">
+                    {lang.code.toUpperCase()}
+                  </span>
+                  {isSelected && (
+                    <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function getSubmenuIcon(label: string) {
   const l = label.toLowerCase();
   
-  // Factory / Industrial
   if (l.includes("cement") || l.includes("kiln") || l.includes("mill") || l.includes("burner") || l.includes("clinker") || l.includes("lime") || l.includes("plant")) {
     return (
       <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -16,7 +119,6 @@ function getSubmenuIcon(label: string) {
       </svg>
     );
   }
-  // High-tech Simulation / Digital Twin
   if (l.includes("cfd") || l.includes("simulation") || l.includes("twin") || l.includes("virtual") || l.includes("analytics") || l.includes("predictive") || l.includes("ai")) {
     return (
       <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -24,7 +126,6 @@ function getSubmenuIcon(label: string) {
       </svg>
     );
   }
-  // Mining / Heavy Material / Conveyor
   if (l.includes("mining") || l.includes("aggregate") || l.includes("bulk") || l.includes("handling")) {
     return (
       <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -32,7 +133,6 @@ function getSubmenuIcon(label: string) {
       </svg>
     );
   }
-  // Engineering / Design / Pipeline
   if (l.includes("design") || l.includes("piping") || l.includes("mechanical") || l.includes("civil") || l.includes("structural") || l.includes("instrumentation") || l.includes("electrical") || l.includes("reverse") || l.includes("laser") || l.includes("scanning")) {
     return (
       <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -40,7 +140,6 @@ function getSubmenuIcon(label: string) {
       </svg>
     );
   }
-  // Training / LMS / Academics
   if (l.includes("training") || l.includes("lms") || l.includes("online") || l.includes("corporate") || l.includes("workshop") || l.includes("catalogue")) {
     return (
       <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -48,7 +147,6 @@ function getSubmenuIcon(label: string) {
       </svg>
     );
   }
-  // Overview / Mission / Strategy
   if (l.includes("overview") || l.includes("mission") || l.includes("vision") || l.includes("philosophy") || l.includes("leadership") || l.includes("why")) {
     return (
       <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -56,7 +154,6 @@ function getSubmenuIcon(label: string) {
       </svg>
     );
   }
-  // Resource / Document / Article
   if (l.includes("blog") || l.includes("article") || l.includes("paper") || l.includes("guide") || l.includes("brochure") || l.includes("insight") || l.includes("video") || l.includes("webinar") || l.includes("download") || l.includes("faq") || l.includes("newsletter") || l.includes("profile")) {
     return (
       <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -64,7 +161,6 @@ function getSubmenuIcon(label: string) {
       </svg>
     );
   }
-  // General Contact / Mail
   return (
     <svg className="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -73,17 +169,8 @@ function getSubmenuIcon(label: string) {
 }
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 8);
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const { language, setLanguage } = useLanguage();
 
   return (
     <>
@@ -94,9 +181,7 @@ export default function Header() {
         </div>
       </div>
 
-      <header
-        className={`w-full sticky top-0 bg-white/95 backdrop-blur-md border-b border-border z-40 transition-all duration-150 h-18 flex items-center`}
-      >
+      <header className="w-full sticky top-0 bg-white/95 backdrop-blur-md border-b border-border z-40 transition-all duration-150 h-18 flex items-center">
         <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between py-3">
           <Link href="/" className="flex items-center gap-2 group">
             <span className="font-sans font-extrabold text-xl text-primary">//</span>
@@ -117,7 +202,7 @@ export default function Header() {
                     </svg>
                   </span>
                   {/* Mega-menu dropdown panel */}
-                  <div className={`absolute hidden group-hover:block top-full left-1/2 -translate-x-1/2 pt-2 z-50`}>
+                  <div className="absolute hidden group-hover:block top-full left-1/2 -translate-x-1/2 pt-2 z-50">
                     <div className={`bg-white rounded-none border border-border p-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)] text-foreground grid gap-x-5 gap-y-2.5 ${
                       item.children.length > 10
                         ? "grid-cols-3 w-[660px]"
@@ -154,12 +239,12 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-4">
+            {/* Country Flag Language Selector */}
+            <LanguageSelectorDropdown />
+
             <div className="hidden md:inline-block">
               <Magnetic strength={0.05}>
-                <Link
-                  href="/lets-connect"
-                  className="button-primary"
-                >
+                <Link href="/lets-connect" className="button-primary">
                   Let&apos;s Connect
                 </Link>
               </Magnetic>
@@ -188,6 +273,30 @@ export default function Header() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 top-[108px] bg-white z-40 overflow-y-auto border-t border-border flex flex-col p-6 xl:hidden">
+          <div className="mb-6 pb-4 border-b border-border">
+            <span className="font-mono text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Select Language</span>
+            <div className="grid grid-cols-2 gap-2">
+              {LANGUAGES.map((lang: LanguageOption) => {
+                const isSelected = language.toLowerCase() === lang.code.toLowerCase();
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setLanguage(lang.code);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-2 p-2 border text-[11px] font-sans transition-colors ${
+                      isSelected ? "border-primary bg-rose-50 text-primary font-bold" : "border-slate-200 text-slate-700"
+                    }`}
+                  >
+                    <CountryFlag country={lang.country} />
+                    <span className="truncate">{lang.nativeName}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <nav className="flex flex-col gap-6 text-xs font-mono font-bold text-foreground uppercase tracking-wider">
             {primaryNav.map((item) => (
               <div key={item.label} className="border-b border-border pb-4">

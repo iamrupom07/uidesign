@@ -1,13 +1,14 @@
+"use client";
+
 import { Reveal } from "@/components/ui/Reveal";
 
 const tools = [
-  "ANSYS Fluent",
-  "AutoCAD Plant 3D",
-  "Aspen HYSYS",
-  "SolidWorks",
-  "AVEVA E3D",
-  "Bentley OpenPlant",
-  "MATLAB / Simulink",
+  "AeroSolve CFD",
+  "SimuLink Suite",
+  "TwinLogic OS",
+  "OptiPlant V4",
+  "Scannex 3D",
+  "Intellect-PM",
 ];
 
 export default function CapabilitiesStrip() {

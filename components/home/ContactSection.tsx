@@ -4,6 +4,7 @@ import { useState } from "react";
 import { companyInfo } from "@/lib/constants";
 import { Reveal } from "@/components/ui/Reveal";
 import { Magnetic } from "@/components/ui/Magnetic";
+import Link from "next/link";
 
 export default function ContactSection() {
   const [submitting, setSubmitting] = useState(false);
@@ -28,9 +29,11 @@ export default function ContactSection() {
   return (
     <section id="lets-connect" className="py-xl bg-background blueprint-mesh border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-lg lg:gap-xl items-stretch">
+        
+        {/* Left Column: Contact Form */}
         <Reveal>
           <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
-            <span className="text-primary font-bold mr-1">┌</span> CONTACT
+            <span className="text-primary font-bold mr-1">┌</span> CONTACT FORM
           </div>
           <h2 className="mb-8 font-display font-extrabold text-3xl text-foreground uppercase">
             Get in touch
@@ -44,6 +47,7 @@ export default function ContactSection() {
                 id="name"
                 name="name"
                 type="text"
+                required
                 placeholder="Enter your full name"
                 className="w-full px-5 py-3 rounded-none border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring transition-all duration-150 text-xs"
               />
@@ -74,18 +78,28 @@ export default function ContactSection() {
                 className="w-full px-5 py-4 rounded-none border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary focus:ring-1 focus:ring-ring transition-all duration-150 text-xs"
               />
             </div>
-            <Magnetic strength={0.05}>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="button-primary px-8 py-3.5 disabled:opacity-60"
+            <div className="flex flex-wrap gap-4 items-center pt-2">
+              <Magnetic strength={0.05}>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="button-primary px-8 py-3.5 disabled:opacity-60 text-xs uppercase"
+                >
+                  {submitting ? "Sending…" : sent ? "Sent ✓" : "Submit Message"}
+                </button>
+              </Magnetic>
+
+              <Link
+                href="/lets-connect?tab=proposal"
+                className="button-outline px-8 py-3.5 text-xs uppercase text-center"
               >
-                {submitting ? "Sending…" : sent ? "Sent ✓" : "Submit Message"}
-              </button>
-            </Magnetic>
+                Request Proposal
+              </Link>
+            </div>
           </form>
         </Reveal>
 
+        {/* Right Column: Contact Details, Language Selector & WhatsApp */}
         <Reveal delay={0.15} className="h-full">
           <div className="relative rounded-none h-full min-h-[26rem] flex flex-col justify-between p-lg text-foreground bg-white border border-border overflow-hidden">
             <div className="grain" />
@@ -100,13 +114,53 @@ export default function ContactSection() {
               <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
             </div>
 
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-4 relative font-bold label-caps">
-                <span className="text-primary font-bold mr-1">┌</span> Houston, TX &nbsp;·&nbsp; 29.76°N 95.37°W
-              </p>
-              <p className="font-display font-extrabold text-2xl mb-2 relative text-foreground uppercase">Contact Us</p>
-              <p className="font-mono text-xs text-secondary relative mb-0.5">{companyInfo.email}</p>
-              <p className="font-mono text-xs text-secondary relative">{companyInfo.phone}</p>
+            <div className="space-y-6">
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-2 relative font-bold label-caps">
+                  <span className="text-primary font-bold mr-1">┌</span> OFFICE LOCATION
+                </p>
+                <p className="font-sans text-xs text-secondary relative leading-relaxed mb-4">
+                  1000 Louisiana St, Suite 4300<br />
+                  Houston, TX 77002, United States
+                </p>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <p className="font-mono text-[9px] uppercase tracking-wider text-slate-400">EMAIL SUPPORT</p>
+                  <p className="font-mono text-xs text-slate-900 font-bold mt-1">{companyInfo.email}</p>
+                </div>
+                <div>
+                  <p className="font-mono text-[9px] uppercase tracking-wider text-slate-400">PHONE DIRECT</p>
+                  <p className="font-mono text-xs text-slate-900 font-bold mt-1">{companyInfo.phone}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-sm items-center border-t border-border pt-6">
+                <a
+                  href="https://linkedin.com/company/macprotec"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-mono text-[10px] text-primary font-bold uppercase hover:text-rose-700 tracking-wider flex items-center gap-1.5"
+                >
+                  <span>🔗</span> LinkedIn Profile
+                </a>
+                <a
+                  href="https://wa.me/17135550199"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-mono text-[10px] text-emerald-600 font-bold uppercase hover:text-emerald-700 tracking-wider flex items-center gap-1.5"
+                >
+                  <span>💬</span> WhatsApp Direct
+                </a>
+                <Link
+                  href="/lets-connect?tab=consultation"
+                  className="font-mono text-[10px] text-slate-600 font-bold uppercase hover:text-slate-800 tracking-wider flex items-center gap-1.5 ml-auto"
+                >
+                  <span>📅</span> Book Technical Consultation
+                </Link>
+              </div>
+
             </div>
           </div>
         </Reveal>
