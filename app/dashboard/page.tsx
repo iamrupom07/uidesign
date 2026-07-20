@@ -5,7 +5,25 @@ import { useRouter } from "next/navigation";
 import TechnicalCursor from "@/components/ui/TechnicalCursor";
 import { Reveal } from "@/components/ui/Reveal";
 import {
+  LayoutDashboard,
+  Inbox,
+  FileText,
+  Users,
+  Wallet,
+  Receipt,
+  BookOpen,
+  LogOut,
+  ChevronRight,
+  Menu,
+  X,
+  ShieldCheck,
+  Activity,
+  Mail,
+  Phone,
+} from "lucide-react";
+import {
   AreaChart,
+
   Area,
   XAxis,
   YAxis,
@@ -39,6 +57,8 @@ interface Proposal {
 interface Lead {
   id: string;
   name: string;
+  email: string;
+  phone: string;
   company: string;
   value: number;
   status: "New" | "Contacted" | "Proposal Sent" | "Closed Won" | "Closed Lost";
@@ -135,9 +155,36 @@ export default function DashboardPage() {
   ]);
 
   const [leads, setLeads] = useState<Lead[]>([
-    { id: "LD-501", name: "Hiroshi Sato", company: "Nippon Cement", value: 85000, status: "Proposal Sent", date: "2026-07-19" },
-    { id: "LD-502", name: "Carlos Vance", company: "Cemex Monterrey", value: 120000, status: "New", date: "2026-07-18" },
-    { id: "LD-503", name: "Elena Rostova", company: "Holcim EU", value: 45000, status: "Closed Won", date: "2026-07-15" },
+    {
+      id: "LD-501",
+      name: "Hiroshi Sato",
+      email: "sato@nippon.co.jp",
+      phone: "+81 3 5555 0142",
+      company: "Nippon Cement",
+      value: 85000,
+      status: "Proposal Sent",
+      date: "2026-07-19",
+    },
+    {
+      id: "LD-502",
+      name: "Carlos Vance",
+      email: "c.vance@cemex.com",
+      phone: "+52 81 8328 1000",
+      company: "Cemex Monterrey",
+      value: 120000,
+      status: "New",
+      date: "2026-07-18",
+    },
+    {
+      id: "LD-503",
+      name: "Elena Rostova",
+      email: "elena.rostova@holcim.com",
+      phone: "+41 58 858 8600",
+      company: "Holcim EU",
+      value: 45000,
+      status: "Closed Won",
+      date: "2026-07-15",
+    },
   ]);
 
   const [ledger, setLedger] = useState<LedgerEntry[]>([
@@ -574,100 +621,209 @@ export default function DashboardPage() {
       <main className="bg-slate-50 min-h-screen text-slate-800 flex flex-col lg:flex-row relative">
         
         {/* Mobile Top Header */}
-        <header className="lg:hidden bg-slate-900 text-white px-6 py-4 flex justify-between items-center border-b border-slate-800 z-30 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="font-sans font-extrabold text-lg text-primary">//</span>
-            <span className="font-sans font-extrabold text-xs tracking-wider uppercase">MACPROTEC DB</span>
+        <header className="lg:hidden bg-slate-950 text-white px-5 py-3.5 flex justify-between items-center border-b border-slate-800/80 z-30 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-primary font-mono font-bold text-xs">
+              //
+            </div>
+            <div>
+              <span className="font-sans font-extrabold text-xs tracking-wider uppercase text-white block leading-tight">MACPROTEC</span>
+              <span className="font-mono text-[9px] text-slate-400 block leading-tight">CENTRAL DB</span>
+            </div>
           </div>
           <button
             onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            className="p-1 border border-slate-700 hover:bg-slate-800 text-xs font-mono font-bold"
+            className="p-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors rounded"
+            aria-label="Toggle Menu"
           >
-            {mobileSidebarOpen ? "[CLOSE]" : "[MENU]"}
+            {mobileSidebarOpen ? <X className="w-5 h-5 text-rose-500" /> : <Menu className="w-5 h-5 text-slate-300" />}
           </button>
         </header>
 
         {/* Sidebar Nav */}
         <aside
-          className={`fixed inset-y-0 left-0 w-64 bg-slate-900 text-slate-400 p-6 flex flex-col justify-between shrink-0 border-r border-slate-800 z-40 transform transition-transform duration-200 lg:relative lg:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 w-64 bg-slate-950 text-slate-400 p-5 flex flex-col justify-between shrink-0 border-r border-slate-800/80 z-40 transform transition-transform duration-200 lg:relative lg:translate-x-0 shadow-2xl lg:shadow-none ${
             mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           <div>
-            <div className="flex items-center gap-2 mb-8">
-              <span className="font-sans font-extrabold text-lg text-primary">//</span>
-              <span className="font-sans font-extrabold text-sm text-white tracking-wider uppercase">MACPROTEC DB</span>
+            {/* Header Brand */}
+            <div className="pb-6 mb-6 border-b border-slate-800/60">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-primary font-mono font-extrabold text-sm shadow-inner">
+                  //
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-sans font-extrabold text-sm text-white tracking-wide uppercase">MACPROTEC</span>
+                    <span className="font-mono text-[9px] font-bold text-rose-500 bg-rose-500/10 px-1 py-0.5 rounded border border-rose-500/20">DB</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-mono text-[9px] text-slate-400 tracking-wider uppercase">System Online</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <nav className="space-y-1">
-              <button
-                onClick={() => { setActiveTab("overview"); setMobileSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-mono transition-colors ${
-                  activeTab === "overview" ? "bg-slate-800 text-white font-bold" : "hover:bg-slate-800/40 hover:text-slate-200"
-                }`}
-              >
-                <span>📊</span> Dashboard Overview
-              </button>
-              <button
-                onClick={() => { setActiveTab("submissions"); setMobileSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-mono transition-colors ${
-                  activeTab === "submissions" ? "bg-slate-800 text-white font-bold" : "hover:bg-slate-800/40 hover:text-slate-200"
-                }`}
-              >
-                <span>✉</span> Submissions ({submissions.length})
-              </button>
-              <button
-                onClick={() => { setActiveTab("proposals"); setMobileSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-mono transition-colors ${
-                  activeTab === "proposals" ? "bg-slate-800 text-white font-bold" : "hover:bg-slate-800/40 hover:text-slate-200"
-                }`}
-              >
-                <span>📋</span> RFP Proposals ({proposals.length})
-              </button>
-              <button
-                onClick={() => { setActiveTab("leads"); setMobileSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-mono transition-colors ${
-                  activeTab === "leads" ? "bg-slate-800 text-white font-bold" : "hover:bg-slate-800/40 hover:text-slate-200"
-                }`}
-              >
-                <span>👥</span> Leads Pipeline ({leads.length})
-              </button>
-              <button
-                onClick={() => { setActiveTab("finance-ledger"); setMobileSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-mono transition-colors ${
-                  activeTab === "finance-ledger" ? "bg-slate-800 text-white font-bold" : "hover:bg-slate-800/40 hover:text-slate-200"
-                }`}
-              >
-                <span>💰</span> Finance Ledger
-              </button>
-              <button
-                onClick={() => { setActiveTab("invoice-creator"); setMobileSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-mono transition-colors ${
-                  activeTab === "invoice-creator" ? "bg-slate-800 text-white font-bold" : "hover:bg-slate-800/40 hover:text-slate-200"
-                }`}
-              >
-                <span>✍</span> Invoice Creator
-              </button>
 
-              {/* BLOG PUBLISHER SECTION TAB */}
-              <button
-                onClick={() => { setActiveTab("blog-manager"); setMobileSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-mono transition-colors ${
-                  activeTab === "blog-manager" ? "bg-slate-800 text-white font-bold" : "hover:bg-slate-800/40 hover:text-slate-200"
-                }`}
-              >
-                <span>📝</span> Blog Manager
-              </button>
-            </nav>
+            {/* Nav Links */}
+            <div className="space-y-6">
+              <div>
+                <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">
+                  Main Overview
+                </div>
+                <nav className="space-y-1">
+                  <button
+                    onClick={() => { setActiveTab("overview"); setMobileSidebarOpen(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
+                      activeTab === "overview"
+                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <LayoutDashboard className={`w-4 h-4 transition-colors ${activeTab === "overview" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`} />
+                      <span>Dashboard Overview</span>
+                    </div>
+                    {activeTab === "overview" && <ChevronRight className="w-3.5 h-3.5 text-primary shrink-0" />}
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab("submissions"); setMobileSidebarOpen(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
+                      activeTab === "submissions"
+                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Inbox className={`w-4 h-4 shrink-0 transition-colors ${activeTab === "submissions" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`} />
+                      <span className="truncate">Submissions</span>
+                    </div>
+                    <span className={`font-mono text-[9px] px-1.5 py-0.5 rounded border transition-colors ${
+                      activeTab === "submissions"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700"
+                    }`}>
+                      {submissions.length}
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab("proposals"); setMobileSidebarOpen(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
+                      activeTab === "proposals"
+                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <FileText className={`w-4 h-4 shrink-0 transition-colors ${activeTab === "proposals" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`} />
+                      <span className="truncate">RFP Proposals</span>
+                    </div>
+                    <span className={`font-mono text-[9px] px-1.5 py-0.5 rounded border transition-colors ${
+                      activeTab === "proposals"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700"
+                    }`}>
+                      {proposals.length}
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab("leads"); setMobileSidebarOpen(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
+                      activeTab === "leads"
+                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Users className={`w-4 h-4 shrink-0 transition-colors ${activeTab === "leads" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`} />
+                      <span className="truncate">Leads Pipeline</span>
+                    </div>
+                    <span className={`font-mono text-[9px] px-1.5 py-0.5 rounded border transition-colors ${
+                      activeTab === "leads"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700"
+                    }`}>
+                      {leads.length}
+                    </span>
+                  </button>
+                </nav>
+              </div>
+
+              <div>
+                <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">
+                  Management & Tools
+                </div>
+                <nav className="space-y-1">
+                  <button
+                    onClick={() => { setActiveTab("finance-ledger"); setMobileSidebarOpen(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
+                      activeTab === "finance-ledger"
+                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Wallet className={`w-4 h-4 transition-colors ${activeTab === "finance-ledger" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`} />
+                      <span>Finance Ledger</span>
+                    </div>
+                    {activeTab === "finance-ledger" && <ChevronRight className="w-3.5 h-3.5 text-primary shrink-0" />}
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab("invoice-creator"); setMobileSidebarOpen(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
+                      activeTab === "invoice-creator"
+                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Receipt className={`w-4 h-4 transition-colors ${activeTab === "invoice-creator" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`} />
+                      <span>Invoice Creator</span>
+                    </div>
+                    {activeTab === "invoice-creator" && <ChevronRight className="w-3.5 h-3.5 text-primary shrink-0" />}
+                  </button>
+
+                  <button
+                    onClick={() => { setActiveTab("blog-manager"); setMobileSidebarOpen(false); }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
+                      activeTab === "blog-manager"
+                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <BookOpen className={`w-4 h-4 shrink-0 transition-colors ${activeTab === "blog-manager" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`} />
+                      <span className="truncate">Blog Manager</span>
+                    </div>
+                    <span className={`font-mono text-[9px] px-1.5 py-0.5 rounded border transition-colors ${
+                      activeTab === "blog-manager"
+                        ? "bg-primary text-white border-primary"
+                        : "bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700"
+                    }`}>
+                      {blogs.length}
+                    </span>
+                  </button>
+                </nav>
+              </div>
+            </div>
           </div>
 
-          <div>
+          <div className="pt-6 mt-6 border-t border-slate-800/80">
             <button
               onClick={handleLogout}
-              className="w-full py-2.5 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors font-mono text-[10px] uppercase font-bold tracking-wider"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded bg-slate-900 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 border border-slate-800 hover:border-rose-500/30 transition-all duration-150 font-mono text-[11px] uppercase font-bold tracking-wider group"
             >
-              Sign Out [Logout]
+              <LogOut className="w-4 h-4 group-hover:text-rose-400 transition-colors" />
+              <span>Sign Out</span>
             </button>
+            <div className="font-mono text-[8px] text-slate-400 text-center uppercase tracking-widest mt-3">
+              MACPROTEC DB v2.4 • HOUSTON, TX
+            </div>
           </div>
         </aside>
 
