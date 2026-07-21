@@ -1,0 +1,6 @@
+<h3><%= title %></h3>
+<p>Hello <%= name %>,</p>
+<p><%= message %></p>
+<% if (typeof actionUrl !== 'undefined' && actionUrl) { %>
+  <a href="<%= actionUrl %>" class="btn"><%= actionText || 'View Details' %></a>
+<% } %>

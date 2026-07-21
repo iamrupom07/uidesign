@@ -1,7 +1,68 @@
-node_modules
-.next
-out
+# Monorepo Package Managers & Dependencies
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+pnpm-lock.yaml
+package-lock.json
+yarn-error.log*
+yarn-debug.log*
+npm-debug.log*
+
+# Turborepo Cache
+.turbo/
+
+# Next.js Web App Build Output
+apps/web/.next/
+apps/web/out/
+apps/web/build/
+.next/
+out/
+build/
+dist/
+
+# API Server Build Output
+apps/api/dist/
+apps/api/build/
+
+# Environment Variables & Secrets
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+apps/web/.env
+apps/web/.env.local
+apps/api/.env
+apps/api/.env.local
+packages/database/.env
+!.env.example
+
+# Database & Local Data
+*.sqlite
+*.sqlite-journal
+*.db
+*.db-journal
+packages/database/generated/
+packages/database/src/generated/
+*.dll.node
+*.tmp*
+
+# IDE & OS System Files
 .DS_Store
-npm-debug.log*
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+# Testing & Coverage Logs
+coverage/
+.nyc_output/
+
+# Temporary / Scratch Files
+*.tmp
+temp/

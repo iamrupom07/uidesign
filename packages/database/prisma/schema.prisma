@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client2"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+  EMPLOYEE
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          Role      @default(USER)
+  employeeId    String?   @unique
+  designation   String?
+  phone         String?
+  status        String    @default("ACTIVE") // "ACTIVE" | "INACTIVE"
+  tempPassword  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+  accounts      Account[]
+
+  @@index([email])
+  @@index([role])
+  @@index([employeeId])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model Account {
+  id           String    @id @default(uuid())
+  userId       String
+  accountId    String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+  expiresAt    DateTime?
+  password     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products Product[]
+
+  @@index([slug])
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  price       Float
+  stock       Int       @default(0)
+  isPublished Boolean   @default(true)
+  categoryId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([deletedAt])
+}
+
+model Lead {
+  id        String    @id @default(uuid())
+  name      String
+  email     String
+  phone     String?
+  company   String
+  value     Float     @default(0)
+  status    String    @default("New")
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([status])
+  @@index([deletedAt])
+}
+
+model FinanceRecord {
+  id          String    @id @default(uuid())
+  type        String    // "Income" | "Expense"
+  description String
+  category    String    // e.g. "CFD Simulation Contract", "Laser Scanning", "Software License", "Plant EPC"
+  sector      String    // e.g. "Cement", "Steel", "Power", "Oil & Gas", "Mining", "Corporate"
+  amount      Float
+  client      String?
+  status      String    @default("Completed") // "Completed" | "Pending" | "Invoiced"
+  date        DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@index([type])
+  @@index([sector])
+  @@index([status])
+  @@index([deletedAt])
+}
+
+model Invoice {
+  id              String        @id @default(uuid())
+  invoiceNumber   String        @unique
+  clientName      String
+  clientEmail     String
+  clientCompany   String?
+  clientAddress   String?
+  issueDate       DateTime      @default(now())
+  dueDate         DateTime?
+  status          String        @default("Draft") // "Draft" | "Sent" | "Paid" | "Overdue" | "Cancelled"
+  currency        String        @default("USD")
+  taxRate         Float         @default(15.0)
+  discount        Float         @default(0.0)
+  subtotal        Float         @default(0.0)
+  taxAmount       Float         @default(0.0)
+  totalAmount     Float         @default(0.0)
+  notes           String?
+  paymentTerms    String?       @default("Net 30")
+  sector          String?
+  serviceCategory String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
+
+  items           InvoiceItem[]
+
+  @@index([status])
+  @@index([sector])
+  @@index([deletedAt])
+  @@index([invoiceNumber])
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  description String
+  quantity    Int      @default(1)
+  unitPrice   Float
+  totalPrice  Float
+
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+}
+
+model BlogPost {
+  id              String      @id @default(uuid())
+  title           String
+  slug            String      @unique
+  excerpt         String
+  content         String      @db.Text
+  category        String      @default("Engineering Insights")
+  sector          String      @default("Cement")
+  coverImage      String?
+  authorName      String      @default("MacProtec Technical Desk")
+  authorTitle     String      @default("Chief Process Engineer")
+  readTime        String      @default("5 min read")
+  isPublished     Boolean     @default(true)
+  views           Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  deletedAt       DateTime?
+
+  images          BlogImage[]
+
+  @@index([slug])
+  @@index([category])
+  @@index([sector])
+  @@index([isPublished])
+  @@index([deletedAt])
+}
+
+model BlogImage {
+  id          String   @id @default(uuid())
+  blogPostId  String
+  url         String
+  caption     String?
+  altText     String?
+  position    String   @default("BODY_MID") // "INTRO" | "BODY_MID" | "BODY_END" | "GALLERY"
+  layout      String   @default("FULL")     // "FULL" | "FLOAT_LEFT" | "FLOAT_RIGHT" | "DUAL_GRID"
+
+  blogPost    BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+
+  @@index([blogPostId])
+}
+
+
