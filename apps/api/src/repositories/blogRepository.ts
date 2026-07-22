@@ -154,9 +154,9 @@ export class BlogRepository {
     });
 
     const totalPosts = posts.length;
-    const publishedCount = posts.filter((p) => p.isPublished).length;
-    const draftCount = posts.filter((p) => !p.isPublished).length;
-    const totalViews = posts.reduce((acc, curr) => acc + (curr.views || 0), 0);
+    const publishedCount = posts.filter((p: any) => p.isPublished).length;
+    const draftCount = posts.filter((p: any) => !p.isPublished).length;
+    const totalViews = posts.reduce((acc: number, curr: any) => acc + (curr.views || 0), 0);
 
     return {
       totalPosts,

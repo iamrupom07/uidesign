@@ -5,7 +5,8 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build",
+    "build": "pnpm db:generate && turbo build",
+    "vercel-build": "pnpm db:generate && turbo build",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,js,css}\"",
     "typecheck": "turbo typecheck",

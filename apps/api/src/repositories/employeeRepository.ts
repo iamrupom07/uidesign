@@ -167,11 +167,11 @@ export class EmployeeRepository {
     });
 
     const totalEmployees = employees.length;
-    const activeCount = employees.filter((e) => e.status === "ACTIVE" || !e.status).length;
-    const inactiveCount = employees.filter((e) => e.status === "INACTIVE").length;
+    const activeCount = employees.filter((e: any) => e.status === "ACTIVE" || !e.status).length;
+    const inactiveCount = employees.filter((e: any) => e.status === "INACTIVE").length;
 
     const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    const newThisMonth = employees.filter((e) => new Date(e.createdAt) >= startOfMonth).length;
+    const newThisMonth = employees.filter((e: any) => new Date(e.createdAt) >= startOfMonth).length;
 
     return {
       totalEmployees,
