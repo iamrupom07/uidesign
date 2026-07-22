@@ -1,0 +1,16 @@
+node_modules/
+.next/
+apps/web/.next/
+apps/api/dist/
+.turbo/
+.vercel/
+dist/
+build/
+*.sqlite
+*.sqlite-journal
+*.db
+*.db-journal
+packages/database/generated/
+packages/database/src/generated/
+*.dll.node
+*.log

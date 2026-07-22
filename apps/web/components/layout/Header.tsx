@@ -345,7 +345,10 @@ export default function Header() {
             {primaryNav.map((item) =>
               item.children ? (
                 <div key={item.label} className="relative group cursor-pointer py-4">
-                  <span className="relative flex items-center gap-1.5 hover:text-primary transition-colors duration-150 ease-standard">
+                  <Link
+                    href={item.href}
+                    className="relative flex items-center gap-1.5 hover:text-primary transition-colors duration-150 ease-standard"
+                  >
                     {item.label}
                     <svg
                       width="8"
@@ -356,7 +359,7 @@ export default function Header() {
                     >
                       <path d="M5 8l5 5 5-5" />
                     </svg>
-                  </span>
+                  </Link>
                   {/* Mega-menu dropdown panel */}
                   <div className="absolute hidden group-hover:block top-full left-1/2 -translate-x-1/2 pt-2 z-50">
                     <div
@@ -375,11 +378,17 @@ export default function Header() {
                             : item.children.length > 5
                               ? "col-span-2"
                               : "col-span-1"
-                        } border-b border-border pb-2 mb-1 flex items-center justify-between`}
+                        } border-b border-border pb-2 mb-1`}
                       >
-                        <span className="font-mono font-semibold text-[10px] text-muted-foreground tracking-widest uppercase">
-                          {item.label} Index
-                        </span>
+                        <Link
+                          href={item.href}
+                          className="w-full font-mono font-bold text-[10px] text-muted-foreground hover:text-primary tracking-widest uppercase flex items-center justify-between gap-2 group/hdr"
+                        >
+                          <span>{item.label} Overview</span>
+                          <span className="text-primary font-mono text-[9px] group-hover/hdr:translate-x-1 transition-transform shrink-0">
+                            View All →
+                          </span>
+                        </Link>
                       </div>
                       {item.children.map((child) => (
                         <Link
@@ -488,9 +497,16 @@ export default function Header() {
               <div key={item.label} className="border-b border-border pb-4">
                 {item.children ? (
                   <div className="flex flex-col gap-3">
-                    <span className="text-secondary font-extrabold flex items-center justify-between">
-                      {item.label}
-                    </span>
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-secondary hover:text-primary font-extrabold flex items-center justify-between group"
+                    >
+                      <span>{item.label}</span>
+                      <span className="text-[10px] text-primary font-mono font-bold uppercase group-hover:translate-x-1 transition-transform">
+                        Overview →
+                      </span>
+                    </Link>
                     <div className="pl-4 grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 border-l border-primary/20">
                       {item.children.map((child) => (
                         <Link

@@ -10,6 +10,7 @@ npm-debug.log*
 
 # Turborepo Cache
 .turbo/
+.vercel/
 
 # Next.js Web App Build Output
 apps/web/.next/
@@ -66,3 +67,5 @@ coverage/
 # Temporary / Scratch Files
 *.tmp
 temp/
+
+.vercel
