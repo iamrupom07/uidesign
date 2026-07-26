@@ -76,7 +76,7 @@ export default function AggregateAndScmPage() {
                 </Reveal>
 
                 <Reveal>
-                  <p className="text-sm  text-slate-600 font-sans leading-relaxed max-w-2xl">
+                  <p className="text-sm text-slate-600 font-sans leading-relaxed max-w-2xl">
                     Concrete, the most widely used construction material globally, owes its versatility and strength to the careful combination of aggregates and cementitious materials. While aggregates provide bulk and stability, cementitious materials bind the mixture together, imparting cohesion and durability to concrete structures. MACPROTEC's deep domain expertise in Supplemental Cementitious Material and Aggregate Industries puts us in a unique position to help the industry achieve sustainable, high-performance production.
                   </p>
                 </Reveal>

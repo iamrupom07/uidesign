@@ -333,11 +333,12 @@ export default function Header() {
 
       <header className="w-full sticky top-0 bg-white/95 backdrop-blur-md border-b border-border z-40 transition-all duration-150 h-18 flex items-center">
         <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between py-3">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-sans font-extrabold text-xl text-primary">//</span>
-            <span className="font-sans font-extrabold text-lg tracking-tight text-foreground transition-colors group-hover:text-primary">
-              MACPROTEC
-            </span>
+          <Link href="/" className="flex items-center group py-1">
+            <img
+              src="/images/logo-horizontal.png"
+              alt="MACPROTEC - Excellence in Process"
+              className="h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
           </Link>
 
           {/* Desktop Nav */}

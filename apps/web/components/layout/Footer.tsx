@@ -6,10 +6,13 @@ export default function Footer() {
     <footer className="bg-white text-foreground border-t border-border">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-14 flex flex-col md:flex-row md:items-start md:justify-between gap-10">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="font-sans font-extrabold text-xl text-primary">//</span>
-            <span className="font-sans font-extrabold text-lg tracking-tight">MACPROTEC</span>
-          </div>
+          <Link href="/" className="inline-block group">
+            <img
+              src="/images/logo-horizontal.png"
+              alt="MACPROTEC - Excellence in Process"
+              className="h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
+          </Link>
           <p className="text-xs text-secondary mt-4 max-w-[16rem] leading-relaxed font-sans">
             Houston-based process engineering consulting and system integration for heavy process
             industries.
