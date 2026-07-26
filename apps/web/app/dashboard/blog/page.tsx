@@ -412,9 +412,7 @@ export default function BlogDashboardPage() {
         {/* Mobile Top Header */}
         <header className="lg:hidden bg-slate-950 text-white px-5 py-3.5 flex justify-between items-center border-b border-slate-800/80 z-30 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-primary font-mono font-bold text-xs">
-              //
-            </div>
+            <img src="/images/logo-icon.png" alt="MACPROTEC Logo" className="w-7 h-7 object-contain" />
             <div>
               <span className="font-sans font-extrabold text-xs tracking-wider uppercase text-white block leading-tight">
                 MACPROTEC
@@ -447,9 +445,7 @@ export default function BlogDashboardPage() {
             {/* Header Brand */}
             <div className="pb-6 mb-6 border-b border-slate-800/60">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-primary font-mono font-extrabold text-sm shadow-inner">
-                  //
-                </div>
+                <img src="/images/logo-icon.png" alt="MACPROTEC Logo" className="w-8 h-8 object-contain" />
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-sans font-extrabold text-sm text-white tracking-wide uppercase">

@@ -22,7 +22,7 @@ export default function Marquee() {
             <span className="font-mono text-xs font-bold text-foreground tracking-widest uppercase">
               {item}
             </span>
-            <span className="font-mono text-xs font-bold text-primary">//</span>
+            <img src="/images/logo-icon.png" alt="" className="w-3.5 h-3.5 object-contain opacity-80" />
           </div>
         ))}
       </div>
