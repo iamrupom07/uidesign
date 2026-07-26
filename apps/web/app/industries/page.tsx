@@ -43,8 +43,7 @@ export default function IndustriesIndex() {
                       {item.title}
                     </h3>
                     <p className="text-xs text-secondary font-sans leading-relaxed">
-                      Custom process simulations, piping stress configurations, and site
-                      commissioning checks targeted at {item.title}.
+                      {item.summary || `Custom process engineering, simulation, and operational optimization targeted at ${item.title}.`}
                     </p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-border flex items-center justify-between">

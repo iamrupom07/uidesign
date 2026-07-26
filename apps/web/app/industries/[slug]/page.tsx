@@ -30,140 +30,262 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
 
   // Dictionary for dynamic high-fidelity industries content
   const industriesData: Record<string, IndustryContent> = {
-    "cement-plants": {
-      title: "Cement Plants",
+    "industry-40": {
+      title: "Industry 4.0",
       subtitle:
-        "Maximize pyroprocessing thermal efficiency, increase alternative fuel substitutions, and reduce clinker cooler bottlenecks.",
+        "Accelerate smart manufacturing transformation using IoT sensors, AI predictive maintenance, and real-time digital twins.",
       challenges: [
         {
-          title: "Pyroprocessing & Fuel Combustion",
+          title: "OT/IT Systems Integration",
+          desc: "Connect legacy DCS, SCADA, and historian node networks into secure cloud and edge telemetry backbones.",
+          img: "/images/card_digital_twin.png",
+        },
+        {
+          title: "Predictive Equipment Analytics",
+          desc: "Apply ML algorithms to vibration, thermal, and electrical metrics to forecast failures weeks before occurrence.",
+          img: "/images/card_plant_optimization.png",
+        },
+        {
+          title: "Real-Time OEE & Energy KPIs",
+          desc: "Consolidate plant-wide operational data to track energy intensity per ton of product automatically.",
+          img: "/images/hero_industrial.png",
+        },
+      ],
+      optimizationTitle: "Industry 4.0 Assessment Scope",
+      optimizationItems: [
+        "IoT Telemetry & Edge Gateway Setup",
+        "Predictive Maintenance Model Calibration",
+        "Real-Time SCADA/DCS Data Pipelines",
+        "Asset Health Index & OEE Dashboards",
+        "Cybersecurity & OT Network Hardening",
+      ],
+      optimizationImg: "/images/card_digital_twin.png",
+      workflowTitle: "Smart Plant Implementation Phases",
+      workflowDesc:
+        "Systematic digital transformation strategy designed for zero-downtime industrial deployment.",
+      workflowSteps: [
+        { step: "Phase 01", label: "OT Audit", desc: "Evaluate existing sensor coverage, network topology, and PLCs." },
+        { step: "Phase 02", label: "Edge Deployment", desc: "Install smart IoT gateways and data collection pipelines." },
+        { step: "Phase 03", label: "AI Model Training", desc: "Train predictive failure models on historical sensor logs." },
+        { step: "Phase 04", label: "Dashboard Rollout", desc: "Launch unified role-based dashboards across plant teams." },
+      ],
+      solutionsTitle: "Applied Industry 4.0 Solutions",
+      solutionsPoints: [
+        "Digital Twin virtual plant replicas",
+        "AI-driven predictive maintenance platforms",
+        "Real-time energy & emissions tracking",
+        "Automated alarm suppression & anomaly detection",
+      ],
+    },
+    cement: {
+      title: "Cement Industry",
+      subtitle:
+        "Maximize pyroprocessing thermal efficiency, optimize grinding circuit power consumption, and increase alternative fuel substitution.",
+      challenges: [
+        {
+          title: "Pyroprocessing & Kiln Stability",
           desc: "Model alternative fuel combustion profiles, secondary air mix zones, and thermal stress on burner pipes.",
           img: "/images/hero_plant.png",
         },
         {
-          title: "Raw Mill Gas Balances",
-          desc: "Analyze flow velocity margins, drag states, and pressure drops to eliminate mill system blockages.",
+          title: "Grinding Mill Energy Efficiency",
+          desc: "Optimize raw meal, cement, and VRM grinding circuits to reduce specific power consumption (kWh/ton).",
+          img: "/images/card_plant_optimization.png",
+        },
+        {
+          title: "Clinker Cooler Heat Recovery",
+          desc: "Balance grate cooler airflow distribution to maximize secondary & tertiary air heat recovery.",
           img: "/images/plant_reactor.png",
-        },
-        {
-          title: "Preheater Cyclone Volatiles",
-          desc: "Detect material blocks and calculate separation efficiency parameters using Eulerian multi-phase solvers.",
-          img: "/images/contact_plant.png",
-        },
-        {
-          title: "Clinker Cooler Fan Controls",
-          desc: "Ensure cooling air optimization and refractory thermal profiles are held within safe limits.",
-          img: "/images/hero_plant.png",
         },
       ],
       optimizationTitle: "Cement Plant Audit Scope",
       optimizationItems: [
-        "Kiln specific heat consumption checks",
-        "Alternative fuel combustion nozzle sizing",
-        "Preheater bypass gas extraction rates",
-        "Secondary air temperature optimization",
-        "Raw mill gas drying capacity reviews",
-        "Clinker cooler cooling fans balancing",
-        "Preheater cyclone pressure drop checks",
+        "Kiln specific heat consumption optimization",
+        "Alternative fuel burner nozzle sizing & CFD",
+        "Raw & cement mill separator efficiency checks",
+        "Clinker cooler fan air balance calibration",
+        "Preheater cyclone pressure drop reduction",
       ],
       optimizationImg: "/images/hero_plant.png",
-      workflowTitle: "Pyroprocessing Performance Phases",
+      workflowTitle: "Cement Performance Optimization",
       workflowDesc:
-        "Every thermal audit follows our validated steps to ensure clinker output goals are met.",
+        "Data-backed engineering audits designed to lower heat consumption and boost kiln throughput.",
       workflowSteps: [
-        {
-          step: "Phase 01",
-          label: "Sensor Audit",
-          desc: "Compile actual plant SCADA logs, fuel chemistry datasets, and pressure coordinates.",
-        },
-        {
-          step: "Phase 02",
-          label: "CFD Thermal Flow",
-          desc: "Construct multi-phase simulation meshes to profile internal velocity fields.",
-        },
-        {
-          step: "Phase 03",
-          label: "Burner Alignment",
-          desc: "Verify nozzle swirl indexes and optimize flame shape lengths.",
-        },
-        {
-          step: "Phase 04",
-          label: "Continuous SLA",
-          desc: "Deploy real-time dashboard telemetry logs to monitor sensor drift.",
-        },
+        { step: "Phase 01", label: "Process Audit", desc: "Collect SCADA telemetry, fuel specs, and mass balance data." },
+        { step: "Phase 02", label: "CFD & Sim", desc: "Construct thermo-chemical simulation meshes for pyroprocess." },
+        { step: "Phase 03", label: "Field Tuning", desc: "Re-align burner nozzles, damper positions, and separator speeds." },
+        { step: "Phase 04", label: "SLA Monitoring", desc: "Track specific power and thermal KPIs continuously." },
       ],
       solutionsTitle: "Applied Cement Solutions",
       solutionsPoints: [
         "Kiln burner alternative fuel retrofits",
-        "CFD clinker cooler airflow balancing",
-        "Preheater cyclone build-up mitigations",
-        "Raw mill gas duct debottlenecking",
+        "Clinker cooler airflow balancing",
+        "Grinding circuit separator optimization",
+        "Process simulation & Heat/Mass balances",
       ],
     },
-    "cement-terminals": {
-      title: "Cement Terminals",
+    "aggregate-and-scm": {
+      title: "Aggregate and SCM",
       subtitle:
-        "Optimize pneumatic conveyor lines, eliminate pipe blockages, and speed up ship unloading rates.",
+        "Optimize crushing, screening, grinding, and supplementary cementitious material (SCM) processing facilities.",
       challenges: [
         {
-          title: "Pneumatic Line Conveying",
-          desc: "Evaluate pressure drops, line velocity limits, and material drag margins to prevent blockages.",
-          img: "/images/plant_reactor.png",
-        },
-        {
-          title: "Silo Aeration & Flow",
-          desc: "Model aeration pad fluidization, discharge velocities, and material flow lines.",
+          title: "Crusher & Screen Throughput",
+          desc: "Eliminate bottleneck choke points in primary, secondary, and tertiary crushing circuits.",
           img: "/images/contact_plant.png",
         },
         {
-          title: "Dust Collector System Compliance",
-          desc: "Review filter bag drag coefficients and exhaust gas flows to minimize bag wear.",
+          title: "SCM Reactivity & Fineness",
+          desc: "Enhance grinding fineness and particle size distribution for slag, calcined clay, and fly ash.",
+          img: "/images/hero_industrial.png",
+        },
+      ],
+      optimizationTitle: "Aggregate & SCM Scope",
+      optimizationItems: [
+        "Crushing circuit power & wear optimization",
+        "Screening efficiency & classification checks",
+        "Calcined clay pyroprocessing thermal audits",
+        "Slag grinding circuit specific power reduction",
+      ],
+      optimizationImg: "/images/contact_plant.png",
+      workflowTitle: "SCM Optimization Methodology",
+      workflowDesc:
+        "Engineering audits focused on boosting throughput and maintaining product fineness.",
+      workflowSteps: [
+        { step: "Phase 01", label: "Circuit Audit", desc: "Analyze feed rates, PSD curves, and moisture levels." },
+        { step: "Phase 02", label: "CFD & DEM", desc: "Model particle flow dynamics in crushers and classifiers." },
+        { step: "Phase 03", label: "Equipment Tuning", desc: "Adjust mill internals, classifier speeds, and screen angles." },
+        { step: "Phase 04", label: "Quality Checks", desc: "Validate blaine fineness and mortar strength metrics." },
+      ],
+      solutionsTitle: "Applied Aggregate & SCM Solutions",
+      solutionsPoints: [
+        "DEM particle flow modeling in transfer chutes",
+        "Calcined clay flash calcination design",
+        "Slag mill grinding media optimization",
+        "Dust suppression & air handling upgrades",
+      ],
+    },
+    "mining-and-metals": {
+      title: "Mining and Metals",
+      subtitle:
+        "Enhance comminution circuit efficiency, pyrometallurgical furnace performance, and mineral processing recovery.",
+      challenges: [
+        {
+          title: "SAG & Ball Mill Power Intensity",
+          desc: "Reduce specific power consumption in heavy grinding circuits through circuit modeling and CFD.",
+          img: "/images/card_engineering_design.png",
+        },
+        {
+          title: "Furnace Heat & Gas Balances",
+          desc: "Optimize smelting furnace gas extractions, off-gas cooling, and refractory thermal protection.",
+          img: "/images/hero_plant.png",
+        },
+      ],
+      optimizationTitle: "Mining & Metals Scope",
+      optimizationItems: [
+        "Comminution circuit energy optimization",
+        "Hydrocyclone battery separation efficiency",
+        "Pyrometallurgical off-gas duct CFD",
+        "Slurry piping hydraulic pressure loss checks",
+      ],
+      optimizationImg: "/images/card_engineering_design.png",
+      workflowTitle: "Metals Processing Workflow",
+      workflowDesc:
+        "End-to-end engineering solutions for ore preparation, beneficiation, and pyrometallurgy.",
+      workflowSteps: [
+        { step: "Phase 01", label: "Ore Analysis", desc: "Review work index, abrasion index, and telemetry logs." },
+        { step: "Phase 02", label: "Sim & Modeling", desc: "Simulate hydrocyclone cut points and furnace gas velocities." },
+        { step: "Phase 03", label: "Engineering Package", desc: "Deliver detail designs for piping, ducting, and liners." },
+        { step: "Phase 04", label: "Ramp-Up Support", desc: "Assist site engineers during plant commissioning." },
+      ],
+      solutionsTitle: "Applied Mining Solutions",
+      solutionsPoints: [
+        "Comminution circuit debottlenecking",
+        "Off-gas duct CFD & thermal stress analysis",
+        "Hydrocyclone cluster optimization",
+        "3D Laser Scanning & reverse engineering for liners",
+      ],
+    },
+    "mine-tailing-management": {
+      title: "Mine Tailing Management",
+      subtitle:
+        "Design safe, sustainable tailing dewatering, paste backfill systems, and environmental compliance solutions.",
+      challenges: [
+        {
+          title: "High-Density Thickening & Dewatering",
+          desc: "Optimize rake torque, flocculant dosing, and underflow density in paste thickeners.",
+          img: "/images/plant_reactor.png",
+        },
+        {
+          title: "Paste Backfill Pipeline Hydraulics",
+          desc: "Calculate yield stress, friction loss, and line pressure in long-distance paste pumping lines.",
+          img: "/images/contact_plant.png",
+        },
+      ],
+      optimizationTitle: "Tailing Audit Scope",
+      optimizationItems: [
+        "Paste thickener underflow solids optimization",
+        "Tailing pipeline hydraulic pressure drop modeling",
+        "Filter press cycle time & moisture reduction",
+        "Tailing dam stability & monitoring telemetry",
+      ],
+      optimizationImg: "/images/plant_reactor.png",
+      workflowTitle: "Tailing Management Strategy",
+      workflowDesc:
+        "Sustainable dewatering and rheology engineering to minimize environmental risks.",
+      workflowSteps: [
+        { step: "Phase 01", label: "Rheology Testing", desc: "Measure yield stress, slump, and settling characteristics." },
+        { step: "Phase 02", label: "Hydraulic Sim", desc: "Model non-Newtonian slurry flow in pipelines." },
+        { step: "Phase 03", label: "System Design", desc: "Specify high-pressure pumps, valves, and thickener rakes." },
+        { step: "Phase 04", label: "Monitoring Setup", desc: "Install pipeline pressure & density telemetry sensors." },
+      ],
+      solutionsTitle: "Applied Tailing Solutions",
+      solutionsPoints: [
+        "Paste backfill plant engineering design",
+        "Non-Newtonian slurry pipeline CFD modeling",
+        "Thickener rake torque & underflow optimization",
+        "Filter press dewatering system integration",
+      ],
+    },
+    petrochemical: {
+      title: "Petrochemical Industry",
+      subtitle:
+        "Optimize heat exchanger networks, fired heaters, distillation columns, and piping stress configurations.",
+      challenges: [
+        {
+          title: "Fired Heater Thermal Efficiency",
+          desc: "Evaluate burner flame pattern, NOx emissions, and tube wall skin temperatures using CFD.",
           img: "/images/hero_plant.png",
         },
         {
-          title: "Loading Spout Clash Audits",
-          desc: "Deploy clash-detection modeling on ship loaders to verify structural clearance tolerances.",
-          img: "/images/plant_reactor.png",
+          title: "Piping Stress & Surge Analysis",
+          desc: "Perform FEA & CAESAR II piping stress calculations for high-pressure, high-temperature lines.",
+          img: "/images/card_cfd_simulation.png",
         },
       ],
-      optimizationTitle: "Terminal Optimization Scope",
+      optimizationTitle: "Petrochemical Audit Scope",
       optimizationItems: [
-        "Conveying pressure drop calculation",
-        "Aeration pad blower capacity matching",
-        "Silo discharge flow velocity maps",
-        "Dust collector exhaust velocity",
-        "Ship loader clash coordinates",
-        "Piping gas velocity margins",
-        "Bag filter drag calibrations",
+        "Fired heater thermal efficiency & flue gas CFD",
+        "Heat exchanger network pinch analysis",
+        "Distillation column hydraulic capacity reviews",
+        "Piping stress FEA & surge pressure checks",
       ],
-      optimizationImg: "/images/plant_reactor.png",
-      workflowTitle: "Pneumatic Optimization Phases",
+      optimizationImg: "/images/card_cfd_simulation.png",
+      workflowTitle: "Petrochemical Optimization Workflow",
       workflowDesc:
-        "Improving material transfer flow rates using validated fluid dynamics calculations.",
+        "Rigorous thermal and mechanical engineering for refining and chemical process units.",
       workflowSteps: [
-        {
-          step: "01",
-          label: "Line Audit",
-          desc: "Audit blower curves, pipe routing configurations, and material parameters.",
-        },
-        {
-          step: "02",
-          label: "Pneumatic CFD",
-          desc: "Model gas-solid phase interactions using Eulerian solvers.",
-        },
-        {
-          step: "03",
-          label: "Retrofit Drafts",
-          desc: "Prepare detailed piping coordinates and clash check lists.",
-        },
-        { step: "04", label: "SLA Validation", desc: "Verify ship unloading velocities on-site." },
+        { step: "Phase 01", label: "Plant Data Review", desc: "Gather stream data, temperatures, pressures, and isometric drafts." },
+        { step: "Phase 02", label: "CFD & FEA", desc: "Run combustion simulations and piping stress calculations." },
+        { step: "Phase 03", label: "Design Package", desc: "Deliver FEED & Detail Engineering modification drawings." },
+        { step: "Phase 04", label: "Turnaround Support", desc: "Provide technical assistance during plant turnarounds." },
       ],
-      solutionsTitle: "Applied Terminal Solutions",
+      solutionsTitle: "Applied Petrochemical Solutions",
       solutionsPoints: [
-        "Pneumatic pipeline conveying upgrades",
-        "Silo fluidization pad retrofits",
-        "Dust collector exhaust fan balancing",
-        "Ship loader coordinate checkouts",
+        "Fired heater burner retrofit CFD",
+        "High-temperature piping stress & FEA analysis",
+        "Heat exchanger bundle fouling reduction",
+        "Flare header hydraulic capacity reviews",
       ],
     },
   };
