@@ -187,10 +187,10 @@ export default function SolutionsPage() {
               alt="MACPROTEC Engineering Industrial Plant Solutions"
               fill
               priority
-              className="object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-1000 ease-out"
+              className="object-cover object-center opacity-100 group-hover:scale-105 transition-transform duration-1000 ease-out"
             />
-            {/* Multi-layered Black Gradient Overlays for High Contrast Text Visibility */}
-            <div className="absolute inset-0 bg-black/75 bg-gradient-to-b from-black/90 via-black/70 to-black/95" />
+            {/* Transparent Black Gradient Overlay for High Background Picture Visibility */}
+            <div className="absolute inset-0 bg-black/40 bg-gradient-to-b from-black/60 via-black/30 to-black/75" />
             <div className="absolute inset-0 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
           </div>
 
@@ -217,26 +217,6 @@ export default function SolutionsPage() {
                   engineering solutions that improve safety, reliability, efficiency, and long-term plant
                   performance across heavy process industries.
                 </p>
-
-                {/* Quick Badges Ticker */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto w-full border-t border-white/20 pt-6 font-mono text-xs text-white">
-                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
-                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">Practical Solutions</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
-                    <Cpu className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">Advanced Tech</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
-                    <Factory className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">Industry Expertise</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
-                    <BarChart3 className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">Measurable Results</span>
-                  </div>
-                </div>
 
                 {/* Hero Action Buttons */}
                 <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
