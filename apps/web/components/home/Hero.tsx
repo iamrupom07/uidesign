@@ -4,9 +4,11 @@ import Link from "next/link";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Reveal } from "@/components/ui/Reveal";
 
+import HeroClients from "@/components/home/HeroClients";
+
 export default function Hero() {
   return (
-    <section className="bg-white py-24 px-4 sm:px-6 lg:px-8 overflow-hidden blueprint-mesh relative">
+    <section className="bg-white py-20 lg:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden blueprint-mesh relative">
       {/* Drafting sheet border outlines representing engineering precision */}
       <div className="absolute top-8 left-8 right-8 bottom-8 border border-slate-200/55 pointer-events-none select-none hidden md:block">
         <div className="absolute top-2 left-3 font-mono text-[8px] text-slate-400/80 tracking-widest uppercase">
@@ -81,6 +83,9 @@ export default function Hero() {
             </div>
           </Reveal>
         </div>
+
+        {/* Client Logos Section styled matching Image 1 structure */}
+        <HeroClients />
       </div>
     </section>
   );
