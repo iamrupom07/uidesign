@@ -59,10 +59,6 @@ export const primaryNav: NavItem[] = [
       { label: "Individual Case Study", href: "/projects/case-study" },
     ],
   },
-  {
-    label: "Contact us",
-    href: "/lets-connect",
-  },
 ];
 
 export const services: Service[] = [

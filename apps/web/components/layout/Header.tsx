@@ -342,7 +342,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden xl:flex items-center gap-5 text-[11px] font-mono font-bold text-secondary uppercase tracking-wider">
+          <nav className="hidden xl:flex items-center gap-6 text-[12.5px] font-mono font-bold text-secondary uppercase tracking-wider">
             {primaryNav.map((item) =>
               item.children ? (
                 <div key={item.label} className="relative group cursor-pointer py-4">
@@ -366,10 +366,10 @@ export default function Header() {
                     <div
                       className={`bg-white rounded-none border border-border p-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)] text-foreground grid gap-x-5 gap-y-2.5 ${
                         item.children.length > 10
-                          ? "grid-cols-3 w-[660px]"
+                          ? "grid-cols-3 w-[680px]"
                           : item.children.length > 5
-                            ? "grid-cols-2 w-[440px]"
-                            : "grid-cols-1 w-[220px]"
+                            ? "grid-cols-2 w-[460px]"
+                            : "grid-cols-1 w-[240px]"
                       }`}
                     >
                       <div
@@ -383,10 +383,10 @@ export default function Header() {
                       >
                         <Link
                           href={item.href}
-                          className="w-full font-mono font-bold text-[10px] text-muted-foreground hover:text-primary tracking-widest uppercase flex items-center justify-between gap-2 group/hdr"
+                          className="w-full font-mono font-bold text-[11px] text-muted-foreground hover:text-primary tracking-widest uppercase flex items-center justify-between gap-2 group/hdr"
                         >
                           <span>{item.label} Overview</span>
-                          <span className="text-primary font-mono text-[9px] group-hover/hdr:translate-x-1 transition-transform shrink-0">
+                          <span className="text-primary font-mono text-[10px] group-hover/hdr:translate-x-1 transition-transform shrink-0">
                             View All →
                           </span>
                         </Link>
@@ -398,7 +398,7 @@ export default function Header() {
                           className="group/item flex items-center gap-2 p-1.5 rounded-none hover:bg-muted transition-all duration-150 ease-standard border border-transparent"
                         >
                           {getSubmenuIcon(child.label)}
-                          <span className="text-[11px] font-sans font-semibold leading-tight text-foreground group-hover/item:text-primary transition-colors">
+                          <span className="text-xs font-sans font-semibold leading-tight text-foreground group-hover/item:text-primary transition-colors">
                             {child.label}
                           </span>
                         </Link>
@@ -466,7 +466,7 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 top-[108px] bg-white z-40 overflow-y-auto border-t border-border flex flex-col p-6 xl:hidden">
           <div className="mb-6 pb-4 border-b border-border">
-            <span className="font-mono text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
+            <span className="font-mono text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
               Select Language
             </span>
             <div className="grid grid-cols-2 gap-2">
@@ -479,7 +479,7 @@ export default function Header() {
                       setLanguage(lang.code);
                       setMobileMenuOpen(false);
                     }}
-                    className={`flex items-center gap-2 p-2 border text-[11px] font-sans transition-colors ${
+                    className={`flex items-center gap-2 p-2 border text-xs font-sans transition-colors ${
                       isSelected
                         ? "border-primary bg-rose-50 text-primary font-bold"
                         : "border-slate-200 text-slate-700"
@@ -493,7 +493,7 @@ export default function Header() {
             </div>
           </div>
 
-          <nav className="flex flex-col gap-6 text-xs font-mono font-bold text-foreground uppercase tracking-wider">
+          <nav className="flex flex-col gap-6 text-sm font-mono font-bold text-foreground uppercase tracking-wider">
             {primaryNav.map((item) => (
               <div key={item.label} className="border-b border-border pb-4">
                 {item.children ? (
@@ -504,7 +504,7 @@ export default function Header() {
                       className="text-secondary hover:text-primary font-extrabold flex items-center justify-between group"
                     >
                       <span>{item.label}</span>
-                      <span className="text-[10px] text-primary font-mono font-bold uppercase group-hover:translate-x-1 transition-transform">
+                      <span className="text-[11px] text-primary font-mono font-bold uppercase group-hover:translate-x-1 transition-transform">
                         Overview →
                       </span>
                     </Link>
@@ -514,7 +514,7 @@ export default function Header() {
                           key={child.href}
                           href={child.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="text-[11px] font-sans text-muted-foreground hover:text-primary flex items-center gap-2 py-0.5"
+                          className="text-xs font-sans text-muted-foreground hover:text-primary flex items-center gap-2 py-0.5"
                         >
                           {getSubmenuIcon(child.label)}
                           <span>{child.label}</span>
