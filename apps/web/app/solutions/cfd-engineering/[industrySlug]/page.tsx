@@ -201,7 +201,7 @@ export default function CfdDetailPage({
               <div className="grid lg:grid-cols-2 gap-8">
                 {/* Engineering Approach */}
                 <Reveal>
-                  <div className="bg-slate-900 text-white border border-slate-800 p-8 sm:p-10 rounded-none h-full shadow-xl">
+                  <div className="bg-[#2d1b47] text-white border border-[#3e2663] p-8 sm:p-10 rounded-none h-full shadow-xl">
                     <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-6 flex items-center gap-2">
                       <Workflow className="w-4 h-4 text-primary" /> ENGINEERING APPROACH
                     </div>
@@ -209,7 +209,7 @@ export default function CfdDetailPage({
                       {service.engineeringApproach.map((step, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center gap-4 p-3 border border-slate-800 bg-slate-950 font-mono text-xs text-slate-200"
+                          className="flex items-center gap-4 p-3 border border-[#3e2663] bg-[#201235] font-mono text-xs text-slate-200"
                         >
                           <span className="w-6 h-6 bg-primary text-white flex items-center justify-center font-bold text-[10px]">
                             0{idx + 1}

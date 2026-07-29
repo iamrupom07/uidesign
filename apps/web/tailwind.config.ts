@@ -8,7 +8,7 @@ const config: Config = {
         // Cybreon template colors
         background: "#FFFFFF",
         foreground: "#0F172A",
-        brand: "#0F172A",
+        brand: "#2d1b47",
         "brand-foreground": "#FFFFFF",
         card: "#FFFFFF",
         "card-foreground": "#0F172A",

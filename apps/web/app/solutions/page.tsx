@@ -161,7 +161,7 @@ export default function SolutionsPage() {
 
       <main className="bg-slate-50 min-h-screen text-slate-800 font-sans selection:bg-rose-500 selection:text-white">
         {/* BREADCRUMB / TOP DOSSIER BAR */}
-        <section className="bg-slate-900 border-b border-slate-800 text-white py-3 px-6 lg:px-8 font-mono text-xs">
+        <section className="bg-[#2d1b47] border-b border-[#3e2663] text-white py-3 px-6 lg:px-8 font-mono text-xs">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2 text-slate-400">
               <Link href="/" className="hover:text-white transition-colors">
@@ -178,115 +178,86 @@ export default function SolutionsPage() {
           </div>
         </section>
 
-        {/* SECTION 1: HERO SECTION */}
-        <section className="relative py-16 lg:py-24 bg-white border-b border-slate-200 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="grid lg:grid-cols-12 gap-12 items-center">
-              {/* Left Column Text */}
-              <div className="lg:col-span-7 space-y-6">
-                <Reveal>
-                  <div className="inline-flex items-center gap-2 bg-rose-50 text-primary border border-rose-200/80 px-3.5 py-1.5 font-mono text-xs font-bold uppercase tracking-wider rounded-full shadow-xs">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                    <span>OUR SOLUTIONS</span>
-                  </div>
-                </Reveal>
+        {/* SECTION 1: FULL-WIDTH HERO SECTION (Resources Style with Black Overlay) */}
+        <section className="w-full relative bg-black border-b-2 border-primary/30 py-16 sm:py-20 lg:py-24 overflow-hidden group">
+          {/* Full-width Background Image */}
+          <div className="absolute inset-0 w-full h-full pointer-events-none">
+            <Image
+              src="/images/hero_industrial.png"
+              alt="MACPROTEC Engineering Industrial Plant Solutions"
+              fill
+              priority
+              className="object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-1000 ease-out"
+            />
+            {/* Multi-layered Black Gradient Overlays for High Contrast Text Visibility */}
+            <div className="absolute inset-0 bg-black/75 bg-gradient-to-b from-black/90 via-black/70 to-black/95" />
+            <div className="absolute inset-0 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
+          </div>
 
-                <Reveal>
-                  <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-slate-900 uppercase tracking-tight leading-[1.1]">
-                    Engineering Solutions That Drive{" "}
-                    <span className="text-primary underline decoration-rose-300 underline-offset-8">
-                      Industrial Performance
-                    </span>
+          {/* Centered Overlay Content */}
+          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+            <Reveal>
+              <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
+                {/* Category Badge Ticker */}
+                <div className="inline-flex items-center gap-2 bg-[#2d1b47]/90 border border-primary/40 px-4 py-1.5 font-mono text-[11px] font-extrabold text-primary tracking-widest uppercase shadow-md backdrop-blur-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                  <span>OUR SOLUTIONS // HEAVY INDUSTRIAL PROCESSES</span>
+                </div>
+
+                {/* Main Hero Title */}
+                <div className="flex justify-center w-full">
+                  <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-black uppercase tracking-tight text-white drop-shadow-2xl">
+                    Engineering Solutions That Drive <span className="text-primary">Industrial Performance</span>
                   </h1>
-                </Reveal>
+                </div>
 
-                <Reveal>
-                  <p className="text-base sm:text-lg text-slate-600 font-sans leading-relaxed max-w-2xl">
-                    From concept engineering to digital transformation, MACPROTEC delivers integrated
-                    engineering solutions that improve safety, reliability, efficiency, and long-term plant
-                    performance across heavy process industries.
-                  </p>
-                </Reveal>
+                {/* Subtitle Description */}
+                <p className="text-slate-200 font-sans text-base sm:text-lg leading-relaxed max-w-2xl mx-auto drop-shadow-md">
+                  From concept engineering to digital transformation, MACPROTEC delivers integrated
+                  engineering solutions that improve safety, reliability, efficiency, and long-term plant
+                  performance across heavy process industries.
+                </p>
 
-                {/* 4 Feature Badges Grid */}
-                <Reveal>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded shadow-2xs font-mono text-[11px] font-bold text-slate-800">
-                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                      <span>Practical Solutions</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded shadow-2xs font-mono text-[11px] font-bold text-slate-800">
-                      <Cpu className="w-4 h-4 text-primary shrink-0" />
-                      <span>Advanced Tech</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded shadow-2xs font-mono text-[11px] font-bold text-slate-800">
-                      <Factory className="w-4 h-4 text-primary shrink-0" />
-                      <span>Industry Expertise</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded shadow-2xs font-mono text-[11px] font-bold text-slate-800">
-                      <BarChart3 className="w-4 h-4 text-primary shrink-0" />
-                      <span>Measurable Results</span>
-                    </div>
+                {/* Quick Badges Ticker */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto w-full border-t border-white/20 pt-6 font-mono text-xs text-white">
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Practical Solutions</span>
                   </div>
-                </Reveal>
-
-                {/* CTAs */}
-                <Reveal>
-                  <div className="flex flex-wrap items-center gap-4 pt-4">
-                    <a
-                      href="#explore-solutions"
-                      className="px-6 py-3.5 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 shadow-md hover:shadow-lg flex items-center gap-2 rounded-none group"
-                    >
-                      <span>Explore Solutions</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </a>
-
-                    <Link
-                      href="/about-us"
-                      className="px-6 py-3.5 bg-white border border-slate-300 hover:border-slate-800 text-slate-800 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 hover:bg-slate-50"
-                    >
-                      <span>Learn More About Us</span>
-                      <ArrowRight className="w-4 h-4 text-slate-400" />
-                    </Link>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <Cpu className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Advanced Tech</span>
                   </div>
-                </Reveal>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <Factory className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Industry Expertise</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <BarChart3 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Measurable Results</span>
+                  </div>
+                </div>
+
+                {/* Hero Action Buttons */}
+                <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                  <a
+                    href="#explore-solutions"
+                    className="px-8 py-4 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 shadow-xl flex items-center gap-2 group"
+                  >
+                    <span>Explore Solutions</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </a>
+
+                  <Link
+                    href="/about-us"
+                    className="px-8 py-4 bg-[#201235] border border-white/20 hover:border-white text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 hover:bg-[#2d1b47]"
+                  >
+                    <span>Learn More About Us</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                </div>
               </div>
-
-              {/* Right Column Hero Banner Image */}
-              <div className="lg:col-span-5 relative">
-                <Reveal>
-                  <div className="relative border-4 border-white shadow-2xl overflow-hidden group bg-slate-900">
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent z-10" />
-                    <Image
-                      src="/images/hero_industrial.png"
-                      alt="MACPROTEC Engineering Industrial Plant Solutions"
-                      width={700}
-                      height={500}
-                      className="w-full h-[380px] sm:h-[450px] object-cover group-hover:scale-105 transition-transform duration-500"
-                      priority
-                    />
-                    
-                    {/* Badge Overlay */}
-                    <div className="absolute bottom-5 left-5 right-5 z-20 bg-slate-950/90 border border-slate-800 p-4 backdrop-blur-md font-mono text-white flex items-center justify-between">
-                      <div>
-                        <div className="text-[10px] text-rose-400 font-bold uppercase tracking-wider">
-                          ENGINEERING DISCIPLINE
-                        </div>
-                        <div className="text-sm font-extrabold font-display uppercase tracking-tight text-white mt-0.5">
-                          HEAVY INDUSTRIAL PROCESSES
-                        </div>
-                      </div>
-                      <div className="w-10 h-10 rounded bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shrink-0">
-                        <Factory className="w-5 h-5" />
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -444,19 +415,19 @@ export default function SolutionsPage() {
         </section>
 
         {/* SECTION 4: CALL TO ACTION BANNER */}
-        <section className="py-16 lg:py-24 bg-slate-950 text-white relative overflow-hidden">
+        <section className="py-16 lg:py-24 bg-[#201235] text-white relative overflow-hidden">
           {/* Background Glow & Blueprint Lines */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="max-w-5xl mx-auto px-6 lg:px-8 relative z-10">
-            <div className="bg-slate-900 border border-slate-800 p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+            <div className="bg-[#2d1b47] border border-[#3e2663] p-8 sm:p-12 shadow-2xl relative overflow-hidden">
               <div className="absolute -top-12 -right-12 w-48 h-48 border border-rose-500/20 rounded-full pointer-events-none" />
 
               <div className="text-center space-y-6 max-w-3xl mx-auto">
                 <Reveal>
-                  <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 px-3.5 py-1 text-rose-400 font-mono text-xs font-bold uppercase tracking-wider rounded-full">
-                    <FileCheck className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 px-3.5 py-1 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-full">
+                    <FileCheck className="w-3.5 h-3.5 text-primary" />
                     <span>READY TO DISCUSS YOUR PROJECT?</span>
                   </div>
                 </Reveal>
@@ -486,7 +457,7 @@ export default function SolutionsPage() {
 
                     <Link
                       href="/lets-connect?type=proposal"
-                      className="px-8 py-4 bg-slate-950 border border-slate-700 hover:border-rose-500 text-slate-200 hover:text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2"
+                      className="px-8 py-4 bg-[#201235] border border-[#3e2663] hover:border-rose-500 text-slate-200 hover:text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2"
                     >
                       <span>Request a Proposal</span>
                       <ArrowRight className="w-4 h-4 text-rose-400" />

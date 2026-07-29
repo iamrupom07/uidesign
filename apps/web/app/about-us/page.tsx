@@ -22,6 +22,7 @@ import {
   Workflow,
   LineChart,
 } from "lucide-react";
+import HeroClients from "@/components/home/HeroClients";
 
 export default function AboutUs() {
   const valueCards = [
@@ -112,8 +113,8 @@ export default function AboutUs() {
             </Reveal>
 
             <Reveal delay={0.16}>
-              <div className="bg-slate-900 text-white border border-slate-800 p-8 rounded-none relative flex flex-col justify-between h-full shadow-xl">
-                <div className="absolute top-4 right-4 font-mono text-[9px] text-slate-500 tracking-widest">
+              <div className="bg-[#2d1b47] text-white border border-[#3e2663] p-8 rounded-none relative flex flex-col justify-between h-full shadow-xl">
+                <div className="absolute top-4 right-4 font-mono text-[9px] text-slate-400 tracking-widest">
                   DOSSIER / HOUSTON TX
                 </div>
                 <div>
@@ -121,19 +122,19 @@ export default function AboutUs() {
                     <Activity className="w-4 h-4 text-primary" /> GLOBAL CONSULTING METRICS
                   </div>
                   <div className="space-y-5 font-mono text-xs text-slate-300">
-                    <div className="flex justify-between border-b border-slate-800 pb-3">
+                    <div className="flex justify-between border-b border-[#3e2663] pb-3">
                       <span>HEADQUARTERS:</span>
                       <span className="text-white font-bold">HOUSTON, TEXAS, USA</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800 pb-3">
+                    <div className="flex justify-between border-b border-[#3e2663] pb-3">
                       <span>PRIMARY CORE:</span>
                       <span className="text-white font-bold">CEMENT & PROCESS PLANTS</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800 pb-3">
+                    <div className="flex justify-between border-b border-[#3e2663] pb-3">
                       <span>METHODOLOGY:</span>
                       <span className="text-white font-bold">CFD + FEA + DIGITAL TWIN</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800 pb-3">
+                    <div className="flex justify-between border-b border-[#3e2663] pb-3">
                       <span>PROJECT LIFECYCLE:</span>
                       <span className="text-white font-bold">CONCEPT TO OPTIMIZATION</span>
                     </div>
@@ -143,7 +144,7 @@ export default function AboutUs() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-8 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="mt-8 pt-4 border-t border-[#3e2663] flex items-center justify-between text-[11px] font-mono text-slate-400">
                   <span>LAT 29.76° N | LON 95.37° W</span>
                   <span className="text-primary font-bold">VERIFIED DOSSIER</span>
                 </div>
@@ -335,27 +336,27 @@ export default function AboutUs() {
             </Reveal>
 
             <Reveal delay={0.16}>
-              <div className="bg-slate-900 text-white border border-slate-800 p-8 rounded-none shadow-xl flex flex-col justify-between h-full">
+              <div className="bg-[#2d1b47] text-white border border-[#3e2663] p-8 rounded-none shadow-xl flex flex-col justify-between h-full">
                 <div>
                   <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-6 flex items-center gap-2">
                     <Cpu className="w-4 h-4 text-primary" /> DIGITAL TOOLING SUITE
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4 font-mono text-xs">
-                    <div className="border border-slate-800 p-4 bg-slate-950">
+                    <div className="border border-[#3e2663] p-4 bg-[#201235]">
                       <span className="text-primary font-bold block mb-1">CFD ANALYSIS</span>
-                      <span className="text-slate-400 text-[11px]">Fluid flow, combustion & thermal distribution</span>
+                      <span className="text-slate-300 text-[11px]">Fluid flow, combustion & thermal distribution</span>
                     </div>
-                    <div className="border border-slate-800 p-4 bg-slate-950">
+                    <div className="border border-[#3e2663] p-4 bg-[#201235]">
                       <span className="text-primary font-bold block mb-1">FEA STRESS</span>
-                      <span className="text-slate-400 text-[11px]">Structural integrity & thermal load analysis</span>
+                      <span className="text-slate-300 text-[11px]">Structural integrity & thermal load analysis</span>
                     </div>
-                    <div className="border border-slate-800 p-4 bg-slate-950">
+                    <div className="border border-[#3e2663] p-4 bg-[#201235]">
                       <span className="text-primary font-bold block mb-1">PROCESS SIMULATION</span>
-                      <span className="text-slate-400 text-[11px]">Mass & energy balance modeling</span>
+                      <span className="text-slate-300 text-[11px]">Mass & energy balance modeling</span>
                     </div>
-                    <div className="border border-slate-800 p-4 bg-slate-950">
+                    <div className="border border-[#3e2663] p-4 bg-[#201235]">
                       <span className="text-primary font-bold block mb-1">DIGITAL TWIN</span>
-                      <span className="text-slate-400 text-[11px]">Real-time operational optimization</span>
+                      <span className="text-slate-300 text-[11px]">Real-time operational optimization</span>
                     </div>
                   </div>
                 </div>
@@ -471,21 +472,26 @@ export default function AboutUs() {
           </RevealGroup>
         </section>
 
+        {/* Client Logos Section */}
+        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+          <HeroClients />
+        </section>
+
         {/* 9. Contact CTA Section */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8">
           <Reveal>
-            <div className="bg-slate-900 text-white p-10 sm:p-14 border border-slate-800 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="bg-[#2d1b47] text-white p-10 sm:p-14 border border-[#3e2663] relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="absolute top-0 right-0 w-48 h-48 border-b border-l border-primary/20 pointer-events-none" />
               <div className="max-w-2xl">
                 <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3 flex items-center gap-2">
                   <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                   INITIATE ENGAGEMENT / SECTION 09
                 </div>
-                <h2 className="font-display font-extrabold text-3xl sm:text-4xl uppercase tracking-tight leading-tight">
+                <h2 className="font-display font-extrabold text-3xl sm:text-4xl uppercase tracking-tight leading-tight text-white">
                   Ready to Optimize Your <br />
-                  <span className="text-primary">Industrial Plant?</span>
+                  <span className="text-white">Industrial Plant?</span>
                 </h2>
-                <p className="text-slate-300 text-sm sm:text-base font-sans mt-4 leading-relaxed">
+                <p className="text-slate-200 text-sm sm:text-base font-sans mt-4 leading-relaxed">
                   Partner with MACPROTEC for engineering excellence, advanced digital simulation, and
                   proven industrial solutions. Let's discuss your project specifications.
                 </p>

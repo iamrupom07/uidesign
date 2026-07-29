@@ -39,7 +39,7 @@ const clients: ClientItem[] = [
   },
   {
     id: "swirl",
-    name: "Industrial Partner",
+    name: "SAXUM",
     category: "Mining & Heavy Materials",
     logo: "/images/clients/swirl.svg",
     layer1: "bg-purple-100/80 border-purple-300",
@@ -52,25 +52,27 @@ const marqueeItems = [...clients, ...clients, ...clients, ...clients];
 
 export default function HeroClients() {
   return (
-    <div className="mt-16 sm:mt-20 pt-10 border-t border-slate-200/80 w-full overflow-hidden">
-      <Reveal>
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 px-2">
-          <div>
-            <div className="inline-flex items-center gap-2 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0" />
-              <span className="font-mono text-[11px] font-bold text-secondary tracking-widest uppercase label-caps">
-                Trusted Global Partners
-              </span>
+    <section className="w-full py-16 sm:py-20 bg-slate-50/50 border-t border-slate-200/80 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shrink-0" />
+                <span className="font-mono text-[11px] font-bold text-secondary tracking-widest uppercase label-caps">
+                  Trusted Global Partners
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-display uppercase">
+                Our Key <span className="text-primary">Clients</span>
+              </h2>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-display uppercase">
-              Our Key <span className="text-primary">Clients</span>
-            </h2>
+            <p className="text-xs sm:text-sm font-mono text-slate-500 max-w-sm">
+              Engineering precision & process solutions for market leaders worldwide.
+            </p>
           </div>
-          <p className="text-xs sm:text-sm font-mono text-slate-500 max-w-sm">
-            Engineering precision & process solutions for market leaders worldwide.
-          </p>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
 
       {/* Infinite Scrolling Logo Cards Marquee Container */}
       <div className="relative w-full overflow-hidden py-4 select-none">
@@ -127,6 +129,6 @@ export default function HeroClients() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -69,7 +69,7 @@ export default function EngagementModels() {
                         className={`w-full block text-center py-3.5 px-6 font-mono text-[11px] font-bold uppercase tracking-wider transition-all duration-100 ${
                           model.isPrimary
                             ? "bg-primary text-white hover:bg-rose-700"
-                            : "bg-[#0F172A] text-white hover:bg-slate-800"
+                            : "bg-[#2d1b47] text-white hover:bg-[#3d2560]"
                         }`}
                       >
                         {model.ctaText}

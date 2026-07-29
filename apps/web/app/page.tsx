@@ -18,6 +18,7 @@ import FAQ from "@/components/home/FAQ";
 import CTABanner from "@/components/home/CTABanner";
 import ContactSection from "@/components/home/ContactSection";
 import TechnicalCursor from "@/components/ui/TechnicalCursor";
+import HeroClients from "@/components/home/HeroClients";
 
 export default function Home() {
   return (
@@ -42,6 +43,7 @@ export default function Home() {
         <FAQ />
         <CTABanner />
         <ContactSection />
+        <HeroClients />
       </main>
       <Footer />
     </>

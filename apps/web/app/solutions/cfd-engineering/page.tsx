@@ -581,7 +581,7 @@ export default function CfdEngineeringSolutionPage() {
 
       <main className="bg-slate-50 min-h-screen text-slate-800 font-sans selection:bg-rose-500 selection:text-white">
         {/* TOP DOSSIER BREADCRUMB BAR */}
-        <section className="bg-slate-900 border-b border-slate-800 text-white py-3 px-6 lg:px-8 font-mono text-xs">
+        <section className="bg-[#2d1b47] border-b border-[#3e2663] text-white py-3 px-6 lg:px-8 font-mono text-xs">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2 text-slate-400">
               <Link href="/" className="hover:text-white transition-colors">
@@ -602,114 +602,86 @@ export default function CfdEngineeringSolutionPage() {
           </div>
         </section>
 
-        {/* 1. HERO BANNER */}
-        <section className="relative py-16 lg:py-24 bg-white border-b border-slate-200 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="grid lg:grid-cols-12 gap-12 items-center">
-              {/* Hero Left Content */}
-              <div className="lg:col-span-7 space-y-6">
-                <Reveal>
-                  <div className="inline-flex items-center gap-2 bg-rose-50 text-primary border border-rose-200/80 px-3.5 py-1.5 font-mono text-xs font-bold uppercase tracking-wider rounded-full shadow-xs">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                    <span>CFD & ENGINEERING SIMULATION</span>
-                  </div>
-                </Reveal>
+        {/* 1. FULL-WIDTH HERO SECTION (Resources Style with Black Overlay) */}
+        <section className="w-full relative bg-black border-b-2 border-primary/30 py-16 sm:py-20 lg:py-24 overflow-hidden group">
+          {/* Full-width Background Image */}
+          <div className="absolute inset-0 w-full h-full pointer-events-none">
+            <Image
+              src="/images/card_cfd_simulation.png"
+              alt="MACPROTEC CFD & Engineering Simulation"
+              fill
+              priority
+              className="object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-1000 ease-out"
+            />
+            {/* Multi-layered Black Gradient Overlays for High Contrast Text Visibility */}
+            <div className="absolute inset-0 bg-black/75 bg-gradient-to-b from-black/90 via-black/70 to-black/95" />
+            <div className="absolute inset-0 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
+          </div>
 
-                <Reveal>
-                  <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-slate-900 uppercase tracking-tight leading-[1.1]">
-                    See Before You Build.{" "}
-                    <span className="text-primary underline decoration-rose-300 underline-offset-8">
-                      Optimize Before You Operate.
-                    </span>
+          {/* Centered Overlay Content */}
+          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+            <Reveal>
+              <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
+                {/* Category Badge Ticker */}
+                <div className="inline-flex items-center gap-2 bg-[#2d1b47]/90 border border-primary/40 px-4 py-1.5 font-mono text-[11px] font-extrabold text-primary tracking-widest uppercase shadow-md backdrop-blur-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                  <span>SOLUTION CARD 02 // CFD & ENGINEERING SIMULATION</span>
+                </div>
+
+                {/* Main Hero Title */}
+                <div className="flex justify-center w-full">
+                  <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-black uppercase tracking-tight text-white drop-shadow-2xl">
+                    See Before You Build. <span className="text-primary">Optimize Before You Operate.</span>
                   </h1>
-                </Reveal>
+                </div>
 
-                <Reveal>
-                  <p className="text-base sm:text-lg text-slate-600 font-sans leading-relaxed max-w-2xl">
-                    Fluid flow, heat transfer, combustion, structural integrity, and particle behaviour define
-                    the performance of every industrial facility. MACPROTEC transforms complex engineering
-                    challenges into practical solutions through advanced simulation and digital engineering.
-                  </p>
-                </Reveal>
+                {/* Subtitle Description */}
+                <p className="text-slate-200 font-sans text-base sm:text-lg leading-relaxed max-w-2xl mx-auto drop-shadow-md">
+                  Fluid flow, heat transfer, combustion, structural integrity, and particle behaviour define
+                  the performance of every industrial facility. MACPROTEC transforms complex engineering
+                  challenges into practical solutions through advanced simulation and digital engineering.
+                </p>
 
-                {/* Hero Badges */}
-                <Reveal>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded font-mono text-[11px] font-bold text-slate-800">
-                      <Wind className="w-4 h-4 text-primary shrink-0" />
-                      <span>CFD Flow Solvers</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded font-mono text-[11px] font-bold text-slate-800">
-                      <Flame className="w-4 h-4 text-primary shrink-0" />
-                      <span>Thermal & Firing</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded font-mono text-[11px] font-bold text-slate-800">
-                      <Cpu className="w-4 h-4 text-primary shrink-0" />
-                      <span>DEM-FEA Coupled</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2.5 rounded font-mono text-[11px] font-bold text-slate-800">
-                      <BarChart3 className="w-4 h-4 text-primary shrink-0" />
-                      <span>Zero Disruption</span>
-                    </div>
+                {/* Quick Badges Ticker */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto w-full border-t border-white/20 pt-6 font-mono text-xs text-white">
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <Wind className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">CFD Flow Solvers</span>
                   </div>
-                </Reveal>
-
-                {/* Action Buttons */}
-                <Reveal>
-                  <div className="flex flex-wrap items-center gap-4 pt-4">
-                    <a
-                      href="#industry-applications"
-                      className="px-6 py-3.5 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 shadow-md flex items-center gap-2 group"
-                    >
-                      <span>Explore Industries</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </a>
-
-                    <a
-                      href="#core-services"
-                      className="px-6 py-3.5 bg-white border border-slate-300 hover:border-slate-900 text-slate-800 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 hover:bg-slate-50"
-                    >
-                      <span>Core Engineering Services</span>
-                      <ArrowRight className="w-4 h-4 text-slate-400" />
-                    </a>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <Flame className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Thermal & Firing</span>
                   </div>
-                </Reveal>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <Cpu className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">DEM-FEA Coupled</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <BarChart3 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Zero Disruption</span>
+                  </div>
+                </div>
+
+                {/* Hero Action Buttons */}
+                <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                  <a
+                    href="#industry-applications"
+                    className="px-8 py-4 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 shadow-xl flex items-center gap-2 group"
+                  >
+                    <span>Explore Industries</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </a>
+
+                  <a
+                    href="#core-services"
+                    className="px-8 py-4 bg-[#201235] border border-white/20 hover:border-white text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 hover:bg-[#2d1b47]"
+                  >
+                    <span>Core Engineering Services</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </a>
+                </div>
               </div>
-
-              {/* Hero Right Visual Image */}
-              <div className="lg:col-span-5 relative">
-                <Reveal>
-                  <div className="relative border-4 border-white shadow-2xl overflow-hidden group bg-slate-900">
-                    <Image
-                      src="/images/card_cfd_simulation.png"
-                      alt="MACPROTEC CFD & Engineering Simulation Visualizer"
-                      width={700}
-                      height={500}
-                      className="w-full h-[380px] sm:h-[450px] object-cover group-hover:scale-105 transition-transform duration-500"
-                      priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent z-10" />
-
-                    <div className="absolute bottom-5 left-5 right-5 z-20 bg-slate-950/90 border border-slate-800 p-4 backdrop-blur-md font-mono text-white flex items-center justify-between">
-                      <div>
-                        <div className="text-[10px] text-rose-400 font-bold uppercase tracking-wider">
-                          NUMERICAL SOLVER MODEL
-                        </div>
-                        <div className="text-sm font-extrabold font-display uppercase tracking-tight text-white mt-0.5">
-                          PREHEATER CYCLONE & KILN CFD
-                        </div>
-                      </div>
-                      <div className="w-10 h-10 rounded bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shrink-0">
-                        <Activity className="w-5 h-5" />
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -1089,7 +1061,7 @@ export default function CfdEngineeringSolutionPage() {
                 const IconComp = card.icon;
                 return (
                   <RevealItem key={idx}>
-                    <div className="bg-slate-900 border border-slate-800 p-8 space-y-4 hover:border-primary transition-all duration-300 group h-full">
+                    <div className="bg-[#2d1b47] border border-[#3e2663] p-8 space-y-4 hover:border-primary transition-all duration-300 group h-full">
                       <div className="w-12 h-12 rounded bg-rose-500/10 border border-rose-500/30 text-primary flex items-center justify-center shrink-0">
                         <IconComp className="w-6 h-6" />
                       </div>
@@ -1112,7 +1084,7 @@ export default function CfdEngineeringSolutionPage() {
         {/* 6. CONTACT US / CTA BANNER */}
         <section className="py-16 lg:py-24 bg-white text-slate-900 relative overflow-hidden">
           <div className="max-w-5xl mx-auto px-6 lg:px-8 relative z-10">
-            <div className="bg-slate-900 text-white border border-slate-800 p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6">
+            <div className="bg-[#2d1b47] text-white border border-[#3e2663] p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6">
               <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
 
               <Reveal>

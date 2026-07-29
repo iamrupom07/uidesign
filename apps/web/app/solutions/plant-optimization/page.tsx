@@ -370,7 +370,7 @@ export default function PlantOptimizationServicePage() {
 
       <main className="bg-slate-50 min-h-screen text-slate-800 font-sans selection:bg-rose-500 selection:text-white">
         {/* BREADCRUMB / DOSSIER TOP BAR */}
-        <section className="bg-slate-900 border-b border-slate-800 text-white py-3 px-6 lg:px-8 font-mono text-xs">
+        <section className="bg-[#2d1b47] border-b border-[#3e2663] text-white py-3 px-6 lg:px-8 font-mono text-xs">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2 text-slate-400">
               <Link href="/" className="hover:text-white transition-colors">
@@ -391,102 +391,85 @@ export default function PlantOptimizationServicePage() {
           </div>
         </section>
 
-        {/* 1. HERO BANNER */}
-        <section className="relative py-16 lg:py-24 bg-white border-b border-slate-200 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="grid lg:grid-cols-12 gap-12 items-center">
-              <div className="lg:col-span-7 space-y-6">
-                <Reveal>
-                  <div className="inline-flex items-center gap-2 bg-rose-50 text-primary border border-rose-200/80 px-3.5 py-1.5 font-mono text-xs font-bold uppercase tracking-wider rounded-full shadow-xs">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                    <span>SOLUTION CARD 04 // PLANT PERFORMANCE OPTIMIZATION</span>
-                  </div>
-                </Reveal>
+        {/* 1. FULL-WIDTH HERO SECTION (Resources Style with Black Overlay) */}
+        <section className="w-full relative bg-black border-b-2 border-primary/30 py-16 sm:py-20 lg:py-24 overflow-hidden group">
+          {/* Full-width Background Image */}
+          <div className="absolute inset-0 w-full h-full pointer-events-none">
+            <Image
+              src="/images/card_plant_optimization.png"
+              alt="MACPROTEC Plant Performance Optimization"
+              fill
+              priority
+              className="object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-1000 ease-out"
+            />
+            {/* Multi-layered Black Gradient Overlays for High Contrast Text Visibility */}
+            <div className="absolute inset-0 bg-black/75 bg-gradient-to-b from-black/90 via-black/70 to-black/95" />
+            <div className="absolute inset-0 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
+          </div>
 
-                <Reveal>
-                  <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-slate-900 uppercase tracking-tight leading-[1.1]">
+          {/* Centered Overlay Content */}
+          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+            <Reveal>
+              <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
+                {/* Category Badge Ticker */}
+                <div className="inline-flex items-center gap-2 bg-[#2d1b47]/90 border border-primary/40 px-4 py-1.5 font-mono text-[11px] font-extrabold text-primary tracking-widest uppercase shadow-md backdrop-blur-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                  <span>SOLUTION CARD 04 // PLANT PERFORMANCE OPTIMIZATION</span>
+                </div>
+
+                {/* Main Hero Title */}
+                <div className="flex justify-center w-full">
+                  <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-black uppercase tracking-tight text-white drop-shadow-2xl">
                     Plant Performance <span className="text-primary">Optimization</span>
                   </h1>
-                </Reveal>
+                </div>
 
-                <Reveal>
-                  <p className="text-base sm:text-lg text-slate-600 font-sans leading-relaxed max-w-2xl">
-                    Increase productivity, improve energy efficiency, and eliminate operational bottlenecks
-                    through engineering-led optimization across kilns, mills, burners, coolers, and complete manufacturing processes.
-                  </p>
-                </Reveal>
+                {/* Subtitle Description */}
+                <p className="text-slate-200 font-sans text-base sm:text-lg leading-relaxed max-w-2xl mx-auto drop-shadow-md">
+                  Increase productivity, improve energy efficiency, and eliminate operational bottlenecks
+                  through engineering-led optimization across kilns, mills, burners, coolers, and complete manufacturing processes.
+                </p>
 
-                {/* Hero Badges */}
-                <Reveal>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded font-mono text-xs text-slate-800 font-bold flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                      <span>Kiln Optimization</span>
-                    </div>
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded font-mono text-xs text-slate-800 font-bold flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                      <span>Raw Mill Optimization</span>
-                    </div>
-                    <div className="bg-slate-50 border border-slate-200 p-3 rounded font-mono text-xs text-slate-800 font-bold flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                      <span>Cement Mill Optimization</span>
-                    </div>
+                {/* Quick Badges Ticker */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto w-full border-t border-white/20 pt-6 font-mono text-xs text-white">
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Kiln Optimization</span>
                   </div>
-                </Reveal>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Raw Mill Sim</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Cement Mill Sim</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 bg-[#201235]/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-semibold whitespace-nowrap">Energy Savings</span>
+                  </div>
+                </div>
 
                 {/* Hero Action Buttons */}
-                <Reveal>
-                  <div className="flex flex-wrap items-center gap-4 pt-4">
-                    <a
-                      href="#services-breakdown"
-                      className="px-6 py-3.5 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 shadow-md flex items-center gap-2 group"
-                    >
-                      <span>Explore Services</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </a>
+                <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                  <a
+                    href="#services-breakdown"
+                    className="px-8 py-4 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 shadow-xl flex items-center gap-2 group"
+                  >
+                    <span>Explore Services</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </a>
 
-                    <Link
-                      href="/lets-connect"
-                      className="px-6 py-3.5 bg-white border border-slate-300 hover:border-slate-900 text-slate-800 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 hover:bg-slate-50"
-                    >
-                      <span>Request Consultation</span>
-                      <ArrowRight className="w-4 h-4 text-slate-400" />
-                    </Link>
-                  </div>
-                </Reveal>
+                  <Link
+                    href="/lets-connect"
+                    className="px-8 py-4 bg-[#201235] border border-white/20 hover:border-white text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 hover:bg-[#2d1b47]"
+                  >
+                    <span>Request Consultation</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </Link>
+                </div>
               </div>
-
-              {/* Right Hero Image */}
-              <div className="lg:col-span-5 relative">
-                <Reveal>
-                  <div className="relative border-4 border-white shadow-2xl overflow-hidden group bg-slate-900">
-                    <Image
-                      src="/images/card_plant_optimization.png"
-                      alt="MACPROTEC Plant Performance Optimization"
-                      width={700}
-                      height={500}
-                      className="w-full h-[380px] sm:h-[450px] object-cover group-hover:scale-105 transition-transform duration-500"
-                      priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent z-10" />
-
-                    <div className="absolute bottom-5 left-5 right-5 z-20 bg-slate-950/90 border border-slate-800 p-4 backdrop-blur-md font-mono text-white flex items-center justify-between">
-                      <div>
-                        <div className="text-[10px] text-rose-400 font-bold uppercase tracking-wider">
-                          DISCIPLINE HIGHLIGHT
-                        </div>
-                        <div className="text-sm font-extrabold font-display uppercase tracking-tight text-white mt-0.5">
-                          PLANT PERFORMANCE OPTIMIZATION
-                        </div>
-                      </div>
-                      <div className="w-10 h-10 rounded bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shrink-0">
-                        <TrendingUp className="w-5 h-5" />
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -748,7 +731,7 @@ export default function PlantOptimizationServicePage() {
         </section>
 
         {/* 4. WHY CHOOSE MACPROTEC FOR PLANT PERFORMANCE OPTIMIZATION */}
-        <section className="py-20 bg-slate-950 text-white border-b border-slate-800 overflow-hidden relative">
+        <section className="py-20 bg-[#201235] text-white border-b border-[#3e2663] overflow-hidden relative">
           <div className="absolute top-0 right-0 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="max-w-7xl mx-auto px-6 lg:px-8 space-y-16 relative z-10">
@@ -779,7 +762,7 @@ export default function PlantOptimizationServicePage() {
                 const IconComp = item.icon;
                 return (
                   <RevealItem key={idx}>
-                    <div className="bg-slate-900 border border-slate-800 p-8 space-y-4 hover:border-primary/50 transition-all duration-300 group h-full">
+                    <div className="bg-[#2d1b47] border border-[#3e2663] p-8 space-y-4 hover:border-primary/50 transition-all duration-300 group h-full">
                       <div className="w-12 h-12 rounded bg-rose-500/10 border border-rose-500/30 text-primary flex items-center justify-center shrink-0">
                         <IconComp className="w-6 h-6" />
                       </div>
@@ -802,11 +785,11 @@ export default function PlantOptimizationServicePage() {
         {/* 5. CONTACT US / CTA BANNER */}
         <section className="py-16 lg:py-24 bg-white text-slate-900 relative overflow-hidden">
           <div className="max-w-5xl mx-auto px-6 lg:px-8 relative z-10">
-            <div className="bg-slate-900 text-white border border-slate-800 p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6">
+            <div className="bg-[#2d1b47] text-white border border-[#3e2663] p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6">
               <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
 
               <Reveal>
-                <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 text-rose-400 px-3.5 py-1 font-mono text-xs font-bold uppercase rounded-full">
+                <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 text-white px-3.5 py-1 font-mono text-xs font-bold uppercase rounded-full">
                   <FileCheck className="w-3.5 h-3.5" />
                   <span>READY TO OPTIMIZE YOUR PLANT?</span>
                 </div>
