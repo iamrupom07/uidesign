@@ -527,17 +527,15 @@ export default function ProcessSimulationServicePage() {
                   <button
                     key={srv.key}
                     onClick={() => setActiveTabKey(srv.key)}
-                    className={`p-4 border text-left transition-all duration-200 flex flex-col justify-between h-28 group ${
-                      isSelected
+                    className={`p-4 border text-left transition-all duration-200 flex flex-col justify-between h-28 group ${isSelected
                         ? "bg-[#201235] text-white border-[#201235] shadow-lg"
                         : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between w-full">
                       <span
-                        className={`text-[10px] font-bold ${
-                          isSelected ? "text-rose-400" : "text-slate-400"
-                        }`}
+                        className={`text-[10px] font-bold ${isSelected ? "text-rose-400" : "text-slate-400"
+                          }`}
                       >
                         SUB-{srv.id}
                       </span>
