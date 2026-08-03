@@ -79,6 +79,8 @@ CLIENT_URL="https://$DOMAIN"
 NEXT_PUBLIC_API_URL="https://$DOMAIN"
 NODE_ENV="production"
 PORT=5000
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="Admin123!"
 EOT
 echo "✅ Updated production .env file."
 
@@ -97,6 +99,9 @@ pnpm install
 
 echo "🗄️ Syncing Prisma Database Schema using workspace Prisma v6..."
 DATABASE_URL="$DATABASE_URL" pnpm db:push
+
+echo "🌱 Seeding default admin user..."
+DATABASE_URL="$DATABASE_URL" pnpm db:seed || true
 
 echo "🏗️ Building Monorepo Apps (Next.js Web + Express API)..."
 pnpm build
@@ -164,4 +169,5 @@ echo "🎉 ======================================================= 🎉"
 echo "   Deployment Complete! Your site is live!"
 echo "   Domain: https://$DOMAIN"
 echo "   IP Access: http://31.220.107.166"
+echo "   Admin Login: Email: admin@example.com | Password: Admin123!"
 echo "=========================================================== 🎉"
