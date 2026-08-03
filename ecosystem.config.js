@@ -3,7 +3,8 @@ module.exports = {
     {
       name: 'macprotec-api',
       cwd: './apps/api',
-      script: 'dist/server.js',
+      script: 'node_modules/tsx/dist/cli.mjs',
+      args: 'src/server.ts',
       env: {
         NODE_ENV: 'production',
         PORT: 5000,

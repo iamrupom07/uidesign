@@ -1,3 +1,3 @@
-export * from "./roles.js";
-export * from "./http.js";
-export * from "./routes.js";
+export * from "./roles";
+export * from "./http";
+export * from "./routes";
