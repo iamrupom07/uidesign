@@ -31,7 +31,7 @@ echo "🟢 npm version: $(npm -v 2>/dev/null || echo 'installed')"
 
 # 3. Install pnpm and pm2 globally
 echo "📦 Installing pnpm and PM2..."
-sudo npm install -g pnpm pm2 || npx -y pnpm --version
+sudo npm install -g pnpm pm2 || true
 
 # 4. Install PostgreSQL locally (if needed)
 if ! command -v psql &> /dev/null; then
@@ -86,13 +86,13 @@ fi
 
 # 7. Install dependencies & Build apps
 echo "🔨 Installing project dependencies with pnpm..."
-pnpm install || npx pnpm install
+pnpm install
 
-echo "🗄️ Syncing Prisma Database Schema..."
-npx prisma db push --schema=packages/database/prisma/schema.prisma
+echo "🗄️ Syncing Prisma Database Schema using workspace Prisma v6..."
+pnpm db:push
 
 echo "🏗️ Building Monorepo Apps (Next.js Web + Express API)..."
-pnpm build || npx pnpm build
+pnpm build
 
 # 8. Start PM2 Process Manager
 echo "⚡ Starting applications with PM2..."
