@@ -3,12 +3,14 @@
 # ==============================================================================
 # MacProtec Monorepo - Hostinger VPS Deployment & Setup Script
 # Domain: https://macproteceng.com
+# Database: Neon PostgreSQL
 # ==============================================================================
 
 set -e
 
 DOMAIN="macproteceng.com"
 WWW_DOMAIN="www.macproteceng.com"
+NEON_DATABASE_URL="postgresql://neondb_owner:npg_zASslWdFO04g@ep-lucky-mud-aygqnybl-pooler.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 echo "🚀 Starting Hostinger VPS Setup for MacProtec ($DOMAIN)..."
 
@@ -33,26 +35,7 @@ echo "🟢 npm version: $(npm -v 2>/dev/null || echo 'installed')"
 echo "📦 Installing pnpm and PM2..."
 sudo npm install -g pnpm pm2 || true
 
-# 4. Install PostgreSQL locally (if needed)
-if ! command -v psql &> /dev/null; then
-    echo "🗄️ Installing PostgreSQL database server..."
-    sudo apt install -y postgresql postgresql-contrib
-    sudo systemctl start postgresql
-    sudo systemctl enable postgresql
-
-    # Setup database and user
-    sudo -u postgres psql -c "CREATE DATABASE macprotec_db;" 2>/dev/null || true
-    sudo -u postgres psql -c "CREATE USER macuser WITH PASSWORD 'MacProtecSecure2026!';" 2>/dev/null || true
-    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE macprotec_db TO macuser;" 2>/dev/null || true
-    echo "✅ Database 'macprotec_db' created with user 'macuser'."
-else
-    echo "🗄️ Creating macprotec_db PostgreSQL database..."
-    sudo -u postgres psql -c "CREATE DATABASE macprotec_db;" 2>/dev/null || true
-    sudo -u postgres psql -c "CREATE USER macuser WITH PASSWORD 'MacProtecSecure2026!';" 2>/dev/null || true
-    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE macprotec_db TO macuser;" 2>/dev/null || true
-fi
-
-# 5. Set up directory and repository
+# 4. Set up directory and repository
 APP_DIR="/var/www/macprotec-site"
 mkdir -p "$APP_DIR"
 
@@ -66,10 +49,10 @@ else
     git clone https://github.com/iamrupom07/uidesign.git .
 fi
 
-# 6. Check & Update .env file
-echo "⚙️ Writing production .env file for $DOMAIN..."
+# 5. Check & Update .env file
+echo "⚙️ Writing production .env file for $DOMAIN with Neon Database..."
 cat <<EOT > "$APP_DIR/.env"
-DATABASE_URL="postgresql://macuser:MacProtecSecure2026!@localhost:5432/macprotec_db"
+DATABASE_URL="$NEON_DATABASE_URL"
 JWT_SECRET="macprotec_super_secret_jwt_key_2026"
 JWT_ACCESS_SECRET="macprotec_jwt_access_secret_key_32_chars"
 JWT_REFRESH_SECRET="macprotec_jwt_refresh_secret_key_32_chars"
@@ -82,7 +65,7 @@ PORT=5000
 ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="Admin123!"
 EOT
-echo "✅ Updated production .env file."
+echo "✅ Updated production .env file with Neon PostgreSQL URL."
 
 # Sync .env to apps/api, apps/web, and packages/database
 echo "🔑 Syncing .env files to all monorepo apps..."
@@ -91,22 +74,22 @@ cp "$APP_DIR/.env" "$APP_DIR/apps/web/.env"
 cp "$APP_DIR/.env" "$APP_DIR/packages/database/.env"
 
 # Load .env variables into current bash environment
-export $(grep -v '^#' "$APP_DIR/.env" | xargs)
+export DATABASE_URL="$NEON_DATABASE_URL"
 
-# 7. Install dependencies & Build apps
+# 6. Install dependencies & Build apps
 echo "🔨 Installing project dependencies with pnpm..."
 pnpm install
 
-echo "🗄️ Syncing Prisma Database Schema using workspace Prisma v6..."
-DATABASE_URL="$DATABASE_URL" pnpm db:push
+echo "🗄️ Syncing Prisma Database Schema to Neon Cloud PostgreSQL..."
+DATABASE_URL="$NEON_DATABASE_URL" pnpm db:push
 
-echo "🌱 Seeding default admin user..."
-DATABASE_URL="$DATABASE_URL" pnpm db:seed || true
+echo "🌱 Seeding default admin user into Neon PostgreSQL..."
+DATABASE_URL="$NEON_DATABASE_URL" pnpm db:seed || true
 
 echo "🏗️ Building Monorepo Apps (Next.js Web + Express API)..."
 pnpm build
 
-# 8. Start PM2 Process Manager
+# 7. Start PM2 Process Manager
 echo "⚡ Restarting applications with PM2..."
 pm2 delete all 2>/dev/null || true
 pm2 start ecosystem.config.js || npx pm2 start ecosystem.config.js
@@ -115,7 +98,7 @@ pm2 save
 # Ensure PM2 starts on server reboot
 env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root 2>/dev/null || true
 
-# 9. Configure Nginx Reverse Proxy
+# 8. Configure Nginx Reverse Proxy
 echo "🌐 Configuring Nginx Reverse Proxy for $DOMAIN..."
 cat <<NGINX | sudo tee /etc/nginx/sites-available/macprotec > /dev/null
 server {
@@ -158,7 +141,7 @@ sudo ln -sf /etc/nginx/sites-available/macprotec /etc/nginx/sites-enabled/macpro
 echo "🔄 Reloading Nginx..."
 sudo nginx -t && sudo systemctl reload nginx
 
-# 10. Attempt SSL setup via Certbot
+# 9. Attempt SSL setup via Certbot
 echo "🔒 Setting up SSL Certificate with Certbot for $DOMAIN..."
 sudo certbot --nginx --non-interactive --agree-tos -m admin@macproteceng.com -d $DOMAIN -d $WWW_DOMAIN || {
     echo "⚠️ SSL setup paused. Run 'sudo certbot --nginx -d $DOMAIN -d $WWW_DOMAIN' manually once DNS A record propagates to 31.220.107.166."
@@ -166,7 +149,7 @@ sudo certbot --nginx --non-interactive --agree-tos -m admin@macproteceng.com -d 
 
 echo ""
 echo "🎉 ======================================================= 🎉"
-echo "   Deployment Complete! Your site is live!"
+echo "   Deployment Complete! Connected to Neon PostgreSQL!"
 echo "   Domain: https://$DOMAIN"
 echo "   IP Access: http://31.220.107.166"
 echo "   Admin Login: Email: admin@example.com | Password: Admin123!"
