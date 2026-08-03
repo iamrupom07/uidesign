@@ -1,7 +1,13 @@
 import { CorsOptions } from "cors";
 import { env } from "./env";
 
-export const trustedOrigins = [env.CLIENT_URL, "http://localhost:3000", "http://127.0.0.1:3000"];
+export const trustedOrigins = [
+  env.CLIENT_URL,
+  "https://macproteceng.com",
+  "https://www.macproteceng.com",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
 
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {

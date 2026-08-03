@@ -2,16 +2,20 @@
 
 # ==============================================================================
 # MacProtec Monorepo - Hostinger VPS Deployment & Setup Script
+# Domain: https://macproteceng.com
 # ==============================================================================
 
 set -e
 
-echo "🚀 Starting Hostinger VPS Setup for MacProtec..."
+DOMAIN="macproteceng.com"
+WWW_DOMAIN="www.macproteceng.com"
+
+echo "🚀 Starting Hostinger VPS Setup for MacProtec ($DOMAIN)..."
 
 # 1. Update system and install essential tools
 echo "📦 Updating system packages..."
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y curl git nginx build-essential
+sudo apt install -y curl git nginx build-essential certbot python3-certbot-nginx
 
 # 2. Install Node.js v20 LTS (if not installed)
 if ! command -v node &> /dev/null; then
@@ -56,17 +60,20 @@ fi
 
 # 6. Check .env file
 if [ ! -f "$APP_DIR/.env" ]; then
-    echo "⚙️ Creating default .env file..."
+    echo "⚙️ Creating production .env file for $DOMAIN..."
     cat <<EOT > "$APP_DIR/.env"
 DATABASE_URL="postgresql://macuser:MacProtecSecure2026!@localhost:5432/macprotec_db"
 JWT_SECRET="macprotec_super_secret_jwt_key_2026"
-BETTER_AUTH_SECRET="macprotec_better_auth_secret_key_2026"
-BETTER_AUTH_URL="http://localhost:5000"
+JWT_ACCESS_SECRET="macprotec_jwt_access_secret_key_32_chars"
+JWT_REFRESH_SECRET="macprotec_jwt_refresh_secret_key_32_chars"
+BETTER_AUTH_SECRET="macprotec_better_auth_secret_key_min_32_chars_long"
+BETTER_AUTH_URL="https://$DOMAIN"
+CLIENT_URL="https://$DOMAIN"
+NEXT_PUBLIC_API_URL="https://$DOMAIN/api"
 NODE_ENV="production"
 PORT=5000
-NEXT_PUBLIC_API_URL="/api"
 EOT
-    echo "✅ Created .env file. Customize it later if needed."
+    echo "✅ Created production .env file."
 fi
 
 # 7. Install dependencies & Build apps
@@ -88,11 +95,11 @@ pm2 save
 env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root 2>/dev/null || true
 
 # 9. Configure Nginx Reverse Proxy
-echo "🌐 Configuring Nginx Reverse Proxy..."
-cat <<'NGINX' | sudo tee /etc/nginx/sites-available/macprotec > /dev/null
+echo "🌐 Configuring Nginx Reverse Proxy for $DOMAIN..."
+cat <<NGINX | sudo tee /etc/nginx/sites-available/macprotec > /dev/null
 server {
     listen 80;
-    server_name _;
+    server_name $DOMAIN $WWW_DOMAIN 31.220.107.166;
 
     client_max_body_size 50M;
 
@@ -100,26 +107,26 @@ server {
     location / {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
     }
 
     # Backend API (Express Server on Port 5000)
     location /api {
         proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
     }
 }
 NGINX
@@ -131,8 +138,15 @@ sudo ln -sf /etc/nginx/sites-available/macprotec /etc/nginx/sites-enabled/macpro
 echo "🔄 Reloading Nginx..."
 sudo nginx -t && sudo systemctl reload nginx
 
+# 10. Attempt SSL setup via Certbot
+echo "🔒 Setting up SSL Certificate with Certbot for $DOMAIN..."
+sudo certbot --nginx --non-interactive --agree-tos -m admin@macproteceng.com -d $DOMAIN -d $WWW_DOMAIN || {
+    echo "⚠️ SSL setup paused. Run 'sudo certbot --nginx -d $DOMAIN -d $WWW_DOMAIN' manually once DNS A record propagates to 31.220.107.166."
+}
+
 echo ""
 echo "🎉 ======================================================= 🎉"
-echo "   Deployment Complete! Your site is live on Hostinger VPS!"
-echo "   Access your app at: http://31.220.107.166"
+echo "   Deployment Complete! Your site is live!"
+echo "   Domain: https://$DOMAIN"
+echo "   IP Access: http://31.220.107.166"
 echo "=========================================================== 🎉"
