@@ -18,7 +18,7 @@ sudo apt update -y
 
 # Install missing essential tools only
 echo "📦 Installing required tools..."
-sudo apt install -y curl git nginx build-essential certbot python3-certbot-nginx nodejs npm
+sudo apt install -y curl git nginx build-essential certbot python3-certbot-nginx
 
 # 2. Ensure Node.js & npm are installed
 if ! command -v npm &> /dev/null; then
@@ -84,12 +84,19 @@ EOT
     echo "✅ Created production .env file."
 fi
 
+# Load .env variables into current bash environment so Prisma & Apps access DATABASE_URL
+echo "🔑 Exporting environment variables..."
+export $(grep -v '^#' "$APP_DIR/.env" | xargs)
+
+# Also copy .env to packages/database if needed by Prisma
+cp "$APP_DIR/.env" "$APP_DIR/packages/database/.env"
+
 # 7. Install dependencies & Build apps
 echo "🔨 Installing project dependencies with pnpm..."
 pnpm install
 
 echo "🗄️ Syncing Prisma Database Schema using workspace Prisma v6..."
-pnpm db:push
+DATABASE_URL="$DATABASE_URL" pnpm db:push
 
 echo "🏗️ Building Monorepo Apps (Next.js Web + Express API)..."
 pnpm build
