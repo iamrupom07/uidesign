@@ -84,12 +84,14 @@ EOT
     echo "✅ Created production .env file."
 fi
 
-# Load .env variables into current bash environment so Prisma & Apps access DATABASE_URL
-echo "🔑 Exporting environment variables..."
-export $(grep -v '^#' "$APP_DIR/.env" | xargs)
-
-# Also copy .env to packages/database if needed by Prisma
+# Sync .env to apps/api, apps/web, and packages/database
+echo "🔑 Syncing .env files to all monorepo apps..."
+cp "$APP_DIR/.env" "$APP_DIR/apps/api/.env"
+cp "$APP_DIR/.env" "$APP_DIR/apps/web/.env"
 cp "$APP_DIR/.env" "$APP_DIR/packages/database/.env"
+
+# Load .env variables into current bash environment
+export $(grep -v '^#' "$APP_DIR/.env" | xargs)
 
 # 7. Install dependencies & Build apps
 echo "🔨 Installing project dependencies with pnpm..."
@@ -102,9 +104,10 @@ echo "🏗️ Building Monorepo Apps (Next.js Web + Express API)..."
 pnpm build
 
 # 8. Start PM2 Process Manager
-echo "⚡ Starting applications with PM2..."
-pm2 start ecosystem.config.js || npx pm2 start ecosystem.config.js || true
-pm2 save || npx pm2 save || true
+echo "⚡ Restarting applications with PM2..."
+pm2 delete all 2>/dev/null || true
+pm2 start ecosystem.config.js || npx pm2 start ecosystem.config.js
+pm2 save
 
 # Ensure PM2 starts on server reboot
 env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root 2>/dev/null || true
