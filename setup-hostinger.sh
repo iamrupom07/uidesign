@@ -3,6 +3,7 @@
 # ==============================================================================
 # MacProtec Monorepo - Hostinger VPS Deployment & Setup Script
 # Domain: https://macproteceng.com
+# Safe mode: Skips apt upgrade & kernel restart to preserve running applications.
 # ==============================================================================
 
 set -e
@@ -12,9 +13,12 @@ WWW_DOMAIN="www.macproteceng.com"
 
 echo "🚀 Starting Hostinger VPS Setup for MacProtec ($DOMAIN)..."
 
-# 1. Update system and install essential tools
-echo "📦 Updating system packages..."
-sudo apt update && sudo apt upgrade -y
+# 1. Refresh package index (Safe: does NOT upgrade existing packages or kernel)
+echo "📦 Refreshing package indices..."
+sudo apt update -y
+
+# Install missing essential tools only
+echo "📦 Installing required tools..."
 sudo apt install -y curl git nginx build-essential certbot python3-certbot-nginx
 
 # 2. Install Node.js v20 LTS (if not installed)
@@ -42,6 +46,11 @@ if ! command -v psql &> /dev/null; then
     sudo -u postgres psql -c "CREATE USER macuser WITH PASSWORD 'MacProtecSecure2026!';" 2>/dev/null || true
     sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE macprotec_db TO macuser;" 2>/dev/null || true
     echo "✅ Database 'macprotec_db' created with user 'macuser'."
+else
+    echo "🗄️ Creating macprotec_db PostgreSQL database..."
+    sudo -u postgres psql -c "CREATE DATABASE macprotec_db;" 2>/dev/null || true
+    sudo -u postgres psql -c "CREATE USER macuser WITH PASSWORD 'MacProtecSecure2026!';" 2>/dev/null || true
+    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE macprotec_db TO macuser;" 2>/dev/null || true
 fi
 
 # 5. Set up directory and repository
@@ -53,9 +62,9 @@ if [ -d "$APP_DIR/.git" ]; then
     cd "$APP_DIR"
     git pull origin main || git pull
 else
-    echo "📂 Setup application directory at $APP_DIR"
-    echo "Please clone or upload your code to $APP_DIR if not already present."
+    echo "📂 Setting up application directory at $APP_DIR"
     cd "$APP_DIR"
+    git clone https://github.com/iamrupom07/uidesign.git .
 fi
 
 # 6. Check .env file
@@ -131,8 +140,7 @@ server {
 }
 NGINX
 
-# Enable site & remove default site if present
-sudo rm -f /etc/nginx/sites-enabled/default
+# Enable site
 sudo ln -sf /etc/nginx/sites-available/macprotec /etc/nginx/sites-enabled/macprotec
 
 echo "🔄 Reloading Nginx..."
