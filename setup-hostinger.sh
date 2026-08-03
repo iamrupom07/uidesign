@@ -66,10 +66,9 @@ else
     git clone https://github.com/iamrupom07/uidesign.git .
 fi
 
-# 6. Check .env file
-if [ ! -f "$APP_DIR/.env" ]; then
-    echo "⚙️ Creating production .env file for $DOMAIN..."
-    cat <<EOT > "$APP_DIR/.env"
+# 6. Check & Update .env file
+echo "⚙️ Writing production .env file for $DOMAIN..."
+cat <<EOT > "$APP_DIR/.env"
 DATABASE_URL="postgresql://macuser:MacProtecSecure2026!@localhost:5432/macprotec_db"
 JWT_SECRET="macprotec_super_secret_jwt_key_2026"
 JWT_ACCESS_SECRET="macprotec_jwt_access_secret_key_32_chars"
@@ -77,12 +76,11 @@ JWT_REFRESH_SECRET="macprotec_jwt_refresh_secret_key_32_chars"
 BETTER_AUTH_SECRET="macprotec_better_auth_secret_key_min_32_chars_long"
 BETTER_AUTH_URL="https://$DOMAIN"
 CLIENT_URL="https://$DOMAIN"
-NEXT_PUBLIC_API_URL="https://$DOMAIN/api"
+NEXT_PUBLIC_API_URL="https://$DOMAIN"
 NODE_ENV="production"
 PORT=5000
 EOT
-    echo "✅ Created production .env file."
-fi
+echo "✅ Updated production .env file."
 
 # Sync .env to apps/api, apps/web, and packages/database
 echo "🔑 Syncing .env files to all monorepo apps..."

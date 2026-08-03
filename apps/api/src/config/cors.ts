@@ -5,6 +5,10 @@ export const trustedOrigins = [
   env.CLIENT_URL,
   "https://macproteceng.com",
   "https://www.macproteceng.com",
+  "http://macproteceng.com",
+  "http://www.macproteceng.com",
+  "http://31.220.107.166",
+  "https://31.220.107.166",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
 ];
