@@ -3,7 +3,6 @@
 # ==============================================================================
 # MacProtec Monorepo - Hostinger VPS Deployment & Setup Script
 # Domain: https://macproteceng.com
-# Safe mode: Skips apt upgrade & kernel restart to preserve running applications.
 # ==============================================================================
 
 set -e
@@ -13,26 +12,26 @@ WWW_DOMAIN="www.macproteceng.com"
 
 echo "🚀 Starting Hostinger VPS Setup for MacProtec ($DOMAIN)..."
 
-# 1. Refresh package index (Safe: does NOT upgrade existing packages or kernel)
+# 1. Refresh package index
 echo "📦 Refreshing package indices..."
 sudo apt update -y
 
 # Install missing essential tools only
 echo "📦 Installing required tools..."
-sudo apt install -y curl git nginx build-essential certbot python3-certbot-nginx
+sudo apt install -y curl git nginx build-essential certbot python3-certbot-nginx nodejs npm
 
-# 2. Install Node.js v20 LTS (if not installed)
-if ! command -v node &> /dev/null; then
-    echo "🟢 Installing Node.js v20..."
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-    sudo apt install -y nodejs
-else
-    echo "🟢 Node.js $(node -v) is already installed."
+# 2. Ensure Node.js & npm are installed
+if ! command -v npm &> /dev/null; then
+    echo "🟢 Installing npm..."
+    sudo apt install -y npm
 fi
+
+echo "🟢 Node.js version: $(node -v)"
+echo "🟢 npm version: $(npm -v 2>/dev/null || echo 'installed')"
 
 # 3. Install pnpm and pm2 globally
 echo "📦 Installing pnpm and PM2..."
-sudo npm install -g pnpm pm2
+sudo npm install -g pnpm pm2 || npx -y pnpm --version
 
 # 4. Install PostgreSQL locally (if needed)
 if ! command -v psql &> /dev/null; then
@@ -87,18 +86,18 @@ fi
 
 # 7. Install dependencies & Build apps
 echo "🔨 Installing project dependencies with pnpm..."
-pnpm install
+pnpm install || npx pnpm install
 
 echo "🗄️ Syncing Prisma Database Schema..."
 npx prisma db push --schema=packages/database/prisma/schema.prisma
 
 echo "🏗️ Building Monorepo Apps (Next.js Web + Express API)..."
-pnpm build
+pnpm build || npx pnpm build
 
 # 8. Start PM2 Process Manager
 echo "⚡ Starting applications with PM2..."
-pm2 start ecosystem.config.js || pm2 restart ecosystem.config.js
-pm2 save
+pm2 start ecosystem.config.js || npx pm2 start ecosystem.config.js || true
+pm2 save || npx pm2 save || true
 
 # Ensure PM2 starts on server reboot
 env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root 2>/dev/null || true
