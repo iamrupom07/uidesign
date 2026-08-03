@@ -72,10 +72,17 @@ echo "✅ Updated production .env file."
 echo "🔑 Syncing .env files to all monorepo apps..."
 cp "$APP_DIR/.env" "$APP_DIR/apps/api/.env"
 cp "$APP_DIR/.env" "$APP_DIR/apps/web/.env"
+cp "$APP_DIR/.env" "$APP_DIR/apps/web/.env.production"
+cp "$APP_DIR/.env" "$APP_DIR/apps/web/.env.local"
 cp "$APP_DIR/.env" "$APP_DIR/packages/database/.env"
 
-# Load .env variables into current bash environment
+# Load & Export all .env variables for Next.js build step
+echo "🔑 Exporting environment variables for Next.js compilation..."
 export DATABASE_URL="$NEON_DATABASE_URL"
+export NEXT_PUBLIC_API_URL="https://$DOMAIN"
+export BETTER_AUTH_URL="https://$DOMAIN"
+export CLIENT_URL="https://$DOMAIN"
+export NODE_ENV="production"
 
 # 6. Install dependencies & Build apps
 echo "🔨 Installing project dependencies with pnpm..."
@@ -88,7 +95,7 @@ echo "🌱 Seeding default admin user into Neon PostgreSQL..."
 DATABASE_URL="$NEON_DATABASE_URL" pnpm db:seed || true
 
 echo "🏗️ Building Monorepo Apps (Next.js Web + Express API)..."
-pnpm build
+NEXT_PUBLIC_API_URL="https://$DOMAIN" BETTER_AUTH_URL="https://$DOMAIN" CLIENT_URL="https://$DOMAIN" NODE_ENV="production" pnpm build
 
 # 7. Start PM2 Process Manager
 echo "⚡ Restarting applications with PM2..."
