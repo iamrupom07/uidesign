@@ -11,6 +11,7 @@ set -e
 DOMAIN="macproteceng.com"
 WWW_DOMAIN="www.macproteceng.com"
 NEON_DATABASE_URL="postgresql://neondb_owner:npg_zASslWdFO04g@ep-lucky-mud-aygqnybl-pooler.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+BETTER_AUTH_SECRET="a8F2kL9pQ3vX7zW1rT4yM0nC6bD5eG2h"
 
 echo "🚀 Starting Hostinger VPS Setup for MacProtec ($DOMAIN)..."
 
@@ -50,13 +51,13 @@ else
 fi
 
 # 5. Check & Update .env file
-echo "⚙️ Writing production .env file for $DOMAIN with Neon Database..."
+echo "⚙️ Writing production .env file for $DOMAIN..."
 cat <<EOT > "$APP_DIR/.env"
 DATABASE_URL="$NEON_DATABASE_URL"
 JWT_SECRET="macprotec_super_secret_jwt_key_2026"
 JWT_ACCESS_SECRET="macprotec_jwt_access_secret_key_32_chars"
 JWT_REFRESH_SECRET="macprotec_jwt_refresh_secret_key_32_chars"
-BETTER_AUTH_SECRET="macprotec_better_auth_secret_key_min_32_chars_long"
+BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET"
 BETTER_AUTH_URL="https://$DOMAIN"
 CLIENT_URL="https://$DOMAIN"
 NEXT_PUBLIC_API_URL="https://$DOMAIN"
@@ -65,7 +66,7 @@ PORT=5000
 ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="Admin123!"
 EOT
-echo "✅ Updated production .env file with Neon PostgreSQL URL."
+echo "✅ Updated production .env file."
 
 # Sync .env to apps/api, apps/web, and packages/database
 echo "🔑 Syncing .env files to all monorepo apps..."
