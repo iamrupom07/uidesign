@@ -12,6 +12,9 @@ import { auth } from "./config/auth";
 
 const app: Express = express();
 
+// Trust Nginx Reverse Proxy Headers
+app.set("trust proxy", 1);
+
 // Security & Base Middleware
 app.use(helmet());
 app.use(cors(corsOptions));
