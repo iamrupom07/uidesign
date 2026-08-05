@@ -33,13 +33,21 @@ export const loginHandler = asyncHandler(async (req: Request, res: Response) => 
     res.setHeader("Set-Cookie", setCookie);
   }
 
-  const result = await authResponse.json();
+  let result: any = null;
+  try {
+    result = await authResponse.json();
+  } catch (e) {
+    result = null;
+  }
 
   if (!authResponse.ok || !result?.user) {
-    throw new ApiError(
-      authResponse.status || HTTP_STATUS.UNAUTHORIZED,
-      result?.message || "Invalid credentials"
-    );
+    const errorMsg =
+      result?.message || result?.error || "Invalid credentials. Please check your login details.";
+    const statusCode =
+      authResponse.status && authResponse.status >= 400 && authResponse.status < 500
+        ? authResponse.status
+        : HTTP_STATUS.UNAUTHORIZED;
+    throw new ApiError(statusCode, errorMsg);
   }
 
   // Generate JWT Access & Refresh Tokens
@@ -104,13 +112,20 @@ export const registerHandler = asyncHandler(async (req: Request, res: Response) 
     res.setHeader("Set-Cookie", setCookie);
   }
 
-  const result = await authResponse.json();
+  let result: any = null;
+  try {
+    result = await authResponse.json();
+  } catch (e) {
+    result = null;
+  }
 
   if (!authResponse.ok || !result?.user) {
-    throw new ApiError(
-      authResponse.status || HTTP_STATUS.BAD_REQUEST,
-      result?.message || "Registration failed"
-    );
+    const errorMsg = result?.message || result?.error || "Registration failed";
+    const statusCode =
+      authResponse.status && authResponse.status >= 400 && authResponse.status < 500
+        ? authResponse.status
+        : HTTP_STATUS.BAD_REQUEST;
+    throw new ApiError(statusCode, errorMsg);
   }
 
   // Generate JWT Access & Refresh Tokens
