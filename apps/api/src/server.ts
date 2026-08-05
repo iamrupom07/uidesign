@@ -3,12 +3,13 @@ import { env } from "./config/env";
 import { prisma } from "@repo/database";
 
 const PORT = env.PORT || 5000;
+const HOST = "0.0.0.0";
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, HOST, () => {
   console.log(`==================================================`);
-  console.log(`🚀 MACPROTEC Express API Server running on port ${PORT}`);
+  console.log(`🚀 MACPROTEC Express API Server running on http://${HOST}:${PORT}`);
   console.log(`🌐 Environment: ${env.NODE_ENV}`);
-  console.log(`🔗 Health Check: http://localhost:${PORT}/health`);
+  console.log(`🔗 Health Check: http://${HOST}:${PORT}/health`);
   console.log(`==================================================`);
 });
 
