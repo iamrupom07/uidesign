@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import ejs from "ejs";
 import path from "path";
+import fs from "fs";
 import { env } from "../config/env";
 
 export interface EmailOptions {
@@ -36,8 +37,22 @@ class EmailService {
     const { to, subject, template, data } = options;
 
     try {
-      const templatePath = path.join(__dirname, "templates", `${template}.ejs`);
-      const layoutPath = path.join(__dirname, "templates", "layouts", "main.ejs");
+      let templatePath = path.join(__dirname, "templates", `${template}.ejs`);
+      let layoutPath = path.join(__dirname, "templates", "layouts", "main.ejs");
+
+      if (!fs.existsSync(templatePath)) {
+        const srcTemplate = path.join(__dirname, "..", "..", "src", "emails", "templates", `${template}.ejs`);
+        const srcLayout = path.join(__dirname, "..", "..", "src", "emails", "templates", "layouts", "main.ejs");
+        if (fs.existsSync(srcTemplate)) {
+          templatePath = srcTemplate;
+          layoutPath = srcLayout;
+        }
+      }
+
+      if (!fs.existsSync(templatePath)) {
+        console.warn(`[EmailService] Template file not found: ${templatePath}. Skipping email send.`);
+        return;
+      }
 
       const bodyContent = await ejs.renderFile(templatePath, data);
       const fullHtml = await ejs.renderFile(layoutPath, {
@@ -56,7 +71,7 @@ class EmailService {
       console.log(`[EmailService] Email sent successfully to ${to}. MessageId: ${info.messageId}`);
     } catch (error) {
       console.error(`[EmailService] Failed to send email to ${to}:`, error);
-      throw error;
+      // Non-fatal for login / registration flow
     }
   }
 }
