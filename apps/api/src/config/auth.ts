@@ -8,8 +8,21 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   secret: env.BETTER_AUTH_SECRET,
-  baseURL: env.BETTER_AUTH_URL,
-  trustedOrigins: [env.CLIENT_URL, "http://localhost:3000"],
+  baseURL: env.BETTER_AUTH_URL || "https://macproteceng.com",
+  trustedOrigins: [
+    env.CLIENT_URL,
+    env.BETTER_AUTH_URL,
+    "https://macproteceng.com",
+    "https://www.macproteceng.com",
+    "http://macproteceng.com",
+    "http://www.macproteceng.com",
+    "http://31.220.107.166",
+    "https://31.220.107.166",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+  ],
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -23,7 +36,7 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    useSecureCookies: env.NODE_ENV === "production",
+    useSecureCookies: false,
     cookiePrefix: "macprotec_session",
   },
 });
