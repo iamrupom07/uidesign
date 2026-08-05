@@ -2,7 +2,7 @@ import app from "./app";
 import { env } from "./config/env";
 import { prisma } from "@repo/database";
 
-const PORT = env.PORT || 5000;
+const PORT = Number(env.PORT) || 5000;
 const HOST = "0.0.0.0";
 
 const server = app.listen(PORT, HOST, () => {
