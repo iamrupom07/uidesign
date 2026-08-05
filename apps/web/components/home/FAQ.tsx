@@ -42,8 +42,8 @@ export default function FAQ() {
 
   return (
     <section className="py-xl bg-background border-t border-border blueprint-mesh">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8">
-        <Reveal className="text-center mb-14">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <Reveal className="text-center max-w-3xl mx-auto mb-14">
           <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4 justify-center flex">
             <span className="text-primary font-bold mr-1">┌</span> FAQ
           </div>
@@ -82,7 +82,7 @@ export default function FAQ() {
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <p className="px-6 pb-5 text-xs sm:text-sm text-secondary leading-relaxed font-sans max-w-2xl">
+                      <p className="px-6 pb-5 text-xs sm:text-sm text-secondary leading-relaxed font-sans max-w-4xl">
                         {faq.answer}
                       </p>
                     </div>

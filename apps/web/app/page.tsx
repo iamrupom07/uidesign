@@ -3,6 +3,7 @@ import Footer from "@/components/layout/Footer";
 import Hero from "@/components/home/Hero";
 import Marquee from "@/components/home/Marquee";
 import CapabilitiesStrip from "@/components/home/CapabilitiesStrip";
+import LatestBlogs from "@/components/home/LatestBlogs";
 import StatsBar from "@/components/home/StatsBar";
 import WelcomeSection from "@/components/home/WelcomeSection";
 import MissionVision from "@/components/home/MissionVision";
@@ -38,6 +39,7 @@ export default function Home() {
         <WhyChooseUs />
         <ValuesBand />
         <Testimonials />
+        <LatestBlogs />
         <FeaturedResources />
         <EngagementModels />
         <FAQ />

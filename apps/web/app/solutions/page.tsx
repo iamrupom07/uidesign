@@ -357,13 +357,13 @@ export default function SolutionsPage() {
               </Reveal>
             </div>
 
-            {/* 6 Steps Horizontal / Grid Workflow */}
-            <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-6 gap-6 relative" stagger={0.07}>
+            {/* 6 Steps Grid Workflow (3 cards per row) */}
+            <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 relative" stagger={0.07}>
               {WORKFLOW_STEPS.map((stepItem) => {
                 const IconComp = stepItem.icon;
                 return (
                   <RevealItem key={stepItem.step}>
-                    <div className="bg-slate-50 border border-slate-200 p-5 rounded-none h-full flex flex-col justify-between relative group hover:border-primary transition-all duration-200">
+                    <div className="bg-slate-50 border border-slate-200 p-6 rounded-none h-full flex flex-col justify-between relative group hover:border-primary hover:shadow-lg transition-all duration-200">
                       <div>
                         {/* Step Header */}
                         <div className="flex items-center justify-between mb-4">
@@ -373,18 +373,18 @@ export default function SolutionsPage() {
                           <IconComp className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
                         </div>
 
-                        <h3 className="font-display font-bold text-base text-slate-900 uppercase tracking-tight mb-2">
+                        <h3 className="font-display font-extrabold text-lg text-slate-900 uppercase tracking-tight mb-2">
                           {stepItem.title}
                         </h3>
 
-                        <p className="font-sans text-xs text-slate-600 leading-relaxed">
+                        <p className="font-sans text-xs sm:text-sm text-slate-600 leading-relaxed">
                           {stepItem.description}
                         </p>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-slate-200/60 font-mono text-[9px] text-slate-400 uppercase font-bold flex items-center gap-1">
+                      <div className="mt-6 pt-3 border-t border-slate-200/60 font-mono text-[10px] text-slate-500 uppercase font-bold flex items-center justify-between">
                         <span>Phase {stepItem.step}</span>
-                        <ChevronRight className="w-3 h-3 text-primary" />
+                        <ChevronRight className="w-3.5 h-3.5 text-primary group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                   </RevealItem>

@@ -50,7 +50,7 @@ export default function EngagementModels() {
           </p>
         </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-lg lg:gap-xl max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-lg lg:gap-xl max-w-7xl mx-auto">
           {models.map((model, idx) => (
             <Reveal key={model.title} delay={idx * 0.1}>
               <div className="card relative flex flex-col justify-between h-full">
