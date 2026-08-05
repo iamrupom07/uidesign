@@ -1,7 +1,12 @@
 {
   "extends": "@repo/config/tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src"
+    "rootDir": "src",
+    "outDir": "dist",
+    "module": "CommonJS",
+    "moduleResolution": "Node"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }
