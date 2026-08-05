@@ -106,8 +106,55 @@ pm2 save
 # Ensure PM2 starts on server reboot
 env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root 2>/dev/null || true
 
-# 8. Configure Nginx Reverse Proxy
+# 8. Configure Nginx Reverse Proxy (HTTP & HTTPS)
 echo "🌐 Configuring Nginx Reverse Proxy for $DOMAIN..."
+sudo rm -f /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/macprotec-le-ssl.conf 2>/dev/null || true
+
+if [ -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
+cat <<NGINX | sudo tee /etc/nginx/sites-available/macprotec > /dev/null
+server {
+    listen 80;
+    server_name $DOMAIN $WWW_DOMAIN 31.220.107.166;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name $DOMAIN $WWW_DOMAIN 31.220.107.166;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+
+    client_max_body_size 50M;
+
+    # Frontend (Next.js App on Port 3000)
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
+    }
+
+    # Backend API (Express Server on Port 5000)
+    location /api {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
+    }
+}
+NGINX
+else
 cat <<NGINX | sudo tee /etc/nginx/sites-available/macprotec > /dev/null
 server {
     listen 80;
@@ -142,6 +189,7 @@ server {
     }
 }
 NGINX
+fi
 
 # Enable site
 sudo ln -sf /etc/nginx/sites-available/macprotec /etc/nginx/sites-enabled/macprotec
@@ -149,11 +197,11 @@ sudo ln -sf /etc/nginx/sites-available/macprotec /etc/nginx/sites-enabled/macpro
 echo "🔄 Reloading Nginx..."
 sudo nginx -t && sudo systemctl reload nginx
 
-# 9. Attempt SSL setup via Certbot
-echo "🔒 Setting up SSL Certificate with Certbot for $DOMAIN..."
-sudo certbot --nginx --non-interactive --agree-tos -m admin@macproteceng.com -d $DOMAIN -d $WWW_DOMAIN || {
-    echo "⚠️ SSL setup paused. Run 'sudo certbot --nginx -d $DOMAIN -d $WWW_DOMAIN' manually once DNS A record propagates to 31.220.107.166."
-}
+# 9. Attempt SSL setup via Certbot if missing
+if [ ! -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
+  echo "🔒 Setting up SSL Certificate with Certbot for $DOMAIN..."
+  sudo certbot --nginx --non-interactive --agree-tos -m admin@macproteceng.com -d $DOMAIN -d $WWW_DOMAIN || true
+fi
 
 echo ""
 echo "🎉 ======================================================= 🎉"
