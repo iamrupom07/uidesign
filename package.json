@@ -11,7 +11,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md,json,js,css}\"",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
-    "db:generate": "pnpm exec prisma generate --schema=packages/database/prisma/schema.prisma",
+    "db:generate": "npx prisma@6.19.3 generate --schema=packages/database/prisma/schema.prisma",
     "db:push": "pnpm --filter @repo/database db:push",
     "db:migrate": "pnpm --filter @repo/database db:migrate",
     "db:seed": "pnpm --filter @repo/database db:seed",
