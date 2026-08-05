@@ -106,7 +106,7 @@ pm2 save
 # Ensure PM2 starts on server reboot
 env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root 2>/dev/null || true
 
-# 8. Configure Nginx Reverse Proxy (HTTP & HTTPS)
+# 8. Configure Nginx Reverse Proxy (Unified Port 3000)
 echo "🌐 Configuring Nginx Reverse Proxy for $DOMAIN..."
 sudo rm -f /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/macprotec-le-ssl.conf 2>/dev/null || true
 
@@ -127,22 +127,9 @@ server {
 
     client_max_body_size 50M;
 
-    # Frontend (Next.js App on Port 3000)
+    # Unified Proxy to Next.js App (Port 3000)
     location / {
         proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_cache_bypass \$http_upgrade;
-    }
-
-    # Backend API (Express Server on Port 5000)
-    location /api {
-        proxy_pass http://127.0.0.1:5000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -162,22 +149,9 @@ server {
 
     client_max_body_size 50M;
 
-    # Frontend (Next.js App on Port 3000)
+    # Unified Proxy to Next.js App (Port 3000)
     location / {
         proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_cache_bypass \$http_upgrade;
-    }
-
-    # Backend API (Express Server on Port 5000)
-    location /api {
-        proxy_pass http://127.0.0.1:5000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
