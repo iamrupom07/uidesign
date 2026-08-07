@@ -38,9 +38,11 @@ import {
 const INDUSTRY_APPLICATIONS = [
   {
     key: "cement",
-    name: "Cement Industry",
+    slug: "cement",
+    name: "Cement",
     badge: "LARGEST EXPERTISE AREA",
     summary: "Pyroprocessing, grinding, dust collection, material handling.",
+    image: "/images/cfd-engineering/cement.jpg",
     description:
       "MACPROTEC's deepest engineering domain expertise lies in cement plant optimization, kiln combustion, preheater cyclone design, and clinker cooling.",
     applications: [
@@ -62,8 +64,10 @@ const INDUSTRY_APPLICATIONS = [
   },
   {
     key: "steel",
-    name: "Steel Industry",
+    slug: "steel",
+    name: "Steel",
     summary: "Furnaces, cooling systems, gas exhaust and dust control.",
+    image: "/images/cfd-engineering/steel.jpg",
     description:
       "Advanced thermal and fluid simulation for steelmaking furnaces, ladle heating, continuous casting, and primary fume extraction.",
     applications: [
@@ -80,8 +84,10 @@ const INDUSTRY_APPLICATIONS = [
   },
   {
     key: "power",
-    name: "Power Generation",
+    slug: "power",
+    name: "Power",
     summary: "Boilers, combustion, flue gas and thermal systems.",
+    image: "/images/cfd-engineering/power.jpg",
     description:
       "Optimizing utility boiler combustion, SCR NOx abatement flow distribution, ESP particulate removal, and flue gas ducting.",
     applications: [
@@ -97,8 +103,10 @@ const INDUSTRY_APPLICATIONS = [
   },
   {
     key: "oilgas",
+    slug: "oil-gas",
     name: "Oil & Gas",
     summary: "Flow assurance, pipelines and process equipment.",
+    image: "/images/cfd-engineering/oilgas.jpg",
     description:
       "Multiphase flow assurance, slugging prediction, separator efficiency modeling, pressure relief analysis, and subsea pipelines.",
     applications: [
@@ -115,8 +123,10 @@ const INDUSTRY_APPLICATIONS = [
   },
   {
     key: "chemical",
-    name: "Chemical & Petrochemical",
+    slug: "chemical",
+    name: "Chemical",
     summary: "Reactors, mixing, piping and process systems.",
+    image: "/images/cfd-engineering/chemical.jpg",
     description:
       "Chemical reaction kinetics, stirred tank mixing, static mixer pressure drops, heat exchanger thermal gradients, and ventilation.",
     applications: [
@@ -132,8 +142,10 @@ const INDUSTRY_APPLICATIONS = [
   },
   {
     key: "mining",
-    name: "Mining Industry",
+    slug: "mining",
+    name: "Mining",
     summary: "Material transfer, ventilation and dust handling.",
+    image: "/images/cfd-engineering/mining.jpg",
     description:
       "Crusher dust extraction, conveyor transfer chute DEM-CFD simulation, ore chute wear reduction, and underground mine ventilation.",
     applications: [
@@ -148,8 +160,10 @@ const INDUSTRY_APPLICATIONS = [
   },
   {
     key: "bulk",
+    slug: "bulk-material-handling",
     name: "Bulk Material Handling",
     summary: "Pneumatic conveying, silos, transfer systems and storage.",
+    image: "/images/cfd-engineering/bulk.jpg",
     description:
       "Dense and dilute phase pneumatic conveying analysis, silo discharge behavior, hopper wear mitigation, and ship loader dust control.",
     applications: [
@@ -566,11 +580,8 @@ const WHY_MACPROTEC_CARDS = [
 ];
 
 export default function CfdEngineeringSolutionPage() {
-  const [selectedIndustryKey, setSelectedIndustryKey] = useState("cement");
   const [activeServiceKey, setActiveServiceKey] = useState("cfd-flow");
 
-  const currentIndustry =
-    INDUSTRY_APPLICATIONS.find((i) => i.key === selectedIndustryKey) || INDUSTRY_APPLICATIONS[0];
   const currentService =
     CORE_SERVICES_DATA.find((s) => s.key === activeServiceKey) || CORE_SERVICES_DATA[0];
 
@@ -607,7 +618,7 @@ export default function CfdEngineeringSolutionPage() {
           {/* Full-width Background Image */}
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             <Image
-              src="/images/card_cfd_simulation.png"
+              src="/images/cfd-engineering/hero_cfd.jpg"
               alt="MACPROTEC CFD & Engineering Simulation"
               fill
               priority
@@ -625,7 +636,7 @@ export default function CfdEngineeringSolutionPage() {
                 {/* Category Badge Ticker */}
                 <div className="inline-flex items-center gap-2 bg-[#2d1b47]/90 border border-primary/40 px-4 py-1.5 font-mono text-[11px] font-extrabold text-primary tracking-widest uppercase shadow-md backdrop-blur-xs">
                   <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
-                  <span>SOLUTION CARD 02 // CFD & ENGINEERING SIMULATION</span>
+                  <span>CFD & ENGINEERING SIMULATION</span>
                 </div>
 
                 {/* Main Hero Title */}
@@ -656,7 +667,7 @@ export default function CfdEngineeringSolutionPage() {
                     href="#core-services"
                     className="px-8 py-4 bg-[#201235] border border-white/20 hover:border-white text-white font-mono text-xs font-bold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 hover:bg-[#2d1b47]"
                   >
-                    <span>Core Engineering Services</span>
+                    <span>Engineering Services</span>
                     <ArrowRight className="w-4 h-4 text-slate-400" />
                   </a>
                 </div>
@@ -725,107 +736,74 @@ export default function CfdEngineeringSolutionPage() {
           </div>
         </section>
 
-        {/* 3. INDUSTRY APPLICATIONS SECTION */}
+        {/* 3. INDUSTRY CARDS SECTION */}
         <section id="industry-applications" className="py-20 bg-white border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-6 lg:px-8 space-y-12">
             {/* Section Header */}
             <div className="text-center max-w-3xl mx-auto space-y-4">
               <Reveal>
                 <div className="inline-block font-mono text-xs font-bold text-primary uppercase tracking-widest bg-rose-50 border border-rose-200 px-3 py-1">
-                  INDUSTRY APPLICATIONS
+                  INDUSTRY
                 </div>
               </Reveal>
 
               <Reveal>
                 <h2 className="font-display font-black text-3xl sm:text-4xl text-slate-900 uppercase tracking-tight">
-                  Engineered Solutions Tailored to Your Sector
+                  Tailored Industrial Applications
                 </h2>
               </Reveal>
 
               <Reveal>
                 <p className="text-slate-600 font-sans text-base leading-relaxed">
-                  Select your industry to explore specialized engineering applications, process equipment
-                  simulations, and plant optimization capabilities.
+                  Select your industry to explore engineering applications tailored to your process.
                 </p>
               </Reveal>
             </div>
 
-            {/* Industry Selector Tabs */}
-            <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-xs border-b border-slate-200 pb-6">
-              {INDUSTRY_APPLICATIONS.map((ind) => {
-                const isSelected = selectedIndustryKey === ind.key;
-                return (
-                  <button
-                    key={ind.key}
-                    onClick={() => setSelectedIndustryKey(ind.key)}
-                    className={`px-4 py-2.5 font-bold uppercase transition-all duration-150 flex items-center gap-2 border ${
-                      isSelected
-                        ? "bg-slate-950 text-white border-slate-950 shadow-md"
-                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-                    }`}
+            {/* 7 Industry Cards Grid */}
+            <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" stagger={0.06}>
+              {INDUSTRY_APPLICATIONS.map((ind, idx) => (
+                <RevealItem key={ind.key}>
+                  <Link
+                    href={`/solutions/cfd-engineering/${ind.slug}`}
+                    className="group bg-slate-50 border border-slate-200 hover:border-primary transition-all duration-300 flex flex-col h-full overflow-hidden shadow-xs hover:shadow-lg"
                   >
-                    <span>{ind.name}</span>
-                    {ind.badge && (
-                      <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.5 font-extrabold rounded-none">
-                        PRO
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Selected Industry Card Banner & Application Cards */}
-            <Reveal key={currentIndustry.key}>
-              <div className="space-y-8">
-                {/* Banner */}
-                <div className="bg-slate-950 text-white border border-slate-800 p-8 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative overflow-hidden">
-                  <div className="space-y-2 max-w-3xl relative z-10">
-                    <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 text-rose-400 px-3 py-1 font-mono text-[10px] font-bold uppercase rounded-full">
-                      <span>{currentIndustry.name} APPLIED ENGINEERING</span>
+                    {/* Card Image */}
+                    <div className="relative aspect-[16/10] w-full bg-slate-950 overflow-hidden">
+                      <Image
+                        src={ind.image}
+                        alt={`${ind.name} - CFD Engineering`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      <div className="absolute top-3 left-3 font-mono text-[10px] font-extrabold bg-slate-950/80 text-white px-2.5 py-1 border border-white/20 backdrop-blur-xs uppercase">
+                        0{idx + 1} // {ind.name.toUpperCase()}
+                      </div>
                     </div>
 
-                    <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-white uppercase tracking-tight">
-                      {currentIndustry.name} Applications
-                    </h3>
-
-                    <p className="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
-                      {currentIndustry.description}
-                    </p>
-                  </div>
-
-                  <Link
-                    href="/lets-connect"
-                    className="px-6 py-3 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider shrink-0 transition-colors shadow-md flex items-center gap-2"
-                  >
-                    <span>Discuss {currentIndustry.name} Project</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-
-                {/* Clickable Application Grid Cards */}
-                <div>
-                  <div className="font-mono text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
-                    Available Simulation & Engineering Cards ({currentIndustry.applications.length})
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {currentIndustry.applications.map((appTitle, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-slate-50 border border-slate-200 p-4 font-mono text-xs text-slate-800 font-bold hover:border-primary hover:bg-rose-50/50 transition-all duration-150 flex items-center justify-between group shadow-2xs cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
-                          <span className="truncate">{appTitle}</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
+                    {/* Card Content */}
+                    <div className="p-6 flex flex-col justify-between flex-1 space-y-4">
+                      <div className="space-y-2">
+                        <h3 className="font-display font-black text-xl text-slate-900 uppercase tracking-tight group-hover:text-primary transition-colors flex items-center justify-between">
+                          <span>{ind.name}</span>
+                          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                        </h3>
+                        <p className="text-xs text-slate-600 font-sans leading-relaxed">
+                          {ind.summary}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Reveal>
+
+                      <div className="pt-4 border-t border-slate-200/80 flex items-center justify-between font-mono text-xs font-bold text-primary">
+                        <span>Explore {ind.name} Services</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </Link>
+                </RevealItem>
+              ))}
+            </RevealGroup>
           </div>
         </section>
 
