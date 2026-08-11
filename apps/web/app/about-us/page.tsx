@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import TechnicalCursor from "@/components/ui/TechnicalCursor";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Globe2,
   Cpu,
@@ -21,6 +22,8 @@ import {
   Activity,
   Workflow,
   LineChart,
+  Compass,
+  Lightbulb,
 } from "lucide-react";
 import HeroClients from "@/components/home/HeroClients";
 
@@ -64,19 +67,53 @@ export default function AboutUs() {
       <Header />
 
       <main className="bg-background min-h-screen py-20 lg:py-24 space-y-24">
-        {/* Page Hero Header */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-10">
-          <Reveal>
-            <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4 flex items-center gap-2">
-              <span className="text-primary font-bold">┌</span>
-              <span className="inline-block w-2 h-2 bg-primary rounded-full animate-pulse" />
-              ABOUT MACPROTEC ENGINEERING
+        {/* Page Hero Header with Industrial Plant Image */}
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-6">
+          <div className="border border-border bg-white relative overflow-hidden shadow-sm">
+            <div className="grid lg:grid-cols-12 items-center">
+              {/* Text Column */}
+              <div className="lg:col-span-7 p-8 sm:p-12 lg:p-14 space-y-6">
+                <Reveal>
+                  <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <span className="text-primary font-bold">┌</span>
+                    <span className="inline-block w-2 h-2 bg-primary rounded-full animate-pulse" />
+                    ABOUT MACPROTEC ENGINEERING
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-50 border border-rose-200 text-primary font-mono text-[10px] font-bold uppercase tracking-wider mb-2">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Global Engineering & Process Simulation Consultancy</span>
+                  </div>
+
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-foreground uppercase tracking-tight leading-tight">
+                    About Us <br />
+                    <span className="text-primary">Engineering Better Plants.</span> <br />
+                    <span className="text-foreground">Delivering Smarter Solutions.</span>
+                  </h1>
+
+                  <p className="body-md text-secondary max-w-2xl leading-relaxed font-sans mt-4">
+                    MACPROTEC Engineering is a premier engineering consulting firm specializing in advanced process modeling, Computational Fluid Dynamics (CFD), structural FEA, and industrial plant optimization.
+                  </p>
+                </Reveal>
+              </div>
+
+              {/* Image Column */}
+              <div className="lg:col-span-5 relative h-72 lg:h-full min-h-[320px] bg-slate-900 overflow-hidden border-t lg:border-t-0 lg:border-l border-border group">
+                <Image
+                  src="/images/about-us/about_hero_plant.jpg"
+                  alt="MACPROTEC Industrial Processing Plant"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 p-3 bg-white/90 backdrop-blur border border-border flex items-center justify-between font-mono text-[10px] text-slate-700">
+                  <span className="font-bold uppercase tracking-wider">INDUSTRIAL PLANT CONSULTING</span>
+                  <span className="text-primary font-bold">MACPROTEC GLOBAL</span>
+                </div>
+              </div>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-foreground uppercase tracking-tight leading-tight max-w-4xl">
-              Engineering Better Plants. <br />
-              <span className="text-primary">Delivering Smarter Solutions.</span>
-            </h1>
-          </Reveal>
+          </div>
         </section>
 
         {/* 1. Company Overview */}
@@ -153,28 +190,34 @@ export default function AboutUs() {
           </div>
         </section>
 
-        {/* 2. Mission & Vision */}
+        {/* 2. Mission & Vision (With Animations as requested in PDF) */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8">
           <Reveal className="mb-10">
-            <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4 flex items-center gap-2">
               <span className="text-primary font-bold mr-1">┌</span> 02. STRATEGIC PURPOSE
+              <span className="px-2 py-0.5 bg-rose-100 border border-rose-200 text-primary text-[9px] font-bold">ANIMATED CARDS</span>
             </div>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-foreground uppercase tracking-tight">
               Mission & <span className="text-primary">Vision</span>
             </h2>
           </Reveal>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <Reveal>
-              <div className="bg-white border border-border p-8 sm:p-10 rounded-none relative h-full flex flex-col justify-between hover:border-primary/50 transition-colors shadow-sm">
+          <RevealGroup className="grid md:grid-cols-2 gap-8" stagger={0.15}>
+            <RevealItem>
+              <div className="group bg-white border border-border hover:border-primary p-8 sm:p-10 rounded-none relative h-full flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden">
+                {/* Dynamic animated corner indicator */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 border-b border-l border-rose-100 group-hover:bg-primary group-hover:border-primary transition-colors duration-300 flex items-start justify-end p-3">
+                  <span className="font-mono text-[10px] font-bold text-primary group-hover:text-white transition-colors">02-A</span>
+                </div>
+
                 <div>
-                  <div className="w-12 h-12 bg-rose-50 border border-rose-100 flex items-center justify-center text-primary mb-6">
-                    <Target className="w-6 h-6" />
+                  <div className="w-14 h-14 bg-rose-50 border border-rose-100 group-hover:border-primary/30 flex items-center justify-center text-primary mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                    <Target className="w-7 h-7 group-hover:text-rose-700 transition-colors" />
                   </div>
                   <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-2">
                     02-A / MISSION STATEMENT
                   </div>
-                  <h3 className="font-display font-extrabold text-xl sm:text-2xl text-foreground mb-4 uppercase">
+                  <h3 className="font-display font-extrabold text-xl sm:text-2xl text-foreground mb-4 uppercase group-hover:text-primary transition-colors">
                     Engineering Solutions That Create Lasting Value
                   </h3>
                   <p className="text-sm text-secondary leading-relaxed font-sans">
@@ -185,19 +228,29 @@ export default function AboutUs() {
                     risks, and maximize the value of their industrial assets.
                   </p>
                 </div>
-              </div>
-            </Reveal>
 
-            <Reveal delay={0.1}>
-              <div className="bg-white border border-border p-8 sm:p-10 rounded-none relative h-full flex flex-col justify-between hover:border-primary/50 transition-colors shadow-sm">
+                <div className="mt-8 pt-4 border-t border-border/80 flex items-center gap-2 font-mono text-[10px] font-bold text-primary uppercase tracking-widest opacity-80 group-hover:opacity-100">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+                  <span>VALUE CREATION & ASSET OPTIMIZATION</span>
+                </div>
+              </div>
+            </RevealItem>
+
+            <RevealItem>
+              <div className="group bg-white border border-border hover:border-primary p-8 sm:p-10 rounded-none relative h-full flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden">
+                {/* Dynamic animated corner indicator */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 border-b border-l border-rose-100 group-hover:bg-primary group-hover:border-primary transition-colors duration-300 flex items-start justify-end p-3">
+                  <span className="font-mono text-[10px] font-bold text-primary group-hover:text-white transition-colors">02-B</span>
+                </div>
+
                 <div>
-                  <div className="w-12 h-12 bg-rose-50 border border-rose-100 flex items-center justify-center text-primary mb-6">
-                    <Sparkles className="w-6 h-6" />
+                  <div className="w-14 h-14 bg-rose-50 border border-rose-100 group-hover:border-primary/30 flex items-center justify-center text-primary mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 shadow-sm">
+                    <Sparkles className="w-7 h-7 group-hover:text-rose-700 transition-colors" />
                   </div>
                   <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-2">
                     02-B / VISION TARGET
                   </div>
-                  <h3 className="font-display font-extrabold text-xl sm:text-2xl text-foreground mb-4 uppercase">
+                  <h3 className="font-display font-extrabold text-xl sm:text-2xl text-foreground mb-4 uppercase group-hover:text-primary transition-colors">
                     Shaping the Future of Industrial Engineering
                   </h3>
                   <p className="text-sm text-secondary leading-relaxed font-sans">
@@ -208,37 +261,62 @@ export default function AboutUs() {
                     operations.
                   </p>
                 </div>
+
+                <div className="mt-8 pt-4 border-t border-border/80 flex items-center gap-2 font-mono text-[10px] font-bold text-primary uppercase tracking-widest opacity-80 group-hover:opacity-100">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+                  <span>SUSTAINABLE DIGITAL TRANSFORMATIONS</span>
+                </div>
               </div>
-            </Reveal>
-          </div>
+            </RevealItem>
+          </RevealGroup>
         </section>
 
-        {/* 3. Our Engineering Philosophy */}
+        {/* 3. Our Engineering Philosophy (With Image as requested in PDF) */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8">
           <Reveal className="mb-6">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> 03. CORE METHODOLOGY
             </div>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-foreground uppercase tracking-tight mb-2">
+              Our Engineering <span className="text-primary">Philosophy</span>
+            </h2>
           </Reveal>
 
           <Reveal delay={0.08}>
-            <div className="bg-white border border-border p-8 sm:p-12 rounded-none relative overflow-hidden shadow-sm">
-              <div className="absolute top-0 right-0 w-40 h-40 border-b border-l border-primary/10 pointer-events-none" />
-              <div className="grid lg:grid-cols-[1fr_2.5fr] gap-8 items-start">
-                <div className="border-l-4 border-primary pl-6">
-                  <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-2">
-                    PHILOSOPHY
+            <div className="bg-white border border-border rounded-none relative overflow-hidden shadow-sm">
+              <div className="grid lg:grid-cols-12 items-center">
+                {/* Philosophy Image */}
+                <div className="lg:col-span-5 relative h-72 lg:h-full min-h-[340px] bg-slate-900 overflow-hidden border-b lg:border-b-0 lg:border-r border-border group">
+                  <Image
+                    src="/images/about-us/engineering_philosophy.jpg"
+                    alt="MACPROTEC Engineering Blueprint, Yellow Hard Hat and CAD Laptop"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 p-3 bg-white/90 backdrop-blur border border-border flex items-center justify-between font-mono text-[10px] text-slate-700">
+                    <span className="font-bold uppercase tracking-wider">ENGINEERING PRACTICE</span>
+                    <span className="text-primary font-bold">CAD + SITE KNOWLEDGE</span>
                   </div>
-                  <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-foreground uppercase tracking-tight leading-none">
-                    Engineering <br />
-                    <span className="text-primary">Beyond Calculations</span>
-                  </h3>
                 </div>
-                <div className="space-y-4">
+
+                {/* Text Content */}
+                <div className="lg:col-span-7 p-8 sm:p-12 space-y-6">
+                  <div className="border-l-4 border-primary pl-6">
+                    <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-2">
+                      PHILOSOPHY
+                    </div>
+                    <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-foreground uppercase tracking-tight leading-none">
+                      Engineering <br />
+                      <span className="text-primary">Beyond Calculations</span>
+                    </h3>
+                  </div>
+
                   <p className="text-foreground text-lg sm:text-xl font-bold leading-relaxed font-display uppercase">
                     Engineering is more than calculations and software outputs—it is about
                     understanding how an entire process operates.
                   </p>
+
                   <p className="text-secondary text-sm sm:text-base leading-relaxed font-sans">
                     At MACPROTEC, every project begins with understanding the client's operational
                     objectives before selecting the appropriate engineering tools. We believe that

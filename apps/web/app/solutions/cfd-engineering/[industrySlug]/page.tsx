@@ -20,12 +20,48 @@ import {
   Zap,
 } from "lucide-react";
 
+import CementCfdPage from "../cement/page";
+import SteelCfdPage from "../steel/page";
+import PowerCfdPage from "../power/page";
+import OilGasCfdPage from "../oil-gas/page";
+import ChemicalCfdPage from "../chemical/page";
+import MiningCfdPage from "../mining/page";
+import BulkMaterialHandlingCfdPage from "../bulk-material-handling/page";
+
 export default function CfdDetailPage({
   params,
 }: {
   params: Promise<{ industrySlug: string }>;
 }) {
   const { industrySlug } = use(params);
+
+  if (industrySlug === "cement") {
+    return <CementCfdPage />;
+  }
+
+  if (industrySlug === "steel") {
+    return <SteelCfdPage />;
+  }
+
+  if (industrySlug === "power") {
+    return <PowerCfdPage />;
+  }
+
+  if (industrySlug === "oil-gas") {
+    return <OilGasCfdPage />;
+  }
+
+  if (industrySlug === "chemical") {
+    return <ChemicalCfdPage />;
+  }
+
+  if (industrySlug === "mining") {
+    return <MiningCfdPage />;
+  }
+
+  if (industrySlug === "bulk-material-handling") {
+    return <BulkMaterialHandlingCfdPage />;
+  }
 
   const industry = cfdIndustries[industrySlug];
   const service = cfdCoreServices.find((s) => s.slug === industrySlug);
