@@ -185,6 +185,7 @@ export const featuredArticles: Article[] = [
     publishedAt: "2025-01-01",
     category: "Cement",
     readingTimeMinutes: 1,
+    heroImage: "/images/expert_insights.jpg",
   },
   {
     slug: "exploring-latest-innovations-cement-mining",
@@ -193,8 +194,9 @@ export const featuredArticles: Article[] = [
       "Discover the cutting-edge solutions and technologies revolutionizing the cement, mining, and petrochemical sectors, drawn from 65 years of combined engineering and system integration expertise.",
     body: "",
     publishedAt: "2025-01-01",
-    category: "Mining",
+    category: "System Integration",
     readingTimeMinutes: 1,
+    heroImage: "/images/system_integration.jpg",
   },
 ];
 
