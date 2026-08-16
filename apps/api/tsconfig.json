@@ -1,11 +1,12 @@
 {
   "extends": "@repo/config/tsconfig.base.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ES2022",
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "skipLibCheck": true
   },
   "include": ["src/**/*"]
 }

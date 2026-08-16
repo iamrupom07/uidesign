@@ -16,6 +16,10 @@ export const baseApi = createApi({
     baseUrl: getApiBaseUrl(),
     credentials: "include", // Ensures HTTP-only auth cookies are sent with requests
   }),
-  tagTypes: ["User", "Auth", "Product", "Category", "Lead", "Finance", "Invoice", "Employee", "Blog"],
+  // Cache retention & performance tuning
+  keepUnusedDataFor: 300, // Keep cache in memory for 5 minutes
+  refetchOnFocus: false, // Prevent redundant refetch when window regains focus
+  refetchOnReconnect: true,
+  tagTypes: ["User", "Auth", "Product", "Category", "Lead", "Finance", "Invoice", "Employee", "Blog", "Submission"],
   endpoints: () => ({}),
 });

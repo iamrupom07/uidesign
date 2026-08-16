@@ -8,6 +8,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { Magnetic } from "@/components/ui/Magnetic";
 import Link from "next/link";
 import gsap from "gsap";
+import { useCreateSubmissionMutation } from "@/redux/api/submissionApi";
 
 interface SolutionContent {
   title: string;
@@ -27,8 +28,30 @@ interface SolutionContent {
 
 export default function SolutionDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const [createSubmission, { isLoading: submitting }] = useCreateSubmissionMutation();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = String(formData.get("name") || "");
+    const email = String(formData.get("email") || "");
+    const message = String(formData.get("message") || "");
+
+    try {
+      await createSubmission({
+        type: "CONSULTATION",
+        name,
+        email,
+        sector: slug,
+        subject: `Consultation: Solution ${slug}`,
+        message,
+      }).unwrap();
+      setSent(true);
+    } catch (err) {
+      console.error("Consultation submit error:", err);
+    }
+  };
 
   // Dictionary for dynamic high-fidelity solutions content
   const solutionsData: Record<string, SolutionContent> = {
@@ -267,22 +290,6 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
     });
     return () => ctx.revert();
   }, [slug]);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitting(true);
-    const form = new FormData(e.currentTarget);
-    try {
-      await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(form)),
-      });
-      setSent(true);
-    } finally {
-      setSubmitting(false);
-    }
-  }
 
   return (
     <>

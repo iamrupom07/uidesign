@@ -6,6 +6,11 @@ import Link from "next/link";
 import TechnicalCursor from "@/components/ui/TechnicalCursor";
 import { useGetMeQuery, useLogoutMutation } from "@/redux/api/authApi";
 import {
+  useGetSubmissionsQuery,
+  useUpdateSubmissionMutation,
+  useDeleteSubmissionMutation,
+} from "@/redux/api/submissionApi";
+import {
   LayoutDashboard,
   Inbox,
   FileText,
@@ -22,21 +27,28 @@ import {
   Search,
   CheckCircle2,
   AlertTriangle,
+  Mail,
+  Building,
+  Calendar,
+  DollarSign,
+  Eye,
+  Trash2,
+  Edit3,
 } from "lucide-react";
-
-interface Proposal {
-  id: string;
-  sector: string;
-  budget: string;
-  startDate: string;
-  scope: string;
-  date: string;
-}
+import { Submission, SubmissionStatus } from "@repo/types";
 
 export default function ProposalsDashboardPage() {
   const router = useRouter();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Auth Protection
   const { data: userData, isLoading: isAuthLoading, isError: isAuthError } = useGetMeQuery();
@@ -50,61 +62,56 @@ export default function ProposalsDashboardPage() {
 
   const currentUser = userData?.data;
 
-  // Mock RFP Proposals State
-  const [proposals, setProposals] = useState<Proposal[]>([
-    {
-      id: "RFP-201",
-      sector: "Cement Manufacturing",
-      budget: "Above $150,000",
-      startDate: "2026-10-01",
-      scope: "Upgrade burner combustion system to support 85% alternative fuel substitution rates.",
-      date: "2026-07-19 15:10",
-    },
-    {
-      id: "RFP-202",
-      sector: "Mining & Minerals",
-      budget: "$50,000 – $150,000",
-      startDate: "2026-11-15",
-      scope: "Slurry pipeline drag calculation and thickener classification retrofits.",
-      date: "2026-07-18 09:30",
-    },
-    {
-      id: "RFP-203",
-      sector: "Power & Energy",
-      budget: "Above $150,000",
-      startDate: "2026-09-01",
-      scope: "Thermal CFD analysis on boiler superheater tube erosion & velocity mitigation.",
-      date: "2026-07-17 14:00",
-    },
-    {
-      id: "RFP-204",
-      sector: "Steel Industry",
-      budget: "$20,000 – $50,000",
-      startDate: "2026-08-20",
-      scope: "EAF dust extraction duct design and pressure loss calculations.",
-      date: "2026-07-15 16:20",
-    },
-  ]);
+  // Real RFP Submissions via RTK Query
+  const {
+    data: rfpResponse,
+    isLoading: isRfpLoading,
+    refetch,
+  } = useGetSubmissionsQuery(
+    { type: "RFP", search: debouncedSearch || undefined },
+    { skip: !userData?.data }
+  );
 
-  // Edit & Archive Modals State
-  const [editModalItem, setEditModalItem] = useState<Proposal | null>(null);
+  const [updateSubmission, { isLoading: isUpdating }] = useUpdateSubmissionMutation();
+  const [deleteSubmission, { isLoading: isDeleting }] = useDeleteSubmissionMutation();
+
+  const proposals = rfpResponse?.data || [];
+
+  // Modals State
+  const [activeDossier, setActiveDossier] = useState<Submission | null>(null);
+  const [editModalItem, setEditModalItem] = useState<Submission | null>(null);
   const [archiveId, setArchiveId] = useState<string | null>(null);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const handleSaveEdit = (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editModalItem) return;
-    setProposals((prev) =>
-      prev.map((item) => (item.id === editModalItem.id ? editModalItem : item))
-    );
-    setEditModalItem(null);
-    setStatusMsg({ type: "success", text: `RFP Proposal ${editModalItem.id} updated successfully!` });
+    try {
+      await updateSubmission({
+        id: editModalItem.id,
+        data: {
+          status: editModalItem.status,
+          notes: editModalItem.notes || undefined,
+        },
+      }).unwrap();
+      setEditModalItem(null);
+      setStatusMsg({ type: "success", text: `RFP Proposal updated successfully!` });
+    } catch (err: any) {
+      console.error(err);
+      setStatusMsg({ type: "error", text: err?.data?.message || "Failed to update RFP proposal." });
+    }
   };
 
-  const handleArchive = (id: string) => {
-    setProposals((prev) => prev.filter((item) => item.id !== id));
-    setArchiveId(null);
-    setStatusMsg({ type: "success", text: `Proposal ${id} archived successfully!` });
+  const handleArchive = async (id: string) => {
+    try {
+      await deleteSubmission(id).unwrap();
+      setArchiveId(null);
+      if (activeDossier?.id === id) setActiveDossier(null);
+      setStatusMsg({ type: "success", text: `Proposal archived successfully!` });
+    } catch (err: any) {
+      console.error(err);
+      setStatusMsg({ type: "error", text: err?.data?.message || "Failed to archive proposal." });
+    }
   };
 
   const handleLogout = async () => {
@@ -117,12 +124,22 @@ export default function ProposalsDashboardPage() {
     }
   };
 
-  const filteredProposals = proposals.filter(
-    (item) =>
-      item.sector.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.scope.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "NEW":
+        return "bg-rose-100 text-rose-800 border-rose-200";
+      case "UNDER_REVIEW":
+        return "bg-amber-100 text-amber-800 border-amber-200";
+      case "RESPONDED":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "CONVERTED":
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
+      case "ARCHIVED":
+        return "bg-slate-100 text-slate-600 border-slate-200";
+      default:
+        return "bg-slate-100 text-slate-800 border-slate-200";
+    }
+  };
 
   if (isAuthLoading || !userData?.data) {
     return (
@@ -155,61 +172,44 @@ export default function ProposalsDashboardPage() {
           </div>
           <button
             onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            className="p-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors rounded"
-            aria-label="Toggle Menu"
+            className="p-1.5 border border-slate-800 rounded text-slate-300 hover:text-white"
           >
-            {mobileSidebarOpen ? (
-              <X className="w-5 h-5 text-rose-500" />
-            ) : (
-              <Menu className="w-5 h-5 text-slate-300" />
-            )}
+            {mobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </header>
 
-        {/* Sidebar Nav */}
+        {/* Sidebar Navigation */}
         <aside
-          className={`fixed inset-y-0 left-0 w-64 bg-slate-950 text-slate-400 p-5 flex flex-col justify-between shrink-0 border-r border-slate-800/80 z-40 transform transition-transform duration-200 lg:relative lg:translate-x-0 shadow-2xl lg:shadow-none ${
-            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          className={`fixed lg:sticky top-0 left-0 h-screen w-72 bg-slate-950 border-r border-slate-800/80 z-40 flex flex-col justify-between p-6 transition-transform duration-200 ease-in-out ${
+            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           }`}
         >
-          <div>
-            {/* Header Brand */}
-            <div className="pb-6 mb-6 border-b border-slate-800/60">
-              <div className="flex items-center gap-2.5">
-                <img src="/images/logo-icon.png" alt="MACPROTEC Logo" className="w-8 h-8 object-contain" />
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-sans font-extrabold text-sm text-white tracking-wide uppercase">
-                      MACPROTEC
-                    </span>
-                    <span className="font-mono text-[9px] font-bold text-rose-500 bg-rose-500/10 px-1 py-0.5 rounded border border-rose-500/20">
-                      DB
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="font-mono text-[9px] text-slate-400 tracking-wider uppercase">
-                      System Online
-                    </span>
-                  </div>
-                </div>
+          <div className="space-y-8 overflow-y-auto">
+            <div className="flex items-center gap-3 pb-6 border-b border-slate-800/60">
+              <img src="/images/logo-icon.png" alt="MACPROTEC Logo" className="w-9 h-9 object-contain" />
+              <div>
+                <span className="font-sans font-extrabold text-sm tracking-wider uppercase text-white block leading-tight">
+                  MACPROTEC
+                </span>
+                <span className="font-mono text-[9px] text-rose-500 font-bold tracking-widest block leading-tight mt-0.5">
+                  OPERATIONS DESK
+                </span>
               </div>
             </div>
 
-            {/* Nav Links */}
             <div className="space-y-6">
               <div>
                 <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">
-                  Main Overview
+                  Telemetry & Inquiries
                 </div>
                 <nav className="space-y-1">
                   <Link
                     href="/dashboard"
                     className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-400 hover:bg-slate-900 hover:text-slate-200"
                   >
-                    <div className="flex items-center gap-3">
-                      <LayoutDashboard className="w-4 h-4 text-slate-400 group-hover:text-slate-200" />
-                      <span>Dashboard Overview</span>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <LayoutDashboard className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-200" />
+                      <span className="truncate">Overview</span>
                     </div>
                   </Link>
 
@@ -223,18 +223,14 @@ export default function ProposalsDashboardPage() {
                     </div>
                   </Link>
 
-                  {/* ACTIVE TAB HIGHLIGHT FOR PROPOSALS */}
                   <Link
                     href="/dashboard/proposals"
-                    className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group bg-rose-500/10 text-white font-bold border-l-2 border-primary"
+                    className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group bg-rose-500/10 text-rose-400 border border-rose-500/30"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <FileText className="w-4 h-4 shrink-0 text-primary" />
+                      <FileText className="w-4 h-4 shrink-0 text-rose-400" />
                       <span className="truncate">RFP Proposals</span>
                     </div>
-                    <span className="font-mono text-[9px] px-1.5 py-0.5 rounded border bg-primary text-white border-primary">
-                      {proposals.length}
-                    </span>
                   </Link>
 
                   <Link
@@ -302,7 +298,6 @@ export default function ProposalsDashboardPage() {
             </div>
           </div>
 
-          {/* User Profile & Logout */}
           <div className="pt-6 mt-6 border-t border-slate-800/60">
             <Link
               href="/dashboard/profile"
@@ -345,7 +340,6 @@ export default function ProposalsDashboardPage() {
 
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 overflow-y-auto">
-          {/* Top Bar */}
           <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs text-slate-500 flex items-center gap-1.5">
@@ -353,14 +347,20 @@ export default function ProposalsDashboardPage() {
                   Dashboard
                 </Link>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-primary font-bold">RFP Proposals Ledger</span>
+                <span className="text-primary font-bold">RFP Proposal Requests</span>
               </span>
             </div>
+
+            <button
+              onClick={() => refetch()}
+              className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs flex items-center gap-1.5"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Refresh</span>
+            </button>
           </header>
 
-          {/* Workspace Body */}
           <div className="p-6 lg:p-10 space-y-6 max-w-6xl mx-auto">
-            {/* Status Feedback Banner */}
             {statusMsg && (
               <div
                 className={`p-4 font-mono text-xs flex items-center justify-between border ${
@@ -383,14 +383,14 @@ export default function ProposalsDashboardPage() {
               </div>
             )}
 
-            {/* Header Title & Filter */}
+            {/* Header & Search */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border border-slate-200 p-5 shadow-sm">
               <div>
                 <h1 className="font-display font-extrabold text-xl text-slate-900 uppercase tracking-tight">
-                  RFP Proposals Ledger ({proposals.length})
+                  RFP Proposals & Scope Statements ({proposals.length})
                 </h1>
                 <p className="font-mono text-xs text-slate-500 mt-0.5">
-                  Request for proposals, engineering scope estimates & project budget allocations.
+                  Plant FEED scopes, alternative fuel calculator requests & capital budgets.
                 </p>
               </div>
 
@@ -398,7 +398,7 @@ export default function ProposalsDashboardPage() {
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search sector, scope, ID..."
+                  placeholder="Search sector, client, scope..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 font-mono text-xs text-slate-800 focus:outline-none focus:border-primary"
@@ -408,145 +408,261 @@ export default function ProposalsDashboardPage() {
 
             {/* Proposals Table */}
             <div className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[700px]">
-                  <thead>
-                    <tr className="bg-slate-100 text-slate-600 font-mono text-[9px] uppercase border-b border-slate-200">
-                      <th className="p-4">ID</th>
-                      <th className="p-4">Project Parameters</th>
-                      <th className="p-4">Scope Description</th>
-                      <th className="p-4">Date</th>
-                      <th className="p-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 font-sans text-xs text-slate-600">
-                    {filteredProposals.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="p-8 text-center font-mono text-slate-400 text-xs">
-                          No proposal records found matching query.
-                        </td>
+              {isRfpLoading ? (
+                <div className="p-12 text-center font-mono text-xs text-slate-400 flex items-center justify-center gap-2">
+                  <RefreshCw className="w-4 h-4 animate-spin text-rose-500" />
+                  <span>LOADING RFP SCOPES...</span>
+                </div>
+              ) : proposals.length === 0 ? (
+                <div className="p-12 text-center font-mono text-slate-400 text-xs">
+                  No RFP proposals registered yet.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                      <tr className="bg-slate-100 text-slate-600 font-mono text-[9px] uppercase border-b border-slate-200">
+                        <th className="p-4">Client & Sector</th>
+                        <th className="p-4">Budget Limit</th>
+                        <th className="p-4">Target Start</th>
+                        <th className="p-4">Scope & Parameters</th>
+                        <th className="p-4">Status</th>
+                        <th className="p-4 text-right">Actions</th>
                       </tr>
-                    ) : (
-                      filteredProposals.map((item) => (
-                        <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                          <td className="p-4 font-mono font-bold text-primary">{item.id}</td>
-                          <td className="p-4">
-                            <div className="font-bold text-slate-900">{item.sector}</div>
-                            <div className="text-[10px] text-slate-400 font-mono">
-                              BUDGET: {item.budget}
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-sans text-xs text-slate-600">
+                      {proposals.map((item) => (
+                        <tr key={item.id} className="hover:bg-slate-50/60 transition-colors">
+                          <td className="p-4 align-top">
+                            <div className="font-bold text-slate-900">{item.name}</div>
+                            <div className="font-mono text-[10px] text-blue-600">
+                              <a href={`mailto:${item.email}`} className="hover:underline">
+                                {item.email}
+                              </a>
                             </div>
-                            <div className="text-[10px] text-emerald-600 font-mono font-semibold">
-                              START: {item.startDate}
+                            <div className="font-mono text-[10px] text-slate-700 font-bold uppercase mt-1">
+                              {item.sector || "General Process Facility"}
+                            </div>
+                            {item.company && (
+                              <div className="font-mono text-[9px] text-slate-400">{item.company}</div>
+                            )}
+                          </td>
+
+                          <td className="p-4 align-top font-mono font-bold text-emerald-600 text-xs">
+                            {item.budget || "TBD"}
+                          </td>
+
+                          <td className="p-4 align-top font-mono text-xs text-slate-700">
+                            {item.startDate || "Immediate"}
+                          </td>
+
+                          <td className="p-4 align-top max-w-sm">
+                            <div className="font-mono text-xs text-slate-800 line-clamp-3 bg-slate-50 p-2.5 border border-slate-200">
+                              {item.scope || item.message}
                             </div>
                           </td>
-                          <td className="p-4 max-w-sm">
-                            <div className="text-slate-500 truncate">{item.scope}</div>
+
+                          <td className="p-4 align-top">
+                            <span
+                              className={`inline-block px-2 py-0.5 text-[9px] font-mono font-bold uppercase border ${getStatusBadge(
+                                item.status
+                              )}`}
+                            >
+                              {item.status}
+                            </span>
                           </td>
-                          <td className="p-4 font-mono text-[10px] text-slate-400">{item.date}</td>
-                          <td className="p-4 text-right space-x-2 whitespace-nowrap">
+
+                          <td className="p-4 align-top text-right space-x-2 whitespace-nowrap">
+                            <button
+                              onClick={() => setActiveDossier(item)}
+                              className="px-2.5 py-1.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 font-mono text-[9px] uppercase font-bold text-slate-700"
+                            >
+                              View Scope
+                            </button>
                             <button
                               onClick={() => setEditModalItem(item)}
-                              className="px-3 py-1.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 hover:border-slate-300 font-mono text-[9px] uppercase font-bold text-slate-700 transition-colors"
+                              className="px-2.5 py-1.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 font-mono text-[9px] uppercase font-bold text-slate-700"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => setArchiveId(item.id)}
-                              className="px-3 py-1.5 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:border-rose-200 font-mono text-[9px] uppercase font-bold text-rose-600 transition-colors"
+                              className="px-2.5 py-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100 font-mono text-[9px] uppercase font-bold text-rose-600"
                             >
                               Archive
                             </button>
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </main>
 
-      {/* EDIT MODAL */}
-      {editModalItem && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 w-full max-w-lg p-6 shadow-2xl space-y-4 font-mono text-xs">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-slate-900 uppercase text-sm">
-                Edit Proposal ({editModalItem.id})
-              </h3>
-              <button onClick={() => setEditModalItem(null)}>
-                <X className="w-5 h-5 text-slate-400 hover:text-slate-700" />
+      {/* Scope Dossier Modal */}
+      {activeDossier && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white border-2 border-slate-900 max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
+            <div className="flex justify-between items-start border-b border-slate-200 pb-4">
+              <div>
+                <span className="font-mono text-[10px] text-primary font-bold uppercase">
+                  RFP PROPOSAL DOSSIER
+                </span>
+                <h2 className="font-display font-extrabold text-xl uppercase text-slate-900 mt-1">
+                  {activeDossier.sector} FEED Proposal
+                </h2>
+              </div>
+              <button
+                onClick={() => setActiveDossier(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-900"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4 font-mono text-xs bg-slate-50 p-4 border border-slate-200">
               <div>
-                <label className="block text-[10px] text-slate-500 uppercase font-bold mb-1">
-                  Industry Sector
+                <span className="text-slate-400 uppercase text-[9px] block">Client Name:</span>
+                <span className="font-bold text-slate-900">{activeDossier.name}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 uppercase text-[9px] block">Email:</span>
+                <a href={`mailto:${activeDossier.email}`} className="text-blue-600 hover:underline">
+                  {activeDossier.email}
+                </a>
+              </div>
+              <div>
+                <span className="text-slate-400 uppercase text-[9px] block">Estimated Budget:</span>
+                <span className="font-bold text-emerald-600">{activeDossier.budget || "TBD"}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 uppercase text-[9px] block">Target Launch Date:</span>
+                <span className="text-slate-800">{activeDossier.startDate || "Immediate"}</span>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-mono text-[10px] uppercase font-bold text-slate-500 mb-2">
+                Detailed FEED Scope & Calculations:
+              </h4>
+              <div className="bg-slate-50 p-4 border border-slate-200 font-mono text-xs text-slate-800 whitespace-pre-line leading-relaxed">
+                {activeDossier.scope || activeDossier.message}
+              </div>
+            </div>
+
+            {activeDossier.files && (
+              <div>
+                <h4 className="font-mono text-[10px] uppercase font-bold text-slate-500 mb-2">
+                  Uploaded CAD / Schematics:
+                </h4>
+                <div className="bg-slate-50 p-3 border border-slate-200 font-mono text-xs text-slate-700">
+                  {activeDossier.files}
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center pt-4 border-t border-slate-200 font-mono text-xs">
+              <a
+                href={`mailto:${activeDossier.email}?subject=MacProtec FEED Scope Response - ${encodeURIComponent(
+                  activeDossier.sector || "Project Proposal"
+                )}`}
+                className="button-primary py-2.5 px-4 text-[10px] uppercase font-bold flex items-center gap-1.5"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>Send Proposal via Email</span>
+              </a>
+
+              <button
+                onClick={() => {
+                  setEditModalItem(activeDossier);
+                  setActiveDossier(null);
+                }}
+                className="button-outline py-2.5 px-4 text-[10px] uppercase font-bold"
+              >
+                Edit Status
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Status Modal */}
+      {editModalItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white border-2 border-slate-900 max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl">
+            <div className="flex justify-between items-start border-b border-slate-200 pb-3">
+              <div>
+                <span className="font-mono text-[10px] text-primary font-bold uppercase">
+                  MANAGE RFP STATUS
+                </span>
+                <h3 className="font-display font-extrabold text-base uppercase text-slate-900">
+                  {editModalItem.name} — {editModalItem.sector}
+                </h3>
+              </div>
+              <button
+                onClick={() => setEditModalItem(null)}
+                className="p-1 text-slate-400 hover:text-slate-900"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-4 font-mono text-xs">
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-600 mb-1">
+                  Status
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={editModalItem.sector}
-                  onChange={(e) => setEditModalItem({ ...editModalItem, sector: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-primary"
-                />
+                <select
+                  value={editModalItem.status}
+                  onChange={(e) =>
+                    setEditModalItem({
+                      ...editModalItem,
+                      status: e.target.value as SubmissionStatus,
+                    })
+                  }
+                  className="w-full bg-slate-50 border border-slate-300 p-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary"
+                >
+                  <option value="NEW">NEW</option>
+                  <option value="UNDER_REVIEW">UNDER_REVIEW</option>
+                  <option value="RESPONDED">RESPONDED</option>
+                  <option value="CONVERTED">CONVERTED</option>
+                  <option value="ARCHIVED">ARCHIVED</option>
+                </select>
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-500 uppercase font-bold mb-1">
-                  Project Budget Range
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editModalItem.budget}
-                  onChange={(e) => setEditModalItem({ ...editModalItem, budget: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] text-slate-500 uppercase font-bold mb-1">
-                  Target Start Date
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editModalItem.startDate}
-                  onChange={(e) => setEditModalItem({ ...editModalItem, startDate: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] text-slate-500 uppercase font-bold mb-1">
-                  Scope Description
+                <label className="block text-[10px] uppercase font-bold text-slate-600 mb-1">
+                  Internal Process Engineer Notes
                 </label>
                 <textarea
                   rows={4}
-                  required
-                  value={editModalItem.scope}
-                  onChange={(e) => setEditModalItem({ ...editModalItem, scope: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-primary"
+                  value={editModalItem.notes || ""}
+                  onChange={(e) =>
+                    setEditModalItem({ ...editModalItem, notes: e.target.value })
+                  }
+                  placeholder="Record FEED scoping notes or pricing milestones..."
+                  className="w-full bg-slate-50 border border-slate-300 p-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setEditModalItem(null)}
-                  className="px-4 py-2 bg-slate-100 text-slate-600 font-bold uppercase hover:bg-slate-200"
+                  className="px-4 py-2 border border-slate-300 hover:bg-slate-100 font-bold uppercase text-[10px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary text-white font-bold uppercase hover:bg-rose-700"
+                  disabled={isUpdating}
+                  className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold uppercase text-[10px]"
                 >
-                  Save Changes
+                  {isUpdating ? "Saving..." : "Save Status"}
                 </button>
               </div>
             </form>
@@ -554,30 +670,30 @@ export default function ProposalsDashboardPage() {
         </div>
       )}
 
-      {/* ARCHIVE CONFIRM MODAL */}
+      {/* Archive Modal */}
       {archiveId && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 w-full max-w-md p-6 shadow-2xl space-y-4 font-mono text-xs">
-            <h3 className="font-bold text-rose-600 uppercase text-sm">
-              Confirm Archive Proposal
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-white border-2 border-slate-900 max-w-sm w-full p-6 space-y-4 shadow-2xl">
+            <h3 className="font-display font-extrabold text-base uppercase text-slate-900 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
+              <span>Confirm Archive</span>
             </h3>
-            <p className="text-slate-600 font-sans">
-              Are you sure you want to archive RFP proposal record{" "}
-              <strong className="font-mono text-slate-900">{archiveId}</strong>?
+            <p className="font-sans text-xs text-slate-600">
+              Are you sure you want to archive this RFP proposal? It will be removed from active pipeline view.
             </p>
-
-            <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 font-mono text-xs">
               <button
                 onClick={() => setArchiveId(null)}
-                className="px-4 py-2 bg-slate-100 text-slate-600 font-bold uppercase hover:bg-slate-200"
+                className="px-4 py-2 border border-slate-300 hover:bg-slate-100 uppercase text-[10px] font-bold"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleArchive(archiveId)}
-                className="px-4 py-2 bg-rose-600 text-white font-bold uppercase hover:bg-rose-700"
+                disabled={isDeleting}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white uppercase text-[10px] font-bold"
               >
-                Archive Proposal
+                {isDeleting ? "Archiving..." : "Archive Proposal"}
               </button>
             </div>
           </div>

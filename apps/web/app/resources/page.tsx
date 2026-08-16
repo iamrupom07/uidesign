@@ -34,6 +34,8 @@ import {
   HardHat,
   Cpu,
 } from "lucide-react";
+import { useCreateSubmissionMutation } from "@/redux/api/submissionApi";
+import { downloadResourcePdf } from "@/lib/resourcePdfGenerator";
 
 // Resource category interface
 interface ResourceItem {
@@ -59,6 +61,7 @@ interface ResourceItem {
     format: string;
     size: string;
     description: string;
+    topics?: string[];
   }[];
 }
 
@@ -75,6 +78,8 @@ export default function ResourcesPage() {
 
   // Contact Inquiry Modal state
   const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [resForm, setResForm] = useState({ name: "", email: "", interest: "Company Profile & Credentials" });
+  const [createSubmission, { isLoading: isSubmittingDocReq }] = useCreateSubmissionMutation();
 
   // Document Preview Modal state
   const [previewModalDoc, setPreviewModalDoc] = useState<{
@@ -87,44 +92,55 @@ export default function ResourcesPage() {
     fileName: string;
   } | null>(null);
 
-  // Trigger download simulation with toast notification
+  // Trigger real client-side PDF document generation and browser download
   const handleDownload = (fileName: string) => {
-    setDownloadToast(`Initializing download: ${fileName}`);
-    setTimeout(() => {
-      setDownloadToast(`Downloaded successfully: ${fileName}`);
+    setDownloadToast(`Generating official PDF: ${fileName}`);
+    try {
+      downloadResourcePdf(fileName);
       setTimeout(() => {
-        setDownloadToast(null);
-      }, 3500);
-    }, 600);
+        setDownloadToast(`Downloaded successfully: ${fileName}`);
+        setTimeout(() => {
+          setDownloadToast(null);
+        }, 3500);
+      }, 500);
+    } catch (err) {
+      console.error("PDF generation error:", err);
+      setDownloadToast(`Error downloading ${fileName}`);
+    }
   };
 
   const toggleFaq = (idx: number) => {
     setActiveFaq(activeFaq === idx ? null : idx);
   };
 
-  // Main resource items data matching exact document spec
+  // Main resource items data matching exact document spec from official brochures
   const resourceItems: ResourceItem[] = [
     {
       id: "company-profile",
       category: "company-profile",
       categoryLabel: "Company Profile",
-      title: "Company Profile",
+      title: "Company Brochure & Profile",
       subtitle: "CORPORATE OVERVIEW & CAPABILITIES",
       description:
-        "A comprehensive overview of MACPROTEC Engineering, our multidisciplinary expertise, core competencies, global project track record, and technical capabilities in heavy process industries.",
+        "Comprehensive technical brochure of MACPROTEC Engineering, our multidisciplinary EPC expertise, global codes (ASME, API, NFPA, ASHRAE, ASTM), verified achievements (1300MW power, 1.43M Sft MEP, 47,000m³ storage), and international references (Saint Gobain, Arkema, Heurtey, Beacon).",
       image: "/images/resources/company_profile.png",
       imageAlt: "MACPROTEC Engineers reviewing blueprints around table",
       tag: "01 // DOSSIER",
       downloads: [
         {
-          title: "PDF - Macprotec Introductory",
+          title: "1. MacProtec Company Brochure (PDF)",
           format: "PDF",
-          size: "3.2 MB",
-          fileName: "PDF-Macprotec Introductory.pdf",
-          highlights: ["Executive summary", "Engineering capabilities", "Global project map"],
+          size: "6.4 MB",
+          fileName: "MacProtec Engineering Company Brochure.pdf",
+          highlights: [
+            "1300 MW Power Generation & 1.43M Sft HVAC/Pharma MEP",
+            "FEED, Detailed Engineering (Civil, Mech, Piping, E&I)",
+            "Global EPC Codes (ASME, API, NFPA, ASHRAE, ASTM)",
+            "Global Portfolio: Saint Gobain, Arkema, Heurtey, Beacon",
+          ],
         },
         {
-          title: "PPTX - (Macprotec Business Introduction)",
+          title: "2. Business Presentation (PPTX)",
           format: "PPTX",
           size: "5.8 MB",
           fileName: "PPTX-(Macprotec Business Introduction).pptx",
@@ -136,10 +152,10 @@ export default function ResourcesPage() {
       id: "engineering-services",
       category: "engineering-services",
       categoryLabel: "Engineering Service Brochures",
-      title: "Engineering Services Brochure",
+      title: "Engineering Services & Technical Dossiers",
       subtitle: "MULTIDISCIPLINARY ENGINEERING & DIGITAL SOLUTIONS",
       description:
-        "Explore our multidisciplinary engineering services, digital solutions, CFD modeling, 3D laser scanning methodologies, and end-to-end project delivery capabilities.",
+        "Explore our multidisciplinary engineering services, digital solutions, CFD modeling (MacFlow Vision), 3D laser scanning (Scan2Value), FEED studies, and end-to-end plant delivery capabilities.",
       image: "/images/resources/engineering_services.png",
       imageAlt: "Dual-monitor workstation displaying 3D CAD mesh model",
       tag: "02 // SERVICES",
@@ -148,51 +164,95 @@ export default function ResourcesPage() {
           title: "Engineering Services Master Brochure",
           format: "PDF",
           size: "6.4 MB",
-          fileName: "Engineering Services Master Brochure.pdf",
+          fileName: "MacProtec Engineering Master Brochure.pdf",
+          highlights: [
+            "FEED & Detailed Engineering Design",
+            "Civil, Structural, Process, Mechanical, Piping, E&I",
+            "3D Laser Scanning & Reverse Engineering",
+            "CFD Flow Simulation & Heat-Mass Balances",
+          ],
         },
       ],
       subBrochures: [
         {
           id: "01",
-          title: "Engineering Solutions",
+          title: "MacProtec Scan2Value — 3D Scanning & Reverse Engineering",
           format: "PDF",
-          size: "3.2 MB",
-          description: "Detailed breakdown of mechanical, electrical, instrumentation, and civil process engineering capabilities.",
+          size: "6.8 MB",
+          description: "Transforming assets into digital intelligence. MacProtec DigiPlant 3D, reverse engineering obsolete parts, point-cloud clash detection, and wear tracking.",
+          topics: [
+            "MacProtec DigiPlant 3D Digital Twins",
+            "Reverse Engineering Obsolete / Worn Parts",
+            "3D Scanning of Plant Assets & Point Cloud Reality Capture",
+            "Wear Tracking & Predictive Replacement for Mills/Ducts",
+            "Zero-Guess Retrofit & Clash Detection",
+          ],
         },
         {
           id: "02",
-          title: "3D Scans and Beyond",
+          title: "MacFlow Vision — CFD for Smarter Cement Plants",
           format: "PDF",
-          size: "4.8 MB",
-          description: "High-definition point-cloud reality capture, spatial clash audits, and brownfield reverse engineering.",
+          size: "5.4 MB",
+          description: "Numerical modeling from burner to stack. Kiln burner flame aerodynamics, calciner mixing & residence time, mill pressure drop reduction, and silo flow optimization.",
+          topics: [
+            "Kiln & Burner Combustion Modeling (Flame shape & refractory protection)",
+            "Calciner Hydrodynamics & Higher AF Substitution (TSR)",
+            "Cyclone Separation Efficiency & Bypass Build-up Mitigation",
+            "Vertical Mill Louver Ring Air Equalization",
+            "Bins, Silos & Hopper Clinker Discharge Behavior",
+          ],
         },
         {
           id: "03",
-          title: "CFD for Cement Plants",
+          title: "Hydraulic Services for Clinker Coolers & Vertical Mills",
           format: "PDF",
-          size: "5.1 MB",
-          description: "Computational fluid dynamics for preheater tower cyclone optimization, duct pressure drop reduction, and burner swirls.",
+          size: "4.2 MB",
+          description: "Combining deep cement know-how with advanced hydraulic diagnostics. Stabilize clinker coolers (SF, MMC, CB) and vertical mills (OK, ATOX, FRM, Loesche).",
+          topics: [
+            "Clinker Cooler Hydraulic Stabilization (SF, MMC, CB types)",
+            "Vertical Roller Mill Hydraulic Pressure Control (OK, ATOX, Loesche)",
+            "Root Cause Diagnostics vs. Part Replacement",
+            "Accumulator Pre-charge, Relief Valves & Leak Mitigation",
+          ],
         },
         {
           id: "04",
-          title: "Hydraulic Simulations",
+          title: "Process Simulation and Beyond — Plant Digital Twins",
           format: "PDF",
-          size: "2.9 MB",
-          description: "Surge analysis, water hammer transients, liquid pipe sizing, and pumping network dynamic simulations.",
+          size: "4.6 MB",
+          description: "Model, Predict, Perform. Digital twin modeling of preheater towers, rotary kilns, coolers, and grinding circuits to test operational changes with zero risk.",
+          topics: [
+            "Plant-Wide Process Digital Twin Modeling",
+            "Preheating Tower, Kiln & Clinker Cooler Simulation",
+            "Ball & Vertical Mill Load / Airflow / Circulation Modeling",
+            "Thermo-Chemical Flowsheet & Waste Heat Recovery",
+          ],
         },
         {
           id: "05",
-          title: "Process Simulation and Beyond",
+          title: "Cement Plant Services A to Z — Process & Automation",
           format: "PDF",
-          size: "4.4 MB",
-          description: "Steady-state heat & mass balances, thermo-chemical process flowsheets, and energy recovery optimization.",
+          size: "4.8 MB",
+          description: "End-to-end plant optimization delivering 3-5% energy reduction and 5-7% higher throughput: kiln tuning, burner optimization, AI raw mix, and mill debottlenecking.",
+          topics: [
+            "Kiln Process Optimization (Burn smarter, not hotter)",
+            "Burner Combustion & Multi-Fuel Tuning",
+            "Raw Mix Design & Optimization with AI Tools",
+            "Grinding Circuit Debottlenecking & Silo Fluidization",
+          ],
         },
         {
           id: "06",
-          title: "CEMENT PLANT Services A to Z",
+          title: "Front End Engineering Design (FEED) & Detailed Design",
           format: "PDF",
-          size: "6.7 MB",
-          description: "Full lifecycle plant engineering from raw material handling to clinker burning, grinding, and emission controls.",
+          size: "5.1 MB",
+          description: "Complete multi-discipline EPC design: civil/structural RCC & steel, mass/energy balance, 3D piping clash audits, electrical SLDs, and international project references.",
+          topics: [
+            "Conceptual Design, Feasibility & PFD / P&ID Development",
+            "Civil, Structural & Architectural GA Drawings",
+            "3D Piping Clash Detection & Caesar II Stress Analysis",
+            "Global Portfolio: Saint Gobain, Arkema, Heurtey, Beacon",
+          ],
         },
       ],
     },
@@ -200,27 +260,39 @@ export default function ResourcesPage() {
       id: "training-catalogue",
       category: "training",
       categoryLabel: "Training Catalogue",
-      title: "Training Catalogue",
-      subtitle: "PROFESSIONAL DEVELOPMENT & COURSES",
+      title: "Training Catalogue 2026 & CementX",
+      subtitle: "PROFESSIONAL DEVELOPMENT & CAPABILITY BUILDING",
       description:
-        "Complete catalogue of technical training programs, professional engineering courses, and customized learning solutions designed for cement plant managers, process engineers, and maintenance teams.",
+        "Hands-on technical training programs and custom plant-focused case studies designed for plant managers, process engineers, and control room operators. We don't just transfer knowledge—we build capability.",
       image: "/images/resources/training_catalogue.png",
       imageAlt: "Technical classroom presentation seminar on LC3 process",
       tag: "03 // LEARNING",
       downloads: [
         {
-          title: "1. Macprotec Training Catalogue 2026",
+          title: "1. MacProtec Master Training Catalog 2026",
           format: "PDF",
-          size: "4.1 MB",
-          fileName: "Macprotec Training Catalogue 2026.pdf",
-          highlights: ["2026 course schedule", "Onsite & virtual modules", "Certification paths"],
+          size: "8.5 MB",
+          fileName: "MacProtec Master Training Catalog 2026.pdf",
+          highlights: [
+            "Complete 37-page curriculum with 6 series and 35+ courses",
+            "Basic Training (Cement 101, Chemistry Mine-to-Mill)",
+            "Control Room Operator Series (Raw, Pyro, Cement Grinding)",
+            "Advanced Series (VRM, Ball Mill, Pyro, Microscopy)",
+            "Hands-On Series (Heat & Mass Balance Bootcamp, Almanacs)",
+            "Equipment & Hydraulics Specific Series",
+          ],
         },
         {
-          title: "2. CementX training for smart plants",
+          title: "2. CementX — Training for Smart Plants",
           format: "PDF",
           size: "3.7 MB",
-          fileName: "CementX training for smart plants.pdf",
-          highlights: ["Industry 4.0 curriculum", "Digital twin operations", "Predictive maintenance"],
+          fileName: "CementX — Training for Smart Plants.pdf",
+          highlights: [
+            "Hands-on diagnostic routines mirroring plant floor tasks",
+            "Custom plant-focused case studies from your operating history",
+            "3D printed physical learning aids & cutaway models",
+            "Training with live historian & DCS plant data",
+          ],
         },
       ],
     },
@@ -228,27 +300,38 @@ export default function ResourcesPage() {
       id: "predictive-solutions",
       category: "predictive-solutions",
       categoryLabel: "Predictive Solutions",
-      title: "Predictive Solutions for Cement Plants",
+      title: "Predictive Solutions & Kiln OCMS",
       subtitle: "REAL-TIME MONITORING & PREDICTIVE ANALYTICS",
       description:
-        "Discover how MACPROTEC combines process expertise, predictive analytics, and intelligent monitoring technologies to improve equipment reliability, optimize plant performance, and reduce unplanned downtime.",
+        "Discover how MACPROTEC combines process expertise and intelligent telemetry to improve equipment reliability. Featuring Smart Up Time and the Kiln Online Condition Monitoring System (Kiln OCMS).",
       image: "/images/resources/predictive_solutions.png",
       imageAlt: "Dark monitoring interface displaying 3D digital twin and Drive Bearing Defect alert",
       tag: "04 // ANALYTICS",
       downloads: [
         {
-          title: "1. Predictive Solutions for Cement Plants",
+          title: "1. Kiln OCMS — Technical Specification",
           format: "PDF",
-          size: "5.2 MB",
-          fileName: "Predictive Solutions for Cement Plants.pdf",
-          highlights: ["Acoustic & thermal telemetry", "Bearing defect algorithms", "Downtime reduction ROI"],
+          size: "4.8 MB",
+          fileName: "Kiln Online Condition Monitoring System.pdf",
+          highlights: [
+            "Multi-sensor telemetry for 2-base and 3-base rotary kilns",
+            "ECS/CemScanner kiln shell temperature & hot spot detection",
+            "Crank sensors (10 Nos.) on roller supports (FLS RA/RB/Fuller)",
+            "Axial balance, roller position, and thrust temperature RTDs",
+            "Kiln drive vibration & girth gear run-out monitoring",
+          ],
         },
         {
-          title: "2. Kiln OCMS",
+          title: "2. Predictive Solutions — Smart Up Time",
           format: "PDF",
-          size: "3.9 MB",
-          fileName: "Kiln OCMS Technical Spec.pdf",
-          highlights: ["Online condition monitoring system", "Rotary kiln shell scanners", "Refractory wear alerts"],
+          size: "4.2 MB",
+          fileName: "Predictive Solutions — Smart Up Time.pdf",
+          highlights: [
+            "Early warnings, not late alarms for critical assets",
+            "Connect: Historian & sensor agnostic (PLC/DCS/Cloud)",
+            "Process: Process physics + Machine Learning models",
+            "Deploy: Native SCADA, DCS & CMMS alerts integration",
+          ],
         },
       ],
     },
@@ -391,34 +474,54 @@ export default function ResourcesPage() {
               Submit your details to request printed portfolios, technical datasheets, or schedule a consultation with our Houston process engineering experts.
             </p>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                setContactModalOpen(false);
-                handleDownload("Technical Consult Request Submitted");
+                try {
+                  await createSubmission({
+                    type: "RESOURCE",
+                    name: resForm.name,
+                    email: resForm.email,
+                    subject: `Documentation Request: ${resForm.interest}`,
+                    message: `User requested technical documentation portfolio: ${resForm.interest}`,
+                  }).unwrap();
+                  setContactModalOpen(false);
+                  handleDownload("Technical Consult Request Submitted");
+                  setResForm({ name: "", email: "", interest: "Company Profile & Credentials" });
+                } catch (err) {
+                  console.error(err);
+                }
               }}
               className="space-y-4 font-mono text-xs"
             >
               <div>
-                <label className="block text-[10px] uppercase font-bold text-neutral-700 mb-1">Full Name</label>
+                <label className="block text-[10px] uppercase font-bold text-neutral-700 mb-1">Full Name*</label>
                 <input
                   required
                   type="text"
+                  value={resForm.name}
+                  onChange={(e) => setResForm({ ...resForm, name: e.target.value })}
                   placeholder="John Doe"
                   className="w-full bg-neutral-50 border border-neutral-300 p-2.5 text-xs text-foreground focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-neutral-700 mb-1">Work Email</label>
+                <label className="block text-[10px] uppercase font-bold text-neutral-700 mb-1">Work Email*</label>
                 <input
                   required
                   type="email"
+                  value={resForm.email}
+                  onChange={(e) => setResForm({ ...resForm, email: e.target.value })}
                   placeholder="jdoe@plant-company.com"
                   className="w-full bg-neutral-50 border border-neutral-300 p-2.5 text-xs text-foreground focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
                 <label className="block text-[10px] uppercase font-bold text-neutral-700 mb-1">Primary Interest</label>
-                <select className="w-full bg-neutral-50 border border-neutral-300 p-2.5 text-xs text-foreground focus:outline-none focus:border-primary">
+                <select
+                  value={resForm.interest}
+                  onChange={(e) => setResForm({ ...resForm, interest: e.target.value })}
+                  className="w-full bg-neutral-50 border border-neutral-300 p-2.5 text-xs text-foreground focus:outline-none focus:border-primary"
+                >
                   <option>Company Profile & Credentials</option>
                   <option>Engineering Services Brochure</option>
                   <option>Training Programmes & Courses</option>
@@ -427,10 +530,11 @@ export default function ResourcesPage() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase py-3.5 transition-colors tracking-widest mt-4 flex items-center justify-center gap-2 shadow-md"
+                disabled={isSubmittingDocReq}
+                className="w-full bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase py-3.5 transition-colors tracking-widest mt-4 flex items-center justify-center gap-2 shadow-md disabled:opacity-60"
               >
                 <Send className="w-4 h-4" />
-                Submit Consultation Request
+                <span>{isSubmittingDocReq ? "Submitting Request..." : "Submit Consultation Request"}</span>
               </button>
             </form>
           </div>
@@ -734,7 +838,7 @@ export default function ResourcesPage() {
                                   size: item.size,
                                   category: "Engineering Services",
                                   summary: item.description,
-                                  topics: ["3D CAD Modeling", "Methodology breakdown", "Case studies"],
+                                  topics: item.topics || ["3D CAD Modeling", "Methodology breakdown", "Case studies"],
                                   fileName: `${item.title}.pdf`,
                                 })
                               }

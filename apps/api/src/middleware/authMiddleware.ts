@@ -24,19 +24,7 @@ export const authenticate = async (
     });
 
     if (session && session.user) {
-      const dbUser = await prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-          employeeId: true,
-          designation: true,
-          status: true,
-        },
-      });
-      req.user = dbUser || session.user;
+      req.user = session.user;
       req.session = session.session;
       return next();
     }

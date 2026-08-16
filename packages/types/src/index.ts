@@ -7,5 +7,6 @@ export * from "./finance.js";
 export * from "./invoice.js";
 export * from "./employee.js";
 export * from "./blog.js";
+export * from "./submission.js";
 export * from "./api.js";
 

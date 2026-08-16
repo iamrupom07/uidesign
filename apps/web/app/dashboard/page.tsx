@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useGetMeQuery, useLogoutMutation } from "@/redux/api/authApi";
+import { useGetSubmissionsQuery, useGetSubmissionStatsQuery } from "@/redux/api/submissionApi";
+import { useGetLeadsQuery } from "@/redux/api/leadApi";
+import { useGetFinanceRecordsQuery } from "@/redux/api/financeApi";
 import TechnicalCursor from "@/components/ui/TechnicalCursor";
 import { Reveal } from "@/components/ui/Reveal";
 import InvoiceSection from "@/components/dashboard/InvoiceSection";
@@ -335,6 +338,11 @@ export default function DashboardPage() {
   const [logout] = useLogoutMutation();
   const currentUser = userData?.data;
 
+  // Real backend queries
+  const { data: realSubmissionsData } = useGetSubmissionsQuery(undefined, { skip: !authorized });
+  const { data: realLeadsData } = useGetLeadsQuery(undefined, { skip: !authorized });
+  const { data: realFinanceData } = useGetFinanceRecordsQuery(undefined, { skip: !authorized });
+
   // Auth & Mounted checks
   useEffect(() => {
     setMounted(true);
@@ -349,6 +357,65 @@ export default function DashboardPage() {
       }
     }
   }, [isAuthLoading, isError, userData, router]);
+
+  useEffect(() => {
+    if (realSubmissionsData?.data && realSubmissionsData.data.length > 0) {
+      setSubmissions(
+        realSubmissionsData.data.map((s) => ({
+          id: s.id,
+          name: s.name,
+          email: s.email,
+          subject: s.subject || s.type,
+          message: s.message,
+          date: new Date(s.createdAt).toISOString().split("T")[0],
+        }))
+      );
+      const rfps = realSubmissionsData.data.filter((s) => s.type === "RFP");
+      if (rfps.length > 0) {
+        setProposals(
+          rfps.map((r) => ({
+            id: r.id,
+            sector: r.sector || "General Process Facility",
+            budget: r.budget || "TBD",
+            startDate: r.startDate || "Immediate",
+            scope: r.scope || r.message,
+            date: new Date(r.createdAt).toISOString().split("T")[0],
+          }))
+        );
+      }
+    }
+  }, [realSubmissionsData]);
+
+  useEffect(() => {
+    if (realLeadsData?.data && realLeadsData.data.length > 0) {
+      setLeads(
+        realLeadsData.data.map((l) => ({
+          id: l.id,
+          name: l.name,
+          email: l.email,
+          phone: l.phone || "",
+          company: l.company,
+          value: l.value || 0,
+          status: l.status,
+          date: new Date(l.createdAt).toISOString().split("T")[0],
+        }))
+      );
+    }
+  }, [realLeadsData]);
+
+  useEffect(() => {
+    if (realFinanceData?.data && realFinanceData.data.length > 0) {
+      setLedger(
+        realFinanceData.data.map((f) => ({
+          id: f.id,
+          type: (f.type.toLowerCase() === "income" ? "income" : "expense") as "income" | "expense",
+          description: f.description,
+          amount: f.amount,
+          date: new Date(f.date).toISOString().split("T")[0],
+        }))
+      );
+    }
+  }, [realFinanceData]);
 
   const handleLogout = async () => {
     try {

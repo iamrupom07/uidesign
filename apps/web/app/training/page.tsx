@@ -7,20 +7,28 @@ import Footer from "@/components/layout/Footer";
 import TechnicalCursor from "@/components/ui/TechnicalCursor";
 import { Reveal } from "@/components/ui/Reveal";
 import { Flame, Bell, CheckCircle2, ArrowLeft, Sparkles } from "lucide-react";
+import { useCreateSubmissionMutation } from "@/redux/api/submissionApi";
 
 export default function TrainingPage() {
   const [email, setEmail] = useState("");
   const [notified, setNotified] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [createSubmission, { isLoading: submitting }] = useCreateSubmissionMutation();
 
-  const handleNotify = (e: React.FormEvent) => {
+  const handleNotify = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    setSubmitting(true);
-    setTimeout(() => {
+    try {
+      await createSubmission({
+        type: "TRAINING",
+        name: "Training Waitlist Subscriber",
+        email,
+        subject: "CementX LMS Priority Waitlist",
+        message: "User joined priority waitlist for CementX Technical Training & LMS Platform.",
+      }).unwrap();
       setNotified(true);
-      setSubmitting(false);
-    }, 600);
+    } catch (err) {
+      console.error("Training subscription error:", err);
+    }
   };
 
   return (

@@ -10,6 +10,7 @@ import invoiceRoutes from "./invoiceRoutes";
 import employeeRoutes from "./employeeRoutes";
 import blogRoutes from "./blogRoutes";
 import uploadRoutes from "./uploadRoutes";
+import submissionRoutes from "./submissionRoutes";
 
 const router: Router = Router();
 
@@ -24,6 +25,7 @@ router.use("/api/v1/invoices", invoiceRoutes);
 router.use("/api/v1/employees", employeeRoutes);
 router.use("/api/v1/blogs", blogRoutes);
 router.use("/api/v1/upload", uploadRoutes);
+router.use("/api/v1/submissions", submissionRoutes);
 
 export default router;
 

@@ -238,4 +238,32 @@ model BlogImage {
   @@index([blogPostId])
 }
 
+model Submission {
+  id          String    @id @default(uuid())
+  type        String    @default("CONTACT") // "CONTACT" | "RFP" | "AUDIT" | "CONSULTATION" | "TRAINING" | "RESOURCE"
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  subject     String?
+  message     String    @db.Text
+  sector      String?
+  budget      String?
+  startDate   String?
+  scope       String?   @db.Text
+  files       String?   @db.Text
+  status      String    @default("NEW") // "NEW" | "UNDER_REVIEW" | "RESPONDED" | "CONVERTED" | "ARCHIVED"
+  notes       String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@index([type])
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+  @@index([deletedAt])
+}
+
+
 
