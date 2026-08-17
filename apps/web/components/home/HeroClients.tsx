@@ -21,7 +21,7 @@ const clients: ClientItem[] = [
     logo: "/images/clients/gcc.png",
     layer1: "bg-blue-100/80 border-blue-300",
     layer2: "bg-red-50 border-red-200",
-    imgClass: "h-20 sm:h-24 max-w-[96%] scale-125 sm:scale-135",
+    imgClass: "h-16 sm:h-20 max-w-[90%] scale-100",
   },
   {
     id: "mgi",
