@@ -10,6 +10,7 @@ npm-debug.log*
 # Turborepo Cache
 .turbo/
 .vercel/
+*.tsbuildinfo
 
 # Next.js Web App Build Output
 apps/web/.next/
