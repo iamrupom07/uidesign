@@ -123,17 +123,17 @@ export default function ContactPage() {
       <TechnicalCursor />
       <Header />
 
-      <main className="bg-background min-h-screen blueprint-mesh py-24 space-y-24">
+      <main className="bg-background min-h-screen blueprint-mesh py-16 sm:py-24 space-y-16 sm:space-y-24">
         {/* Banner Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <Reveal>
-            <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> CONTACT DOSSIER
             </div>
-            <h1 className="text-4xl sm:text-5xl font-display font-extrabold text-foreground uppercase tracking-tight leading-none">
+            <h1 className="text-3xl sm:text-5xl font-display font-extrabold text-foreground uppercase tracking-tight leading-tight">
               Let&apos;s <span className="text-primary">Connect</span>
             </h1>
-            <p className="body-md text-secondary mt-4 max-w-2xl">
+            <p className="body-md text-secondary mt-4 max-w-2xl text-sm sm:text-base">
               Initiate contact, request project proposals, upload process layouts, or schedule
               virtual design reviews with our Houston consulting engineers.
             </p>
@@ -141,34 +141,34 @@ export default function ContactPage() {
         </section>
 
         {/* 1. Contact Form Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-3 gap-lg items-stretch">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-lg items-stretch">
             <div className="lg:col-span-2">
               <Reveal>
-                <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-4">
+                <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3">
                   <span className="text-primary font-bold mr-1">┌</span> FORM // SEC-01
                 </div>
-                <h2 className="text-2xl font-display font-extrabold uppercase mb-6">
+                <h2 className="text-2xl sm:text-3xl font-display font-extrabold uppercase mb-6">
                   Contact Form
                 </h2>
 
                 <form
-                  className="space-y-5 bg-white border border-border p-8 relative"
+                  className="space-y-5 bg-white border border-border p-5 sm:p-8 relative"
                   onSubmit={handleMessageSubmit}
                 >
                   {messageSent ? (
                     <div className="bg-emerald-50 border border-emerald-300 p-6 text-center space-y-3">
                       <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                      <h3 className="font-display font-extrabold text-base uppercase text-slate-900">
+                      <h3 className="font-display font-extrabold text-lg uppercase text-slate-900">
                         Inquiry Received
                       </h3>
-                      <p className="text-xs text-slate-600 font-sans max-w-md mx-auto">
+                      <p className="text-sm text-slate-600 font-sans max-w-md mx-auto">
                         Your message has been registered and dispatched to our process engineering desk. A confirmation has been sent to your email.
                       </p>
                       <button
                         type="button"
                         onClick={() => setMessageSent(false)}
-                        className="button-outline text-[10px] py-2 px-4 uppercase font-bold mt-2"
+                        className="button-outline text-xs py-2.5 px-5 uppercase font-bold mt-2"
                       >
                         Send Another Inquiry
                       </button>
@@ -176,7 +176,7 @@ export default function ContactPage() {
                   ) : (
                     <>
                       {contactError && (
-                        <div className="bg-rose-50 border border-rose-300 p-3 font-mono text-xs text-rose-700 flex items-center gap-2">
+                        <div className="bg-rose-50 border border-rose-300 p-3.5 font-mono text-xs text-rose-700 flex items-center gap-2">
                           <AlertCircle className="w-4 h-4 shrink-0" />
                           <span>{contactError}</span>
                         </div>
@@ -186,7 +186,7 @@ export default function ContactPage() {
                         <div>
                           <label
                             htmlFor="msg-name"
-                            className="block font-mono text-[10px] font-bold text-secondary uppercase mb-1.5 label-caps"
+                            className="block font-mono text-xs font-bold text-secondary uppercase mb-1.5 label-caps"
                           >
                             Full Name*
                           </label>
@@ -197,13 +197,13 @@ export default function ContactPage() {
                             value={contactForm.name}
                             onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                             placeholder="Enter your name"
-                            className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-xs"
+                            className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-sm"
                           />
                         </div>
                         <div>
                           <label
                             htmlFor="msg-email"
-                            className="block font-mono text-[10px] font-bold text-secondary uppercase mb-1.5 label-caps"
+                            className="block font-mono text-xs font-bold text-secondary uppercase mb-1.5 label-caps"
                           >
                             Email Address*
                           </label>
@@ -214,14 +214,14 @@ export default function ContactPage() {
                             value={contactForm.email}
                             onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                             placeholder="Enter your email"
-                            className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-xs"
+                            className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-sm"
                           />
                         </div>
                       </div>
                       <div>
                         <label
                           htmlFor="msg-subject"
-                          className="block font-mono text-[10px] font-bold text-secondary uppercase mb-1.5 label-caps"
+                          className="block font-mono text-xs font-bold text-secondary uppercase mb-1.5 label-caps"
                         >
                           Subject
                         </label>
@@ -231,13 +231,13 @@ export default function ContactPage() {
                           value={contactForm.subject}
                           onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
                           placeholder="General inquiry topic"
-                          className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-xs"
+                          className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-sm"
                         />
                       </div>
                       <div>
                         <label
                           htmlFor="msg-text"
-                          className="block font-mono text-[10px] font-bold text-secondary uppercase mb-1.5 label-caps"
+                          className="block font-mono text-xs font-bold text-secondary uppercase mb-1.5 label-caps"
                         >
                           Message Details*
                         </label>
@@ -248,7 +248,7 @@ export default function ContactPage() {
                           value={contactForm.message}
                           onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                           placeholder="Detail your plant challenges or feedback..."
-                          className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-xs"
+                          className="w-full px-4 py-3 border border-border bg-card text-foreground font-sans focus:outline-none focus:border-primary text-sm"
                         />
                       </div>
 
@@ -256,7 +256,7 @@ export default function ContactPage() {
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="button-primary px-8 py-3 text-xs uppercase flex items-center gap-2"
+                          className="button-primary px-8 py-3.5 text-xs sm:text-sm uppercase flex items-center gap-2"
                         >
                           {isSubmitting ? (
                             <>
@@ -275,23 +275,23 @@ export default function ContactPage() {
             </div>
 
             {/* Quick overview detail card */}
-            <div className="card relative h-full flex flex-col justify-between">
+            <div className="card relative h-full flex flex-col justify-between p-5 sm:p-8">
               <div>
-                <span className="font-mono text-[10px] text-slate-400">INFO-01 / ADDR</span>
-                <h3 className="font-display font-extrabold text-base uppercase text-foreground mt-4 mb-3">
+                <span className="font-mono text-xs font-bold text-primary">01</span>
+                <h3 className="font-display font-extrabold text-lg uppercase text-foreground mt-4 mb-3">
                   Houston Office
                 </h3>
-                <p className="text-xs text-secondary leading-relaxed font-sans mb-6">
+                <p className="text-sm text-secondary leading-relaxed font-sans mb-6">
                   Houston-based process engineering consulting and system integration for heavy
                   process industries.
                 </p>
-                <div className="space-y-2.5 font-mono text-[10px] text-secondary">
+                <div className="space-y-2.5 font-mono text-xs text-secondary">
                   <div>EMAIL: {companyInfo.email}</div>
                   <div>PHONE: {companyInfo.phone}</div>
                   <div>HOURS: 8:00 AM – 5:00 PM CST</div>
                 </div>
               </div>
-              <div className="pt-4 border-t border-border font-mono text-[9px] text-slate-400 uppercase tracking-widest">
+              <div className="pt-4 border-t border-border font-mono text-xs text-slate-400 uppercase tracking-widest">
                 ESTABLISHED IN TEXAS
               </div>
             </div>
@@ -299,7 +299,7 @@ export default function ContactPage() {
         </section>
 
         {/* 2. Live Cal.com Booking Section (Direct Calendar Embed) */}
-        <section id="booking" className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section id="booking" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-16 sm:pt-20">
           <div className="bg-white border border-border shadow-sm overflow-hidden min-h-[620px] p-2 sm:p-6 flex flex-col">
             <Cal
               namespace="talk-to-macprotec-experts"
@@ -311,24 +311,24 @@ export default function ContactPage() {
         </section>
 
         {/* 3. Request Proposal Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
-          <div className="grid lg:grid-cols-3 gap-lg items-stretch">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-16 sm:pt-20">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-lg items-stretch">
             {/* Overview dossier text */}
-            <div className="card relative h-full flex flex-col justify-between">
+            <div className="card relative h-full flex flex-col justify-between p-5 sm:p-8">
               <div>
-                <span className="font-mono text-[10px] text-primary font-bold">
+                <span className="font-mono text-xs text-primary font-bold">
                   ┌ RFP // SEC-03
                 </span>
                 <h3 className="font-display font-extrabold text-xl uppercase text-foreground mt-4 mb-4">
                   Request a Proposal
                 </h3>
-                <p className="text-xs text-secondary leading-relaxed font-sans">
+                <p className="text-sm text-secondary leading-relaxed font-sans">
                   Submit basic project parameters, targeted launch dates, and rough budget limits.
                   Our mechanical engineering leads will compile a FEED scope statement and feedback
                   within 48 business hours.
                 </p>
               </div>
-              <div className="pt-4 border-t border-border font-mono text-[9px] text-slate-400 uppercase tracking-widest">
+              <div className="pt-4 border-t border-border font-mono text-xs text-slate-400 uppercase tracking-widest">
                 FORM COMPLIANCE / PARTNER PORTAL
               </div>
             </div>
@@ -336,7 +336,7 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <Reveal delay={0.08}>
                 <form
-                  className="space-y-5 bg-white border border-border p-8 relative"
+                  className="space-y-5 bg-white border border-border p-5 sm:p-8 relative"
                   onSubmit={handleProposalSubmit}
                 >
                   {proposalSent ? (
@@ -615,31 +615,31 @@ export default function ContactPage() {
         </section>
 
         {/* 4. Office Locations Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-16 sm:pt-20">
           <Reveal className="mb-10">
-            <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-4">
+            <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> GEOLOCATION // SEC-04
             </div>
-            <h2 className="text-2xl font-display font-extrabold uppercase text-foreground">
+            <h2 className="text-2xl sm:text-3xl font-display font-extrabold uppercase text-foreground">
               Office Locations
             </h2>
           </Reveal>
 
-          <RevealGroup className="grid md:grid-cols-2 gap-lg" stagger={0.08}>
+          <RevealGroup className="grid md:grid-cols-2 gap-8 lg:gap-lg" stagger={0.08}>
             <RevealItem>
-              <div className="card relative h-full flex flex-col justify-between">
+              <div className="card relative h-full flex flex-col justify-between p-5 sm:p-8">
                 <div>
-                  <div className="font-mono text-[9px] text-primary uppercase font-bold">
+                  <div className="font-mono text-xs text-primary uppercase font-bold">
                     Houston Headquarters
                   </div>
-                  <h3 className="font-display font-extrabold text-base uppercase text-foreground mt-2 mb-3">
+                  <h3 className="font-display font-extrabold text-lg uppercase text-foreground mt-2 mb-3">
                     Houston, TX
                   </h3>
-                  <p className="text-xs text-secondary leading-relaxed font-sans mb-6">
+                  <p className="text-sm text-secondary leading-relaxed font-sans mb-6">
                     Located in central Houston, supporting executive project scopes, flowsheet
                     calculations, and simulation meshing.
                   </p>
-                  <div className="space-y-2 font-mono text-[10px] text-secondary">
+                  <div className="space-y-2 font-mono text-xs text-secondary">
                     <div>COORDINATES: 29.76°N, 95.37°W</div>
                     <div>TELEPHONE: +1 (713) 555-0190</div>
                     <div>EMAIL: houston@macprotec.com</div>
@@ -648,7 +648,7 @@ export default function ContactPage() {
 
                 {/* Tech coordinates box representation */}
                 <div className="relative w-full aspect-[2/1] border border-border bg-slate-50 overflow-hidden mt-6">
-                  <div className="absolute inset-0 flex items-center justify-center font-mono text-[9px] text-slate-300">
+                  <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-slate-300">
                     // HOUSTON TELEMETRY MAP
                   </div>
                   <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-primary" />
@@ -658,19 +658,19 @@ export default function ContactPage() {
             </RevealItem>
 
             <RevealItem>
-              <div className="card relative h-full flex flex-col justify-between">
+              <div className="card relative h-full flex flex-col justify-between p-5 sm:p-8">
                 <div>
-                  <div className="font-mono text-[9px] text-primary uppercase font-bold">
+                  <div className="font-mono text-xs text-primary uppercase font-bold">
                     Regional Operations Support
                   </div>
-                  <h3 className="font-display font-extrabold text-base uppercase text-foreground mt-2 mb-3">
+                  <h3 className="font-display font-extrabold text-lg uppercase text-foreground mt-2 mb-3">
                     Denver, CO
                   </h3>
-                  <p className="text-xs text-secondary leading-relaxed font-sans mb-6">
+                  <p className="text-sm text-secondary leading-relaxed font-sans mb-6">
                     Managing regional on-site scanner deployment, reverse-engineering coordinate
                     checks, and mill alignment monitoring.
                   </p>
-                  <div className="space-y-2 font-mono text-[10px] text-secondary">
+                  <div className="space-y-2 font-mono text-xs text-secondary">
                     <div>COORDINATES: 39.73°N, 104.99°W</div>
                     <div>TELEPHONE: +1 (303) 555-0144</div>
                     <div>EMAIL: denver@macprotec.com</div>
@@ -678,7 +678,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="relative w-full aspect-[2/1] border border-border bg-slate-50 overflow-hidden mt-6">
-                  <div className="absolute inset-0 flex items-center justify-center font-mono text-[9px] text-slate-300">
+                  <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-slate-300">
                     // DENVER TELEMETRY MAP
                   </div>
                   <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-primary" />
@@ -690,17 +690,17 @@ export default function ContactPage() {
         </section>
 
         {/* 5. General Enquiry Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
-          <div className="grid lg:grid-cols-3 gap-lg items-stretch">
-            <div className="card relative h-full flex flex-col justify-between bg-white">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-16 sm:pt-20">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-lg items-stretch">
+            <div className="card relative h-full flex flex-col justify-between bg-white p-5 sm:p-8">
               <div>
-                <span className="font-mono text-[10px] text-primary font-bold">
+                <span className="font-mono text-xs text-primary font-bold">
                   ┌ GENERAL INFO // SEC-05
                 </span>
-                <h3 className="font-display font-extrabold text-lg uppercase text-foreground mt-4 mb-4">
+                <h3 className="font-display font-extrabold text-xl uppercase text-foreground mt-4 mb-4">
                   General Enquiry
                 </h3>
-                <p className="text-xs text-secondary leading-relaxed font-sans">
+                <p className="text-sm text-secondary leading-relaxed font-sans">
                   For vendor registrations, careers, media kit downloads, and billing, please reach
                   out to our general services desk.
                 </p>
@@ -710,18 +710,18 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <RevealGroup className="grid sm:grid-cols-2 gap-4 h-full" stagger={0.08}>
                 <RevealItem>
-                  <div className="card relative bg-white border border-border p-6 h-full flex flex-col justify-between">
+                  <div className="card relative bg-white border border-border p-5 sm:p-6 h-full flex flex-col justify-between">
                     <div>
-                      <h4 className="font-display font-extrabold text-xs uppercase text-foreground mb-3">
+                      <h4 className="font-display font-extrabold text-sm uppercase text-foreground mb-3">
                         Careers & Talent
                       </h4>
-                      <p className="text-xs text-secondary leading-relaxed font-sans mb-4">
+                      <p className="text-sm text-secondary leading-relaxed font-sans mb-4">
                         Join our engineering teams. Send resume dossiers directly.
                       </p>
                     </div>
                     <a
                       href="mailto:careers@macprotec.com"
-                      className="font-mono text-[9px] text-primary font-bold uppercase hover:text-rose-700"
+                      className="font-mono text-xs text-primary font-bold uppercase hover:text-rose-700"
                     >
                       careers@macprotec.com →
                     </a>
@@ -729,18 +729,18 @@ export default function ContactPage() {
                 </RevealItem>
 
                 <RevealItem>
-                  <div className="card relative bg-white border border-border p-6 h-full flex flex-col justify-between">
+                  <div className="card relative bg-white border border-border p-5 sm:p-6 h-full flex flex-col justify-between">
                     <div>
-                      <h4 className="font-display font-extrabold text-xs uppercase text-foreground mb-3">
+                      <h4 className="font-display font-extrabold text-sm uppercase text-foreground mb-3">
                         Billing & Admin
                       </h4>
-                      <p className="text-xs text-secondary leading-relaxed font-sans mb-4">
+                      <p className="text-sm text-secondary leading-relaxed font-sans mb-4">
                         Accounts payable, invoice verification, and purchase orders.
                       </p>
                     </div>
                     <a
                       href="mailto:admin@macprotec.com"
-                      className="font-mono text-[9px] text-primary font-bold uppercase hover:text-rose-700"
+                      className="font-mono text-xs text-primary font-bold uppercase hover:text-rose-700"
                     >
                       admin@macprotec.com →
                     </a>

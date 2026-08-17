@@ -87,10 +87,10 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
       workflowDesc:
         "Systematic digital transformation strategy designed for zero-downtime industrial deployment.",
       workflowSteps: [
-        { step: "Phase 01", label: "OT Audit", desc: "Evaluate existing sensor coverage, network topology, and PLCs." },
-        { step: "Phase 02", label: "Edge Deployment", desc: "Install smart IoT gateways and data collection pipelines." },
-        { step: "Phase 03", label: "AI Model Training", desc: "Train predictive failure models on historical sensor logs." },
-        { step: "Phase 04", label: "Dashboard Rollout", desc: "Launch unified role-based dashboards across plant teams." },
+        { step: "01", label: "OT Audit", desc: "Evaluate existing sensor coverage, network topology, and PLCs." },
+        { step: "02", label: "Edge Deployment", desc: "Install smart IoT gateways and data collection pipelines." },
+        { step: "03", label: "AI Model Training", desc: "Train predictive failure models on historical sensor logs." },
+        { step: "04", label: "Dashboard Rollout", desc: "Launch unified role-based dashboards across plant teams." },
       ],
       solutionsTitle: "Applied Industry 4.0 Solutions",
       solutionsPoints: [
@@ -134,10 +134,10 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
       workflowDesc:
         "Data-backed engineering audits designed to lower heat consumption and boost kiln throughput.",
       workflowSteps: [
-        { step: "Phase 01", label: "Process Audit", desc: "Collect SCADA telemetry, fuel specs, and mass balance data." },
-        { step: "Phase 02", label: "CFD & Sim", desc: "Construct thermo-chemical simulation meshes for pyroprocess." },
-        { step: "Phase 03", label: "Field Tuning", desc: "Re-align burner nozzles, damper positions, and separator speeds." },
-        { step: "Phase 04", label: "SLA Monitoring", desc: "Track specific power and thermal KPIs continuously." },
+        { step: "01", label: "Process Audit", desc: "Collect SCADA telemetry, fuel specs, and mass balance data." },
+        { step: "02", label: "CFD & Sim", desc: "Construct thermo-chemical simulation meshes for pyroprocess." },
+        { step: "03", label: "Field Tuning", desc: "Re-align burner nozzles, damper positions, and separator speeds." },
+        { step: "04", label: "SLA Monitoring", desc: "Track specific power and thermal KPIs continuously." },
       ],
       solutionsTitle: "Applied Cement Solutions",
       solutionsPoints: [
@@ -175,10 +175,10 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
       workflowDesc:
         "Engineering audits focused on boosting throughput and maintaining product fineness.",
       workflowSteps: [
-        { step: "Phase 01", label: "Circuit Audit", desc: "Analyze feed rates, PSD curves, and moisture levels." },
-        { step: "Phase 02", label: "CFD & DEM", desc: "Model particle flow dynamics in crushers and classifiers." },
-        { step: "Phase 03", label: "Equipment Tuning", desc: "Adjust mill internals, classifier speeds, and screen angles." },
-        { step: "Phase 04", label: "Quality Checks", desc: "Validate blaine fineness and mortar strength metrics." },
+        { step: "01", label: "Circuit Audit", desc: "Analyze feed rates, PSD curves, and moisture levels." },
+        { step: "02", label: "CFD & DEM", desc: "Model particle flow dynamics in crushers and classifiers." },
+        { step: "03", label: "Equipment Tuning", desc: "Adjust mill internals, classifier speeds, and screen angles." },
+        { step: "04", label: "Quality Checks", desc: "Validate blaine fineness and mortar strength metrics." },
       ],
       solutionsTitle: "Applied Aggregate & SCM Solutions",
       solutionsPoints: [
@@ -216,10 +216,10 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
       workflowDesc:
         "End-to-end engineering solutions for ore preparation, beneficiation, and pyrometallurgy.",
       workflowSteps: [
-        { step: "Phase 01", label: "Ore Analysis", desc: "Review work index, abrasion index, and telemetry logs." },
-        { step: "Phase 02", label: "Sim & Modeling", desc: "Simulate hydrocyclone cut points and furnace gas velocities." },
-        { step: "Phase 03", label: "Engineering Package", desc: "Deliver detail designs for piping, ducting, and liners." },
-        { step: "Phase 04", label: "Ramp-Up Support", desc: "Assist site engineers during plant commissioning." },
+        { step: "01", label: "Ore Analysis", desc: "Review work index, abrasion index, and telemetry logs." },
+        { step: "02", label: "Sim & Modeling", desc: "Simulate hydrocyclone cut points and furnace gas velocities." },
+        { step: "03", label: "Engineering Package", desc: "Deliver detail designs for piping, ducting, and liners." },
+        { step: "04", label: "Ramp-Up Support", desc: "Assist site engineers during plant commissioning." },
       ],
       solutionsTitle: "Applied Mining Solutions",
       solutionsPoints: [
@@ -257,10 +257,10 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
       workflowDesc:
         "Sustainable dewatering and rheology engineering to minimize environmental risks.",
       workflowSteps: [
-        { step: "Phase 01", label: "Rheology Testing", desc: "Measure yield stress, slump, and settling characteristics." },
-        { step: "Phase 02", label: "Hydraulic Sim", desc: "Model non-Newtonian slurry flow in pipelines." },
-        { step: "Phase 03", label: "System Design", desc: "Specify high-pressure pumps, valves, and thickener rakes." },
-        { step: "Phase 04", label: "Monitoring Setup", desc: "Install pipeline pressure & density telemetry sensors." },
+        { step: "01", label: "Rheology Testing", desc: "Measure yield stress, slump, and settling characteristics." },
+        { step: "02", label: "Hydraulic Sim", desc: "Model non-Newtonian slurry flow in pipelines." },
+        { step: "03", label: "System Design", desc: "Specify high-pressure pumps, valves, and thickener rakes." },
+        { step: "04", label: "Monitoring Setup", desc: "Install pipeline pressure & density telemetry sensors." },
       ],
       solutionsTitle: "Applied Tailing Solutions",
       solutionsPoints: [
@@ -298,10 +298,10 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
       workflowDesc:
         "Rigorous thermal and mechanical engineering for refining and chemical process units.",
       workflowSteps: [
-        { step: "Phase 01", label: "Plant Data Review", desc: "Gather stream data, temperatures, pressures, and isometric drafts." },
-        { step: "Phase 02", label: "CFD & FEA", desc: "Run combustion simulations and piping stress calculations." },
-        { step: "Phase 03", label: "Design Package", desc: "Deliver FEED & Detail Engineering modification drawings." },
-        { step: "Phase 04", label: "Turnaround Support", desc: "Provide technical assistance during plant turnarounds." },
+        { step: "01", label: "Plant Data Review", desc: "Gather stream data, temperatures, pressures, and isometric drafts." },
+        { step: "02", label: "CFD & FEA", desc: "Run combustion simulations and piping stress calculations." },
+        { step: "03", label: "Design Package", desc: "Deliver FEED & Detail Engineering modification drawings." },
+        { step: "04", label: "Turnaround Support", desc: "Provide technical assistance during plant turnarounds." },
       ],
       solutionsTitle: "Applied Petrochemical Solutions",
       solutionsPoints: [
@@ -401,7 +401,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
 
       <main className="bg-background min-h-screen blueprint-mesh space-y-24 pt-24 pb-20">
         {/* Section 1: Hero Banner (Blueprint Frame Theme) */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="absolute top-8 left-8 right-8 bottom-8 border border-slate-200/55 pointer-events-none" />
           <div className="absolute top-10 left-10 font-mono text-[8px] text-slate-400">
             DRAFTING / INDUSTRY REPORT
@@ -425,7 +425,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 2: Operational Challenges Dossier */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-10">
             <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> CHALLENGES LOG
@@ -465,7 +465,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 3: Audit & Optimization Parameters */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-lg items-center">
             {/* Checklist */}
             <Reveal>
@@ -512,7 +512,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 4: Workflow Phases */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <Reveal className="mb-12">
             <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> WORKFLOW DOSSIER
@@ -541,7 +541,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 5: Circular Loop Diagram */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <div className="grid lg:grid-cols-2 gap-lg items-center">
             <Reveal>
               <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
@@ -606,7 +606,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 6: Applied Solutions Matrix */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <div className="grid lg:grid-cols-2 gap-lg">
             <Reveal>
               <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
@@ -663,7 +663,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 7: Contact Us Form */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <div className="grid lg:grid-cols-2 gap-lg items-stretch">
             {/* Quick Contact Form */}
             <Reveal>
@@ -779,7 +779,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 8: Related Resources */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <Reveal className="mb-10">
             <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> KNOWLEDGE BANK
@@ -805,7 +805,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
                   </p>
                 </div>
                 <Link
-                  href="/resources/blogs"
+                  href="/resources/blog"
                   className="font-mono text-[9px] font-bold text-primary uppercase mt-6 tracking-widest hover:text-rose-700"
                 >
                   Read File →
@@ -861,7 +861,7 @@ export default function IndustryDetailPage({ params }: { params: Promise<{ slug:
 
         {/* Section 9: Partner Logo Band */}
         <section className="bg-white border-t border-b border-border py-12">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap gap-8 items-center justify-around opacity-60 grayscale">
               {partnerLogos.map((partner) => (
                 <span

@@ -40,6 +40,10 @@ export const primaryNav: NavItem[] = [
   {
     label: "Resources",
     href: "/resources",
+    children: [
+      { label: "Engineering Brochures & PDF Dossiers", href: "/resources" },
+      { label: "Technical Publications & Blog", href: "/resources/blog" },
+    ],
   },
   {
     label: "Projects",

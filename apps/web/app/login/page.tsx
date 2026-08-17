@@ -35,7 +35,11 @@ export default function LoginPage() {
     } catch (err: any) {
       console.error("[Login Error]", err);
       const message =
-        err?.data?.message || err?.message || "Invalid credentials. Please check your login details.";
+        err?.data?.message ||
+        err?.data?.error ||
+        err?.error ||
+        err?.message ||
+        "Invalid credentials. Please check your login details.";
       setErrorMsg(message);
     }
   };

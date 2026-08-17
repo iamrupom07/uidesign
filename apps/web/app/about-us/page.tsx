@@ -68,7 +68,7 @@ export default function AboutUs() {
 
       <main className="bg-background min-h-screen py-20 lg:py-24 space-y-24">
         {/* Page Hero Header with Industrial Plant Image */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-6">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="border border-border bg-white relative overflow-hidden shadow-sm">
             <div className="grid lg:grid-cols-12 items-center">
               {/* Text Column */}
@@ -117,7 +117,7 @@ export default function AboutUs() {
         </section>
 
         {/* 1. Company Overview */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="absolute top-0 right-0 w-32 h-32 border-b border-l border-primary/20 opacity-20 pointer-events-none" />
           <Reveal>
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
@@ -191,7 +191,7 @@ export default function AboutUs() {
         </section>
 
         {/* 2. Mission & Vision (With Animations as requested in PDF) */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-10">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4 flex items-center gap-2">
               <span className="text-primary font-bold mr-1">┌</span> 02. STRATEGIC PURPOSE
@@ -207,15 +207,15 @@ export default function AboutUs() {
               <div className="group bg-white border border-border hover:border-primary p-8 sm:p-10 rounded-none relative h-full flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden">
                 {/* Dynamic animated corner indicator */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 border-b border-l border-rose-100 group-hover:bg-primary group-hover:border-primary transition-colors duration-300 flex items-start justify-end p-3">
-                  <span className="font-mono text-[10px] font-bold text-primary group-hover:text-white transition-colors">02-A</span>
+                  <span className="font-mono text-xs font-bold text-primary group-hover:text-white transition-colors">01</span>
                 </div>
 
                 <div>
                   <div className="w-14 h-14 bg-rose-50 border border-rose-100 group-hover:border-primary/30 flex items-center justify-center text-primary mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
                     <Target className="w-7 h-7 group-hover:text-rose-700 transition-colors" />
                   </div>
-                  <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-2">
-                    02-A / MISSION STATEMENT
+                  <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-2">
+                    01 / MISSION STATEMENT
                   </div>
                   <h3 className="font-display font-extrabold text-xl sm:text-2xl text-foreground mb-4 uppercase group-hover:text-primary transition-colors">
                     Engineering Solutions That Create Lasting Value
@@ -229,7 +229,7 @@ export default function AboutUs() {
                   </p>
                 </div>
 
-                <div className="mt-8 pt-4 border-t border-border/80 flex items-center gap-2 font-mono text-[10px] font-bold text-primary uppercase tracking-widest opacity-80 group-hover:opacity-100">
+                <div className="mt-8 pt-4 border-t border-border/80 flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-widest opacity-80 group-hover:opacity-100">
                   <span className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
                   <span>VALUE CREATION & ASSET OPTIMIZATION</span>
                 </div>
@@ -240,15 +240,15 @@ export default function AboutUs() {
               <div className="group bg-white border border-border hover:border-primary p-8 sm:p-10 rounded-none relative h-full flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden">
                 {/* Dynamic animated corner indicator */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 border-b border-l border-rose-100 group-hover:bg-primary group-hover:border-primary transition-colors duration-300 flex items-start justify-end p-3">
-                  <span className="font-mono text-[10px] font-bold text-primary group-hover:text-white transition-colors">02-B</span>
+                  <span className="font-mono text-xs font-bold text-primary group-hover:text-white transition-colors">02</span>
                 </div>
 
                 <div>
                   <div className="w-14 h-14 bg-rose-50 border border-rose-100 group-hover:border-primary/30 flex items-center justify-center text-primary mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 shadow-sm">
                     <Sparkles className="w-7 h-7 group-hover:text-rose-700 transition-colors" />
                   </div>
-                  <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-2">
-                    02-B / VISION TARGET
+                  <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-2">
+                    02 / VISION TARGET
                   </div>
                   <h3 className="font-display font-extrabold text-xl sm:text-2xl text-foreground mb-4 uppercase group-hover:text-primary transition-colors">
                     Shaping the Future of Industrial Engineering
@@ -272,7 +272,7 @@ export default function AboutUs() {
         </section>
 
         {/* 3. Our Engineering Philosophy (With Image as requested in PDF) */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-6">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> 03. CORE METHODOLOGY
@@ -333,7 +333,7 @@ export default function AboutUs() {
         </section>
 
         {/* 4. Cement Industry Expertise */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-8">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> 04. SECTOR FOCUS
@@ -382,7 +382,7 @@ export default function AboutUs() {
         </section>
 
         {/* 5. Digital Engineering Capability */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-8">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> 05. ADVANCED CAPABILITY
@@ -444,7 +444,7 @@ export default function AboutUs() {
         </section>
 
         {/* 6. Global Presence */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-8">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> 06. GLOBAL REACH
@@ -477,7 +477,7 @@ export default function AboutUs() {
         </section>
 
         {/* 7. Leadership & Engineering Team */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-8">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> 07. TEAM DOSSIER
@@ -510,7 +510,7 @@ export default function AboutUs() {
         </section>
 
         {/* 8. Why Clients Trust MACPROTEC */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-10">
             <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
               <span className="text-primary font-bold mr-1">┌</span> 08. CLIENT CONFIDENCE
@@ -551,12 +551,12 @@ export default function AboutUs() {
         </section>
 
         {/* Client Logos Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <HeroClients />
         </section>
 
         {/* 9. Contact CTA Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="bg-[#2d1b47] text-white p-10 sm:p-14 border border-[#3e2663] relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="absolute top-0 right-0 w-48 h-48 border-b border-l border-primary/20 pointer-events-none" />

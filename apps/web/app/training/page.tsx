@@ -42,7 +42,7 @@ export default function TrainingPage() {
         <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* SINGLE CENTERED SECTION */}
-        <section className="relative z-10 max-w-4xl mx-auto px-6 py-16 lg:py-24 text-center space-y-8 my-auto">
+        <section className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-16 lg:py-24 text-center space-y-8 my-auto">
           
           {/* PRESSURE COOKER HIGH-TECH VISUAL */}
           <Reveal>

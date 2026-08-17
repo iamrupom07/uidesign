@@ -13,69 +13,102 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   @apply text-foreground bg-background font-sans;
   background-color: #ffffff;
   color: #0f172a;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 
-/* Headings Typography (Space Grotesk technical layout) */
+/* Base Main Content Typography Scaling (Without Affecting Header/Navbar) */
+main {
+  font-size: 1.05rem;
+}
+
+main p {
+  font-family: var(--font-sans);
+  line-height: 1.65;
+}
+
+/* Headings Typography (Fluid responsive Space Grotesk layout) */
 h1 {
   font-family: var(--font-display);
-  font-size: 3.5rem;
+  font-size: clamp(2.25rem, 5vw, 3.85rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.05;
+  line-height: 1.08;
   color: #0f172a;
   text-transform: uppercase;
 }
 
 h2 {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.15;
   color: #0f172a;
   text-transform: uppercase;
 }
 
 h3 {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
   font-weight: 700;
   letter-spacing: -0.01em;
-  line-height: 1.2;
+  line-height: 1.25;
   color: #0f172a;
   text-transform: uppercase;
+}
+
+h4 {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: #0f172a;
 }
 
 p {
   font-family: var(--font-sans);
 }
 
-/* Typography Utility Classes */
+/* Typography Utility Classes (Elevated Readability Scale) */
+.body-lg {
+  font-family: var(--font-sans);
+  font-size: 1.1875rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: #334155;
+}
+
 .body-md {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.65;
   color: #334155;
 }
 
 .body-sm {
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.55;
   color: #64748b;
 }
 
 .label-caps {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -84,13 +117,13 @@ p {
 
 .data-mono {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 400;
   letter-spacing: 0;
   color: #0f172a;
 }
 
-/* Diagonal Hatched Drafting Dividers from PDF */
+/* Diagonal Hatched Drafting Dividers */
 .hatch-divider {
   height: 24px;
   width: 100%;
@@ -107,15 +140,15 @@ p {
 
 /* Cybreon Component Classes */
 .button-primary {
-  @apply bg-primary text-white rounded-none px-[28px] py-[14px] font-mono text-[11px] font-bold uppercase tracking-wider transition-all duration-100 hover:bg-rose-700 active:translate-x-[1px] active:translate-y-[1px];
+  @apply bg-primary text-white rounded-none px-6 sm:px-[28px] py-3.5 sm:py-[14px] font-mono text-[12px] font-bold uppercase tracking-wider transition-all duration-100 hover:bg-rose-700 active:translate-x-[1px] active:translate-y-[1px];
 }
 
 .button-outline {
-  @apply bg-white text-foreground border border-border rounded-none px-[28px] py-[14px] font-mono text-[11px] font-bold uppercase tracking-wider transition-all duration-100 hover:bg-muted active:translate-x-[1px] active:translate-y-[1px];
+  @apply bg-white text-foreground border border-border rounded-none px-6 sm:px-[28px] py-3.5 sm:py-[14px] font-mono text-[12px] font-bold uppercase tracking-wider transition-all duration-100 hover:bg-muted active:translate-x-[1px] active:translate-y-[1px];
 }
 
 .card {
-  @apply bg-white text-foreground rounded-none border border-border p-8 transition-all duration-300 ease-emphasized hover:border-primary/45 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(225,29,72,0.05)];
+  @apply bg-white text-foreground rounded-none border border-border p-5 sm:p-8 transition-all duration-300 ease-emphasized hover:border-primary/45 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(225,29,72,0.05)];
 }
 
 .kpi-badge {

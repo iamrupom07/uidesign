@@ -13,10 +13,10 @@ const tools = [
 
 export default function CapabilitiesStrip() {
   return (
-    <section className="bg-muted py-lg border-y border-border">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section className="bg-muted py-8 sm:py-lg border-y border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="font-mono text-[10px] font-bold text-secondary tracking-widest uppercase text-center mb-8">
+          <p className="font-mono text-xs font-bold text-secondary tracking-widest uppercase text-center mb-6 sm:mb-8">
             Engineered With Industry-Standard Platforms
           </p>
         </Reveal>

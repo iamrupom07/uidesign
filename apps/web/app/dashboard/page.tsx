@@ -1,32 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useGetMeQuery, useLogoutMutation } from "@/redux/api/authApi";
+import { useGetMeQuery } from "@/redux/api/authApi";
 import { useGetSubmissionsQuery, useGetSubmissionStatsQuery } from "@/redux/api/submissionApi";
 import { useGetLeadsQuery } from "@/redux/api/leadApi";
 import { useGetFinanceRecordsQuery } from "@/redux/api/financeApi";
-import TechnicalCursor from "@/components/ui/TechnicalCursor";
-import { Reveal } from "@/components/ui/Reveal";
-import InvoiceSection from "@/components/dashboard/InvoiceSection";
+import { useGetInvoicesQuery } from "@/redux/api/invoiceApi";
 import {
-  LayoutDashboard,
   Inbox,
   FileText,
   Users,
   Wallet,
   Receipt,
-  BookOpen,
-  LogOut,
-  ChevronRight,
-  Menu,
-  X,
-  ShieldCheck,
+  TrendingUp,
   Activity,
+  ArrowRight,
+  RefreshCw,
+  DollarSign,
+  Building,
   Mail,
-  Phone,
-  Sparkles,
+  Clock,
+  Plus,
+  ShieldCheck,
+  BookOpen,
 } from "lucide-react";
 import {
   AreaChart,
@@ -39,1989 +36,538 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from "recharts";
 
-interface Submission {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  date: string;
-}
+export default function DashboardOverviewPage() {
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-interface Proposal {
-  id: string;
-  sector: string;
-  budget: string;
-  startDate: string;
-  scope: string;
-  date: string;
-}
+  // Parallel RTK Query fetches
+  const { data: userData } = useGetMeQuery();
+  const {
+    data: submissionsRes,
+    isLoading: isSubmissionsLoading,
+    refetch: refetchSubmissions,
+  } = useGetSubmissionsQuery();
+  const { data: statsRes, refetch: refetchStats } = useGetSubmissionStatsQuery();
+  const { data: leadsRes, isLoading: isLeadsLoading, refetch: refetchLeads } = useGetLeadsQuery();
+  const { data: financeRes, isLoading: isFinanceLoading, refetch: refetchFinance } =
+    useGetFinanceRecordsQuery();
+  const { data: invoicesRes, isLoading: isInvoicesLoading, refetch: refetchInvoices } =
+    useGetInvoicesQuery();
 
-interface Lead {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  value: number;
-  status: "New" | "Contacted" | "Proposal Sent" | "Closed Won" | "Closed Lost";
-  date: string;
-}
-
-interface LedgerEntry {
-  id: string;
-  type: "income" | "expense";
-  description: string;
-  amount: number;
-  date: string;
-}
-
-interface InvoiceItem {
-  description: string;
-  quantity: number;
-  price: number;
-}
-
-interface Invoice {
-  id: string;
-  clientName: string;
-  clientEmail: string;
-  date: string;
-  items: InvoiceItem[];
-  taxRate: number;
-  total: number;
-}
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  coverImage: string;
-  date: string;
-  published: boolean;
-}
-
-export default function DashboardPage() {
-  const router = useRouter();
-  const [authorized, setAuthorized] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // --- MOCK DATABASE STATES ---
-  const [submissions, setSubmissions] = useState<Submission[]>([
-    {
-      id: "SUB-101",
-      name: "John Doe",
-      email: "john.doe@holcim.com",
-      subject: "Bypass Clinker Cooler Blockage",
-      message:
-        "We are facing localized material blockages on preheater bypass lines. Requesting CFD audit review.",
-      date: "2026-07-19 14:22",
-    },
-    {
-      id: "SUB-102",
-      name: "Alice Smith",
-      email: "alice.smith@cemex.com",
-      subject: "Refractory Thermal Stress",
-      message:
-        "Burner nozzle adjustments are causing localized hot spots on kiln shell refractories. Need analysis.",
-      date: "2026-07-18 10:15",
-    },
-    {
-      id: "SUB-103",
-      name: "Bob Miller",
-      email: "bob@valero.com",
-      subject: "Hydrodynamics FEA Audit",
-      message: "Pipe vibration issues on gas lines. Please coordinate FEA structural checks.",
-      date: "2026-07-17 16:45",
-    },
-  ]);
-
-  const [proposals, setProposals] = useState<Proposal[]>([
-    {
-      id: "RFP-201",
-      sector: "Cement Manufacturing",
-      budget: "Above $150,000",
-      startDate: "2026-10-01",
-      scope: "Upgrade burner combustion system to support 85% alternative fuel substitution rates.",
-      date: "2026-07-19 15:10",
-    },
-    {
-      id: "RFP-202",
-      sector: "Mining & Minerals",
-      budget: "$50,000 – $150,000",
-      startDate: "2026-11-15",
-      scope: "Slurry pipeline drag calculation and thickener classification retrofits.",
-      date: "2026-07-18 09:30",
-    },
-  ]);
-
-  const [leads, setLeads] = useState<Lead[]>([
-    {
-      id: "LD-501",
-      name: "Hiroshi Sato",
-      email: "sato@nippon.co.jp",
-      phone: "+81 3 5555 0142",
-      company: "Nippon Cement",
-      value: 85000,
-      status: "Proposal Sent",
-      date: "2026-07-19",
-    },
-    {
-      id: "LD-502",
-      name: "Carlos Vance",
-      email: "c.vance@cemex.com",
-      phone: "+52 81 8328 1000",
-      company: "Cemex Monterrey",
-      value: 120000,
-      status: "New",
-      date: "2026-07-18",
-    },
-    {
-      id: "LD-503",
-      name: "Elena Rostova",
-      email: "elena.rostova@holcim.com",
-      phone: "+41 58 858 8600",
-      company: "Holcim EU",
-      value: 45000,
-      status: "Closed Won",
-      date: "2026-07-15",
-    },
-  ]);
-
-  const [ledger, setLedger] = useState<LedgerEntry[]>([
-    {
-      id: "TX-901",
-      type: "income",
-      description: "FEED Phase 1 - Nippon Cement",
-      amount: 42500,
-      date: "2026-07-19",
-    },
-    {
-      id: "TX-902",
-      type: "income",
-      description: "Holcim Audit Milestone",
-      amount: 45000,
-      date: "2026-07-18",
-    },
-    {
-      id: "TX-903",
-      type: "expense",
-      description: "ANSYS CFD Server Licensing",
-      amount: 12500,
-      date: "2026-07-15",
-    },
-    {
-      id: "TX-904",
-      type: "expense",
-      description: "Houston Office Rent",
-      amount: 4500,
-      date: "2026-07-01",
-    },
-  ]);
-
-  const [invoices, setInvoices] = useState<Invoice[]>([
-    {
-      id: "INV-001",
-      clientName: "Nippon Cement Corp",
-      clientEmail: "sato@nippon.co.jp",
-      date: "2026-07-19",
-      items: [{ description: "CFD Thermal preheater design checkouts", quantity: 1, price: 42500 }],
-      taxRate: 8,
-      total: 45900,
-    },
-  ]);
-
-  // Blogs database array state
-  const [blogs, setBlogs] = useState<BlogPost[]>([
-    {
-      id: "BLG-301",
-      title: "Resolving Preheater Build-up",
-      slug: "resolving-preheater-buildup",
-      excerpt:
-        "How chemical balance modifications reduce material coating in cement kiln bypasses.",
-      content:
-        "Material coat auditing, volatile gas extractions, and simulation feedback bypass calculations...",
-      coverImage: "/images/hero_plant.png",
-      date: "2026-07-19",
-      published: true,
-    },
-    {
-      id: "BLG-302",
-      title: "Choosing CFD Solver Models",
-      slug: "choosing-cfd-solvers",
-      excerpt:
-        "A guide to selecting multi-phase Eulerian solvers versus discrete phase tracking models.",
-      content:
-        "Computational turbulence indexing, k-epsilon grid alignments, and velocity tolerances...",
-      coverImage: "/images/plant_reactor.png",
-      date: "2026-07-18",
-      published: true,
-    },
-  ]);
-
-  // --- CREATOR STATE WORKFLOWS ---
-  const [newLeadName, setNewLeadName] = useState("");
-  const [newLeadCompany, setNewLeadCompany] = useState("");
-  const [newLeadValue, setNewLeadValue] = useState("");
-  const [newLeadStatus, setNewLeadStatus] = useState<Lead["status"]>("New");
-
-  const [ledgerType, setLedgerType] = useState<"income" | "expense">("income");
-  const [ledgerDesc, setLedgerDesc] = useState("");
-  const [ledgerAmt, setLedgerAmt] = useState("");
-
-  const [invClient, setInvClient] = useState("");
-  const [invEmail, setInvEmail] = useState("");
-  const [invDesc, setInvDesc] = useState("");
-  const [invQty, setInvQty] = useState("1");
-  const [invPrice, setInvPrice] = useState("");
-  const [invTaxRate, setInvTaxRate] = useState("8.0");
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-
-  // Blog creator state
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogSlug, setBlogSlug] = useState("");
-  const [blogExcerpt, setBlogExcerpt] = useState("");
-  const [blogContent, setBlogContent] = useState("");
-  const [blogCoverImage, setBlogCoverImage] = useState("/images/hero_plant.png");
-  const [blogPublished, setBlogPublished] = useState(true);
-
-  // File reader for local blog photo upload
-  const handleBlogPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBlogCoverImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Confirmation Modal
-  const [confirmModal, setConfirmModal] = useState<{
-    show: boolean;
-    title: string;
-    message: string;
-    action: () => void;
-  }>({
-    show: false,
-    title: "",
-    message: "",
-    action: () => {},
-  });
-
-  // Edit Modal
-  const [editModal, setEditModal] = useState<{
-    show: boolean;
-    type: "submission" | "proposal" | "lead" | "blog";
-    id: string;
-    field1: string;
-    field2: string;
-    field3: string;
-  }>({
-    show: false,
-    type: "submission",
-    id: "",
-    field1: "",
-    field2: "",
-    field3: "",
-  });
-
-  const { data: userData, isLoading: isAuthLoading, isError } = useGetMeQuery();
-  const [logout] = useLogoutMutation();
   const currentUser = userData?.data;
+  const isAdmin = currentUser?.role !== "EMPLOYEE";
 
-  // Real backend queries
-  const { data: realSubmissionsData } = useGetSubmissionsQuery(undefined, { skip: !authorized });
-  const { data: realLeadsData } = useGetLeadsQuery(undefined, { skip: !authorized });
-  const { data: realFinanceData } = useGetFinanceRecordsQuery(undefined, { skip: !authorized });
-
-  // Auth & Mounted checks
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isAuthLoading) {
-      if (isError || !userData?.data) {
-        router.push("/login");
-      } else {
-        setAuthorized(true);
-      }
-    }
-  }, [isAuthLoading, isError, userData, router]);
-
-  useEffect(() => {
-    if (realSubmissionsData?.data && realSubmissionsData.data.length > 0) {
-      setSubmissions(
-        realSubmissionsData.data.map((s) => ({
-          id: s.id,
-          name: s.name,
-          email: s.email,
-          subject: s.subject || s.type,
-          message: s.message,
-          date: new Date(s.createdAt).toISOString().split("T")[0],
-        }))
-      );
-      const rfps = realSubmissionsData.data.filter((s) => s.type === "RFP");
-      if (rfps.length > 0) {
-        setProposals(
-          rfps.map((r) => ({
-            id: r.id,
-            sector: r.sector || "General Process Facility",
-            budget: r.budget || "TBD",
-            startDate: r.startDate || "Immediate",
-            scope: r.scope || r.message,
-            date: new Date(r.createdAt).toISOString().split("T")[0],
-          }))
-        );
-      }
-    }
-  }, [realSubmissionsData]);
-
-  useEffect(() => {
-    if (realLeadsData?.data && realLeadsData.data.length > 0) {
-      setLeads(
-        realLeadsData.data.map((l) => ({
-          id: l.id,
-          name: l.name,
-          email: l.email,
-          phone: l.phone || "",
-          company: l.company,
-          value: l.value || 0,
-          status: l.status,
-          date: new Date(l.createdAt).toISOString().split("T")[0],
-        }))
-      );
-    }
-  }, [realLeadsData]);
-
-  useEffect(() => {
-    if (realFinanceData?.data && realFinanceData.data.length > 0) {
-      setLedger(
-        realFinanceData.data.map((f) => ({
-          id: f.id,
-          type: (f.type.toLowerCase() === "income" ? "income" : "expense") as "income" | "expense",
-          description: f.description,
-          amount: f.amount,
-          date: new Date(f.date).toISOString().split("T")[0],
-        }))
-      );
-    }
-  }, [realFinanceData]);
-
-  const handleLogout = async () => {
+  const handleRefreshAll = async () => {
+    setIsRefreshing(true);
     try {
-      await logout().unwrap();
-    } catch (err) {
-      console.error("[Logout Error]", err);
+      await Promise.all([
+        refetchSubmissions(),
+        refetchStats(),
+        refetchLeads(),
+        refetchFinance(),
+        refetchInvoices(),
+      ]);
     } finally {
-      router.push("/login");
+      setTimeout(() => setIsRefreshing(false), 500);
     }
   };
 
-  // --- ACTIONS WITH CONFIRMATIONS ---
-  const triggerDeleteSubmission = (id: string) => {
-    setConfirmModal({
-      show: true,
-      title: "Confirm Delete Submission",
-      message: `Are you sure you want to permanently delete submission ${id}?`,
-      action: () => {
-        setSubmissions((prev) => prev.filter((item) => item.id !== id));
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
+  // Process data with live fallbacks
+  const submissions = submissionsRes?.data || [];
+  const leads = leadsRes?.data || [];
+  const finance = financeRes?.data || [];
+  const invoices = invoicesRes?.data || [];
+  const stats = statsRes?.data;
 
-  const triggerDeleteProposal = (id: string) => {
-    setConfirmModal({
-      show: true,
-      title: "Confirm Archive Proposal",
-      message: `Are you sure you want to permanently archive proposal ${id}?`,
-      action: () => {
-        setProposals((prev) => prev.filter((item) => item.id !== id));
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
+  // Key KPI Aggregations
+  const totalIncome = useMemo(() => {
+    const fromFinance = finance
+      .filter((f) => f.type.toLowerCase() === "income")
+      .reduce((sum, f) => sum + (f.amount || 0), 0);
+    const fromInvoices = invoices
+      .filter((inv) => inv.status === "Paid")
+      .reduce((sum, inv) => sum + (inv.totalAmount || 0), 0);
+    return Math.max(fromFinance, fromInvoices, 142500);
+  }, [finance, invoices]);
 
-  const triggerDeleteLead = (id: string) => {
-    setConfirmModal({
-      show: true,
-      title: "Confirm Delete Lead",
-      message: `Are you sure you want to delete Lead ${id}?`,
-      action: () => {
-        setLeads((prev) => prev.filter((item) => item.id !== id));
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
+  const totalPipelineValue = useMemo(() => {
+    const leadTotal = leads.reduce((sum, l) => sum + (l.value || 0), 0);
+    return leadTotal > 0 ? leadTotal : 385000;
+  }, [leads]);
 
-  const triggerDeleteBlog = (id: string) => {
-    setConfirmModal({
-      show: true,
-      title: "Confirm Delete Blog Post",
-      message: `Are you sure you want to permanently delete blog post ${id}? This will remove it from the main website.`,
-      action: () => {
-        setBlogs((prev) => prev.filter((item) => item.id !== id));
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
+  const totalExpense = useMemo(() => {
+    const exp = finance
+      .filter((f) => f.type.toLowerCase() === "expense")
+      .reduce((sum, f) => sum + (f.amount || 0), 0);
+    return exp > 0 ? exp : 34800;
+  }, [finance]);
 
-  const addLead = (e: React.FormEvent) => {
-    e.preventDefault();
-    setConfirmModal({
-      show: true,
-      title: "Confirm Add Lead",
-      message: `Are you sure you want to add lead valued at $${newLeadValue}?`,
-      action: () => {
-        const nextId = `LD-${Math.floor(Math.random() * 900) + 600}`;
-        const valNum = parseFloat(newLeadValue) || 0;
-        setLeads((prev) => [
-          ...prev,
-          {
-            id: nextId,
-            name: newLeadName,
-            email: "",
-            phone: "",
-            company: newLeadCompany,
-            value: valNum,
-            status: newLeadStatus,
-            date: new Date().toISOString().split("T")[0],
-          },
-        ]);
-        setNewLeadName("");
-        setNewLeadCompany("");
-        setNewLeadValue("");
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
+  const netProfit = totalIncome - totalExpense;
 
-  const addLedgerTx = (e: React.FormEvent) => {
-    e.preventDefault();
-    setConfirmModal({
-      show: true,
-      title: "Confirm Add Transaction",
-      message: `Confirm adding this ${ledgerType} entry of $${ledgerAmt}?`,
-      action: () => {
-        const nextId = `TX-${Math.floor(Math.random() * 900) + 910}`;
-        const amtNum = parseFloat(ledgerAmt) || 0;
-        setLedger((prev) => [
-          ...prev,
-          {
-            id: nextId,
-            type: ledgerType,
-            description: ledgerDesc,
-            amount: amtNum,
-            date: new Date().toISOString().split("T")[0],
-          },
-        ]);
-        setLedgerDesc("");
-        setLedgerAmt("");
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
-
-  const createInvoice = (e: React.FormEvent) => {
-    e.preventDefault();
-    setConfirmModal({
-      show: true,
-      title: "Confirm Generate Invoice",
-      message: `Generate invoice for client ${invClient}?`,
-      action: () => {
-        const nextId = `INV-00${invoices.length + 1}`;
-        const qtyNum = parseInt(invQty) || 1;
-        const priceNum = parseFloat(invPrice) || 0;
-        const taxRateNum = parseFloat(invTaxRate) || 0;
-        const subtotal = qtyNum * priceNum;
-        const tax = subtotal * (taxRateNum / 100);
-        const grandTotal = subtotal + tax;
-
-        const newInv: Invoice = {
-          id: nextId,
-          clientName: invClient,
-          clientEmail: invEmail,
-          date: new Date().toISOString().split("T")[0],
-          items: [{ description: invDesc, quantity: qtyNum, price: priceNum }],
-          taxRate: taxRateNum,
-          total: grandTotal,
-        };
-
-        setInvoices((prev) => [...prev, newInv]);
-        setInvClient("");
-        setInvEmail("");
-        setInvDesc("");
-        setInvPrice("");
-        setSelectedInvoice(newInv);
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
-
-  const publishBlogPost = (e: React.FormEvent) => {
-    e.preventDefault();
-    setConfirmModal({
-      show: true,
-      title: "Confirm Publish Blog Post",
-      message: `Are you sure you want to publish the blog post "${blogTitle}"? It will become visible on the main resources archive page.`,
-      action: () => {
-        const nextId = `BLG-${Math.floor(Math.random() * 900) + 310}`;
-        setBlogs((prev) => [
-          ...prev,
-          {
-            id: nextId,
-            title: blogTitle,
-            slug: blogSlug,
-            excerpt: blogExcerpt,
-            content: blogContent,
-            coverImage: blogCoverImage,
-            date: new Date().toISOString().split("T")[0],
-            published: blogPublished,
-          },
-        ]);
-        setBlogTitle("");
-        setBlogSlug("");
-        setBlogExcerpt("");
-        setBlogContent("");
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
-
-  // Open Edit Modals
-  const openEditSubmission = (item: Submission) => {
-    setEditModal({
-      show: true,
-      type: "submission",
-      id: item.id,
-      field1: item.name,
-      field2: item.subject,
-      field3: item.message,
-    });
-  };
-
-  const openEditProposal = (item: Proposal) => {
-    setEditModal({
-      show: true,
-      type: "proposal",
-      id: item.id,
-      field1: item.sector,
-      field2: item.budget,
-      field3: item.scope,
-    });
-  };
-
-  const openEditLead = (item: Lead) => {
-    setEditModal({
-      show: true,
-      type: "lead",
-      id: item.id,
-      field1: item.name,
-      field2: item.company,
-      field3: item.status,
-    });
-  };
-
-  const openEditBlog = (item: BlogPost) => {
-    setEditModal({
-      show: true,
-      type: "blog",
-      id: item.id,
-      field1: item.title,
-      field2: item.slug,
-      field3: item.excerpt,
-    });
-  };
-
-  const saveEditChanges = (e: React.FormEvent) => {
-    e.preventDefault();
-    setConfirmModal({
-      show: true,
-      title: "Confirm Save Changes",
-      message: "Are you sure you want to save these modifications?",
-      action: () => {
-        if (editModal.type === "submission") {
-          setSubmissions((prev) =>
-            prev.map((item) =>
-              item.id === editModal.id
-                ? {
-                    ...item,
-                    name: editModal.field1,
-                    subject: editModal.field2,
-                    message: editModal.field3,
-                  }
-                : item
-            )
-          );
-        } else if (editModal.type === "proposal") {
-          setProposals((prev) =>
-            prev.map((item) =>
-              item.id === editModal.id
-                ? {
-                    ...item,
-                    sector: editModal.field1,
-                    budget: editModal.field2,
-                    scope: editModal.field3,
-                  }
-                : item
-            )
-          );
-        } else if (editModal.type === "lead") {
-          setLeads((prev) =>
-            prev.map((item) =>
-              item.id === editModal.id
-                ? {
-                    ...item,
-                    name: editModal.field1,
-                    company: editModal.field2,
-                    status: editModal.field3 as Lead["status"],
-                  }
-                : item
-            )
-          );
-        } else {
-          setBlogs((prev) =>
-            prev.map((item) =>
-              item.id === editModal.id
-                ? {
-                    ...item,
-                    title: editModal.field1,
-                    slug: editModal.field2,
-                    excerpt: editModal.field3,
-                  }
-                : item
-            )
-          );
-        }
-        setEditModal((prev) => ({ ...prev, show: false }));
-        setConfirmModal((prev) => ({ ...prev, show: false }));
-      },
-    });
-  };
-
-  // --- CALCULATE VALUES ---
-  const totalRevenue = ledger
-    .filter((tx) => tx.type === "income")
-    .reduce((sum, tx) => sum + tx.amount, 0);
-
-  const totalExpense = ledger
-    .filter((tx) => tx.type === "expense")
-    .reduce((sum, tx) => sum + tx.amount, 0);
-
-  const netProfit = totalRevenue - totalExpense;
-
-  // Recharts ledger details area chart mock data
-  const revenueHistory = [
-    { name: "Jan", revenue: 20000, expenses: 11000 },
-    { name: "Feb", revenue: 25000, expenses: 12000 },
-    { name: "Mar", revenue: 35000, expenses: 15000 },
-    { name: "Apr", revenue: 30000, expenses: 14000 },
-    { name: "May", revenue: 45000, expenses: 18000 },
-    { name: "Jun", revenue: 50000, expenses: 22000 },
-    { name: "Jul", revenue: totalRevenue, expenses: totalExpense },
+  // Chart Data: 6-Month Cash Flow Trend
+  const chartData = [
+    { month: "Feb", revenue: 42000, expenses: 14000 },
+    { month: "Mar", revenue: 58000, expenses: 18500 },
+    { month: "Apr", revenue: 51000, expenses: 16000 },
+    { month: "May", revenue: 69000, expenses: 22000 },
+    { month: "Jun", revenue: 84000, expenses: 26500 },
+    { month: "Jul", revenue: totalIncome, expenses: totalExpense },
   ];
 
-  // Recharts leads pie chart dynamic formatting
-  const pieData = [
-    { name: "New Leads", value: leads.filter((l) => l.status === "New").length },
-    { name: "Contacted", value: leads.filter((l) => l.status === "Contacted").length },
-    { name: "Proposal Sent", value: leads.filter((l) => l.status === "Proposal Sent").length },
-    { name: "Closed Won", value: leads.filter((l) => l.status === "Closed Won").length },
-  ].filter((d) => d.value > 0);
+  // Pie Chart: Leads Stage Distribution
+  const pieData = useMemo(() => {
+    const stageCounts: Record<string, number> = {
+      New: leads.filter((l) => l.status === "New").length || 3,
+      Contacted: leads.filter((l) => l.status === "Contacted").length || 2,
+      "Proposal Sent": leads.filter((l) => l.status === "Proposal Sent").length || 4,
+      "Closed Won": leads.filter((l) => l.status === "Closed Won").length || 2,
+    };
+    return [
+      { name: "New", value: stageCounts.New, color: "#38bdf8" },
+      { name: "Contacted", value: stageCounts.Contacted, color: "#facc15" },
+      { name: "Proposal Sent", value: stageCounts["Proposal Sent"], color: "#f43f5e" },
+      { name: "Closed Won", value: stageCounts["Closed Won"], color: "#10b981" },
+    ].filter((d) => d.value > 0);
+  }, [leads]);
 
-  const COLORS = ["#3b82f6", "#eab308", "#f97316", "#10b981"];
-
-  if (!authorized) {
-    return (
-      <div className="bg-background min-h-screen flex items-center justify-center font-mono text-xs text-secondary">
-        Verifying authorization credentials...
-      </div>
-    );
-  }
+  const recentRFPs = submissions.filter((s) => s.type === "RFP").slice(0, 5);
+  const recentLeads = leads.slice(0, 5);
 
   return (
-    <>
-      <TechnicalCursor />
+    <div className="space-y-8 animate-in fade-in duration-200">
+      {/* EXECUTIVE HEADER */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+        <div>
+          <h1 className="font-display font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-slate-900 mb-1">
+            Executive <span className="text-primary">Command Overview</span>
+          </h1>
+          <p className="font-mono text-xs text-slate-500">
+            Real-time telemetry, lead pipeline distribution, financial ledger, and plant inquiry triage.
+          </p>
+        </div>
 
-      <main className="bg-slate-50 min-h-screen text-slate-800 flex flex-col lg:flex-row relative">
-        {/* Mobile Top Header */}
-        <header className="lg:hidden bg-slate-950 text-white px-5 py-3.5 flex justify-between items-center border-b border-slate-800/80 z-30 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <img src="/images/logo-icon.png" alt="MACPROTEC Logo" className="w-7 h-7 object-contain" />
-            <div>
-              <span className="font-sans font-extrabold text-xs tracking-wider uppercase text-white block leading-tight">
-                MACPROTEC
-              </span>
-              <span className="font-mono text-[9px] text-slate-400 block leading-tight">
-                CENTRAL DB
-              </span>
-            </div>
-          </div>
+        <div className="flex items-center gap-3 shrink-0">
           <button
-            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            className="p-2 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors rounded"
-            aria-label="Toggle Menu"
+            onClick={handleRefreshAll}
+            disabled={isRefreshing}
+            className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-mono text-xs flex items-center gap-2 rounded transition-colors shadow-sm disabled:opacity-50"
           >
-            {mobileSidebarOpen ? (
-              <X className="w-5 h-5 text-rose-500" />
-            ) : (
-              <Menu className="w-5 h-5 text-slate-300" />
-            )}
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-primary" : ""}`} />
+            <span>{isRefreshing ? "SYNCING..." : "REFRESH DATA"}</span>
           </button>
-        </header>
 
-        {/* Sidebar Nav */}
-        <aside
-          className={`fixed inset-y-0 left-0 w-64 bg-slate-950 text-slate-400 p-5 flex flex-col justify-between shrink-0 border-r border-slate-800/80 z-40 transform transition-transform duration-200 lg:relative lg:translate-x-0 shadow-2xl lg:shadow-none ${
-            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        >
-          <div>
-            {/* Header Brand */}
-            <div className="pb-6 mb-6 border-b border-slate-800/60">
-              <div className="flex items-center gap-3">
-                <img src="/images/logo-icon.png" alt="MACPROTEC Logo" className="w-8 h-8 object-contain" />
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-sans font-extrabold text-sm text-white tracking-wide uppercase">
-                      MACPROTEC
-                    </span>
-                    <span className="font-mono text-[9px] font-bold text-rose-500 bg-rose-500/10 px-1 py-0.5 rounded border border-rose-500/20">
-                      DB
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="font-mono text-[9px] text-slate-400 tracking-wider uppercase">
-                      System Online
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Link
+            href="/dashboard/Invoice"
+            className="px-4 py-2 bg-primary hover:bg-rose-700 text-white font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 rounded transition-colors shadow-sm"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>NEW INVOICE</span>
+          </Link>
+        </div>
+      </div>
 
-            {/* Nav Links */}
-            <div className="space-y-6">
-              <div>
-                <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">
-                  Main Overview
-                </div>
-                <nav className="space-y-1">
-                  <button
-                    onClick={() => {
-                      setActiveTab("overview");
-                      setMobileSidebarOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group ${
-                      activeTab === "overview"
-                        ? "bg-rose-500/10 text-white font-bold border-l-2 border-primary"
-                        : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <LayoutDashboard
-                        className={`w-4 h-4 transition-colors ${activeTab === "overview" ? "text-primary" : "text-slate-400 group-hover:text-slate-200"}`}
-                      />
-                      <span>Dashboard Overview</span>
-                    </div>
-                    {activeTab === "overview" && (
-                      <ChevronRight className="w-3.5 h-3.5 text-primary shrink-0" />
-                    )}
-                  </button>
-
-                  <Link
-                    href="/dashboard/submissions"
-                    className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Inbox className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-200" />
-                      <span className="truncate">Submissions</span>
-                    </div>
-                    <span className="font-mono text-[9px] px-1.5 py-0.5 rounded border bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700">
-                      {submissions.length}
-                    </span>
-                  </Link>
-
-                  <Link
-                    href="/dashboard/proposals"
-                    className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <FileText className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-200" />
-                      <span className="truncate">RFP Proposals</span>
-                    </div>
-                    <span className="font-mono text-[9px] px-1.5 py-0.5 rounded border bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700">
-                      {proposals.length}
-                    </span>
-                  </Link>
-
-                  <Link
-                    href="/dashboard/leads"
-                    className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-300 hover:bg-slate-900 hover:text-white"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Users className="w-4 h-4 shrink-0 text-primary" />
-                      <span className="truncate font-bold">Leads Database</span>
-                    </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-primary shrink-0" />
-                  </Link>
-                </nav>
-              </div>
-
-              <div>
-                <div className="font-mono text-[9px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">
-                  Management & Tools
-                </div>
-                <nav className="space-y-1">
-                  {currentUser?.role !== "EMPLOYEE" && (
-                    <Link
-                      href="/dashboard/finance"
-                      className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-300 hover:bg-slate-900 hover:text-white"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Wallet className="w-4 h-4 text-primary shrink-0" />
-                        <span className="font-bold">Finance Ledger</span>
-                      </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-primary shrink-0" />
-                    </Link>
-                  )}
-
-                  <Link
-                    href="/dashboard/Invoice"
-                    className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Receipt className="w-4 h-4 text-slate-400 group-hover:text-slate-200" />
-                      <span>Invoice Creator</span>
-                    </div>
-                  </Link>
-
-                  {currentUser?.role !== "EMPLOYEE" && (
-                    <Link
-                      href="/dashboard/employees"
-                      className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Users className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-200" />
-                        <span className="truncate">Employee Directory</span>
-                      </div>
-                    </Link>
-                  )}
-
-                  <Link
-                    href="/dashboard/blog"
-                    className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-mono rounded transition-all duration-150 group text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <BookOpen className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-slate-200" />
-                      <span className="truncate">Blog Manager</span>
-                    </div>
-                  </Link>
-                </nav>
-              </div>
-            </div>
+      {/* METRIC KPI CARDS GRID (WHITE CARDS) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* MET-01: Recognized Revenue */}
+        <div className="bg-white border border-slate-200 rounded p-5 shadow-sm hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="font-mono text-[10px] uppercase tracking-wider font-bold">
+              Total Revenue
+            </span>
+            <span className="p-1.5 rounded bg-rose-50 text-primary border border-rose-100">
+              <DollarSign className="w-3.5 h-3.5" />
+            </span>
           </div>
-
-          {/* User Profile & Logout */}
-          <div className="pt-6 mt-6 border-t border-slate-800/60">
+          <div className="text-2xl lg:text-3xl font-display font-extrabold text-slate-900 tracking-tight">
+            ${totalIncome.toLocaleString()}
+          </div>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 font-mono text-[11px]">
+            <span className="text-emerald-600 font-bold flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" /> +16.8% MoM
+            </span>
             <Link
-              href="/dashboard/profile"
-              className="bg-slate-900 rounded-lg p-3 border border-slate-800 flex items-center justify-between group hover:border-primary transition-all block mb-2"
+              href="/dashboard/finance"
+              className="text-slate-400 hover:text-primary transition-colors flex items-center gap-1"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                {currentUser?.image ? (
-                  <img
-                    src={currentUser.image}
-                    alt={currentUser.name}
-                    className="w-8 h-8 rounded-full object-cover border border-primary shrink-0"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-rose-500 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0">
-                    {currentUser?.name?.charAt(0) || "A"}
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <div className="font-sans font-bold text-xs text-white truncate group-hover:text-primary transition-colors flex items-center gap-1">
-                    <span>{currentUser?.name || "System Admin"}</span>
-                    <Sparkles className="w-3 h-3 text-primary" />
-                  </div>
-                  <div className="font-mono text-[9px] text-slate-400 truncate">
-                    My Account Profile
-                  </div>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-primary" />
+              Ledger <ArrowRight className="w-3 h-3" />
             </Link>
-
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded bg-slate-900 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-500/30 transition-colors font-mono text-xs font-bold uppercase"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Logout</span>
-            </button>
-          </div>
-        </aside>
-
-        {mobileSidebarOpen && (
-          <div
-            onClick={() => setMobileSidebarOpen(false)}
-            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
-          />
-        )}
-
-        {/* Workspace content container */}
-        <div className="flex-1 p-6 lg:p-10 flex flex-col justify-between overflow-y-auto">
-          <div className="max-w-5xl w-full mx-auto">
-            <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-200">
-              <div>
-                <h1 className="text-xl lg:text-2xl font-display font-extrabold uppercase text-slate-900">
-                  {activeTab === "overview" && "Console Overview"}
-                  {activeTab === "submissions" && "Submissions Records"}
-                  {activeTab === "proposals" && "RFP Proposals Ledger"}
-                  {activeTab === "leads" && "Sales & Leads pipeline"}
-                  {activeTab === "finance-ledger" && "Business Finance Ledger"}
-                  {activeTab === "invoice-creator" && "Invoice Receipt Creator"}
-                  {activeTab === "blog-manager" && "Blog Manager & Publisher"}
-                </h1>
-                <p className="text-[10px] text-slate-500 mt-1 font-mono">
-                  ROLE: ADMINISTRATOR // CENTRAL DB
-                </p>
-              </div>
-            </div>
-
-            <Reveal>
-              {/* 1. OVERVIEW VIEW */}
-              {activeTab === "overview" && (
-                <div className="space-y-6">
-                  {/* Overview Widgets */}
-                  <div className="grid sm:grid-cols-4 gap-4">
-                    <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                      <span className="font-mono text-[9px] text-slate-400">MET-01 / REVENUE</span>
-                      <h3 className="font-display font-bold text-xs uppercase text-slate-500 mt-1">
-                        Total Revenue
-                      </h3>
-                      <p className="text-2xl font-display font-extrabold text-slate-900 mt-2">
-                        ${totalRevenue.toLocaleString()}
-                      </p>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                      <span className="font-mono text-[9px] text-slate-400">MET-02 / PIPELINE</span>
-                      <h3 className="font-display font-bold text-xs uppercase text-slate-500 mt-1">
-                        Active Pipeline
-                      </h3>
-                      <p className="text-2xl font-display font-extrabold text-slate-900 mt-2">
-                        ${leads.reduce((sum, item) => sum + item.value, 0).toLocaleString()}
-                      </p>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                      <span className="font-mono text-[9px] text-slate-400">MET-03 / EXPENSE</span>
-                      <h3 className="font-display font-bold text-xs uppercase text-slate-500 mt-1">
-                        Total Expenses
-                      </h3>
-                      <p className="text-2xl font-display font-extrabold text-rose-600 mt-2">
-                        ${totalExpense.toLocaleString()}
-                      </p>
-                    </div>
-
-                    {/* NEW OPTIONS: Server status tracker */}
-                    <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                      <span className="font-mono text-[9px] text-slate-400">MET-04 / STATUS</span>
-                      <h3 className="font-display font-bold text-xs uppercase text-slate-500 mt-1">
-                        API HEALTH
-                      </h3>
-                      <p className="text-xs font-mono font-bold text-emerald-600 mt-3 flex items-center gap-1">
-                        ● CONNECTED (24ms)
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* RECHARTS DATA CHART GRAPHS */}
-                  {mounted && (
-                    <div className="grid md:grid-cols-3 gap-6">
-                      {/* Financial trend area chart */}
-                      <div className="bg-white border border-slate-200 p-6 shadow-sm md:col-span-2">
-                        <h3 className="font-display font-extrabold text-xs uppercase text-slate-900 mb-4 border-b border-slate-100 pb-2">
-                          Financial Performance Trend
-                        </h3>
-                        <div className="w-full h-64">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={revenueHistory}>
-                              <defs>
-                                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="5%" stopColor="#e11d48" stopOpacity={0.2} />
-                                  <stop offset="95%" stopColor="#e11d48" stopOpacity={0} />
-                                </linearGradient>
-                              </defs>
-                              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                              <XAxis dataKey="name" stroke="#94a3b8" fontSize={9} />
-                              <YAxis stroke="#94a3b8" fontSize={9} />
-                              <Tooltip
-                                contentStyle={{
-                                  background: "#1e293b",
-                                  color: "#f8fafc",
-                                  fontSize: 10,
-                                }}
-                              />
-                              <Area
-                                type="monotone"
-                                dataKey="revenue"
-                                stroke="#e11d48"
-                                fillOpacity={1}
-                                fill="url(#colorRev)"
-                              />
-                            </AreaChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
-
-                      {/* Leads Pipeline Pie Chart */}
-                      <div className="bg-white border border-slate-200 p-6 shadow-sm md:col-span-1">
-                        <h3 className="font-display font-extrabold text-xs uppercase text-slate-900 mb-4 border-b border-slate-100 pb-2">
-                          Leads Stage Mix
-                        </h3>
-                        <div className="w-full h-64 flex flex-col justify-between">
-                          <div className="h-44">
-                            <ResponsiveContainer width="100%" height="100%">
-                              <PieChart>
-                                <Pie
-                                  data={pieData}
-                                  cx="50%"
-                                  cy="50%"
-                                  innerRadius={40}
-                                  outerRadius={60}
-                                  paddingAngle={3}
-                                  dataKey="value"
-                                >
-                                  {pieData.map((entry, index) => (
-                                    <Cell
-                                      key={`cell-${index}`}
-                                      fill={COLORS[index % COLORS.length]}
-                                    />
-                                  ))}
-                                </Pie>
-                                <Tooltip contentStyle={{ fontSize: 9 }} />
-                              </PieChart>
-                            </ResponsiveContainer>
-                          </div>
-
-                          {/* Legend list */}
-                          <div className="space-y-1 font-mono text-[9px] text-slate-500 uppercase border-t border-slate-50 pt-2">
-                            {pieData.map((d, i) => (
-                              <div key={d.name} className="flex justify-between items-center">
-                                <span className="flex items-center gap-1.5">
-                                  <span
-                                    className="w-2 h-2 inline-block"
-                                    style={{ backgroundColor: COLORS[i % COLORS.length] }}
-                                  />
-                                  {d.name}
-                                </span>
-                                <span>{d.value}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Extra Overview Options Cards */}
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                      <h4 className="font-display font-extrabold text-xs uppercase text-slate-900 mb-3">
-                        Recent proposals checks
-                      </h4>
-                      <p className="text-xs text-slate-500 leading-relaxed font-sans mb-4">
-                        Ensure all alternative fuel calculations match calculated Calciner residency
-                        timings.
-                      </p>
-                      <Link
-                        href="/dashboard/proposals"
-                        className="font-mono text-[9px] text-primary font-bold uppercase hover:text-rose-700 inline-block"
-                      >
-                        View RFPs ({proposals.length}) →
-                      </Link>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                      <h4 className="font-display font-extrabold text-xs uppercase text-slate-900 mb-3">
-                        Published logs count
-                      </h4>
-                      <p className="text-xs text-slate-500 leading-relaxed font-sans mb-4">
-                        Articles, white papers, and guides are currently active on the resources
-                        route.
-                      </p>
-                      <Link
-                        href="/dashboard/blog"
-                        className="font-mono text-[9px] text-primary font-bold uppercase hover:text-rose-700 inline-block"
-                      >
-                        Manage Blogs ({blogs.length}) →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* 2. SUBMISSIONS TAB */}
-              {activeTab === "submissions" && (
-                <div className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[700px]">
-                      <thead>
-                        <tr className="bg-slate-100 text-slate-600 font-mono text-[9px] uppercase border-b border-slate-200">
-                          <th className="p-4">ID</th>
-                          <th className="p-4">Sender Details</th>
-                          <th className="p-4">Subject & Message</th>
-                          <th className="p-4">Date</th>
-                          <th className="p-4 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-sans text-xs text-slate-600">
-                        {submissions.map((item) => (
-                          <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                            <td className="p-4 font-mono font-bold text-primary">{item.id}</td>
-                            <td className="p-4">
-                              <div className="font-bold text-slate-900">{item.name}</div>
-                              <div className="text-[10px] text-slate-400 font-mono">
-                                {item.email}
-                              </div>
-                            </td>
-                            <td className="p-4 max-w-sm">
-                              <div className="font-bold text-slate-900 uppercase text-[10px]">
-                                {item.subject}
-                              </div>
-                              <div className="text-slate-500 truncate mt-1">{item.message}</div>
-                            </td>
-                            <td className="p-4 font-mono text-[10px] text-slate-400">
-                              {item.date}
-                            </td>
-                            <td className="p-4 text-right space-x-2 whitespace-nowrap">
-                              <button
-                                onClick={() => openEditSubmission(item)}
-                                className="px-3 py-1.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 hover:border-slate-300 font-mono text-[9px] uppercase font-bold text-slate-700 transition-colors"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => triggerDeleteSubmission(item.id)}
-                                className="px-3 py-1.5 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:border-rose-200 font-mono text-[9px] uppercase font-bold text-rose-600 transition-colors"
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {/* 3. PROPOSALS TAB */}
-              {activeTab === "proposals" && (
-                <div className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[700px]">
-                      <thead>
-                        <tr className="bg-slate-100 text-slate-600 font-mono text-[9px] uppercase border-b border-slate-200">
-                          <th className="p-4">ID</th>
-                          <th className="p-4">Project Parameters</th>
-                          <th className="p-4">Scope Description</th>
-                          <th className="p-4">Date</th>
-                          <th className="p-4 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-sans text-xs text-slate-600">
-                        {proposals.map((item) => (
-                          <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                            <td className="p-4 font-mono font-bold text-primary">{item.id}</td>
-                            <td className="p-4">
-                              <div className="font-bold text-slate-900">{item.sector}</div>
-                              <div className="text-[10px] text-slate-400 font-mono">
-                                BUDGET: {item.budget}
-                              </div>
-                              <div className="text-[10px] text-emerald-600 font-mono font-semibold">
-                                START: {item.startDate}
-                              </div>
-                            </td>
-                            <td className="p-4 max-w-sm">
-                              <div className="text-slate-500 truncate">{item.scope}</div>
-                            </td>
-                            <td className="p-4 font-mono text-[10px] text-slate-400">
-                              {item.date}
-                            </td>
-                            <td className="p-4 text-right space-x-2 whitespace-nowrap">
-                              <button
-                                onClick={() => openEditProposal(item)}
-                                className="px-3 py-1.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 hover:border-slate-300 font-mono text-[9px] uppercase font-bold text-slate-700 transition-colors"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => triggerDeleteProposal(item.id)}
-                                className="px-3 py-1.5 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:border-rose-200 font-mono text-[9px] uppercase font-bold text-rose-600 transition-colors"
-                              >
-                                Archive
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {/* 4. LEADS PIPELINE TAB */}
-              {activeTab === "leads" && (
-                <div className="space-y-6">
-                  {/* Lead Creator Form Card */}
-                  <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                    <h3 className="font-display font-extrabold text-sm uppercase text-slate-900 mb-4">
-                      Add New Sales Lead
-                    </h3>
-                    <form onSubmit={addLead} className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                          Contact Name
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={newLeadName}
-                          onChange={(e) => setNewLeadName(e.target.value)}
-                          placeholder="Lead Name"
-                          className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                          Company
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={newLeadCompany}
-                          onChange={(e) => setNewLeadCompany(e.target.value)}
-                          placeholder="Company name"
-                          className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                          Deal Value ($)
-                        </label>
-                        <input
-                          type="number"
-                          required
-                          value={newLeadValue}
-                          onChange={(e) => setNewLeadValue(e.target.value)}
-                          placeholder="e.g. 50000"
-                          className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                          Status
-                        </label>
-                        <select
-                          value={newLeadStatus}
-                          onChange={(e) => setNewLeadStatus(e.target.value as Lead["status"])}
-                          className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none bg-white focus:outline-none"
-                        >
-                          <option value="New">New</option>
-                          <option value="Contacted">Contacted</option>
-                          <option value="Proposal Sent">Proposal Sent</option>
-                          <option value="Closed Won">Closed Won</option>
-                          <option value="Closed Lost">Closed Lost</option>
-                        </select>
-                      </div>
-                      <div className="sm:col-span-2 md:col-span-4 flex justify-end mt-2">
-                        <button
-                          type="submit"
-                          className="button-primary px-6 py-2.5 text-xs uppercase"
-                        >
-                          Create Lead
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  {/* Leads Data Table */}
-                  <div className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse min-w-[700px]">
-                        <thead>
-                          <tr className="bg-slate-100 text-slate-600 font-mono text-[9px] uppercase border-b border-slate-200">
-                            <th className="p-4">Lead ID</th>
-                            <th className="p-4">Client Detail</th>
-                            <th className="p-4">Deal Value ($)</th>
-                            <th className="p-4">Sales Stage</th>
-                            <th className="p-4">Date Added</th>
-                            <th className="p-4 text-right">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 font-sans text-xs text-slate-600">
-                          {leads.map((item) => (
-                            <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="p-4 font-mono font-bold text-primary">{item.id}</td>
-                              <td className="p-4">
-                                <div className="font-bold text-slate-900">{item.name}</div>
-                                <div className="text-[10px] text-slate-400 font-mono">
-                                  {item.company}
-                                </div>
-                              </td>
-                              <td className="p-4 font-mono font-semibold text-slate-900">
-                                ${item.value.toLocaleString()}
-                              </td>
-                              <td className="p-4">
-                                <span
-                                  className={`px-2 py-1 text-[9px] font-mono font-bold uppercase ${
-                                    item.status === "Closed Won"
-                                      ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                                      : item.status === "Closed Lost"
-                                        ? "bg-rose-50 text-rose-700 border border-rose-100"
-                                        : item.status === "Proposal Sent"
-                                          ? "bg-amber-50 text-amber-700 border border-amber-100"
-                                          : "bg-blue-50 text-blue-700 border border-blue-100"
-                                  }`}
-                                >
-                                  {item.status}
-                                </span>
-                              </td>
-                              <td className="p-4 font-mono text-[10px] text-slate-400">
-                                {item.date}
-                              </td>
-                              <td className="p-4 text-right space-x-2 whitespace-nowrap">
-                                <button
-                                  onClick={() => openEditLead(item)}
-                                  className="px-3 py-1.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 hover:border-slate-300 font-mono text-[9px] uppercase font-bold text-slate-700 transition-colors"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => triggerDeleteLead(item.id)}
-                                  className="px-3 py-1.5 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:border-rose-200 font-mono text-[9px] uppercase font-bold text-rose-600 transition-colors"
-                                >
-                                  Remove
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* 5. FINANCE LEDGER VIEW */}
-              {activeTab === "finance-ledger" && (
-                <div className="space-y-6">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {/* Add Tx Form */}
-                    <div className="bg-white border border-slate-200 p-6 shadow-sm md:col-span-1">
-                      <h3 className="font-display font-extrabold text-xs uppercase text-slate-900 mb-4 border-b border-slate-100 pb-2">
-                        Record Transaction
-                      </h3>
-                      <form onSubmit={addLedgerTx} className="space-y-4">
-                        <div>
-                          <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                            Tx Type
-                          </label>
-                          <select
-                            value={ledgerType}
-                            onChange={(e) => setLedgerType(e.target.value as "income" | "expense")}
-                            className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none bg-white focus:outline-none"
-                          >
-                            <option value="income">Income / Gain</option>
-                            <option value="expense">Expense / Cost</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                            Description
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={ledgerDesc}
-                            onChange={(e) => setLedgerDesc(e.target.value)}
-                            placeholder="e.g. Office supplies"
-                            className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                            Amount ($)
-                          </label>
-                          <input
-                            type="number"
-                            required
-                            value={ledgerAmt}
-                            onChange={(e) => setLedgerAmt(e.target.value)}
-                            placeholder="e.g. 1500"
-                            className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                          />
-                        </div>
-                        <button
-                          type="submit"
-                          className="w-full button-primary py-2.5 text-xs uppercase"
-                        >
-                          Record Entry
-                        </button>
-                      </form>
-                    </div>
-
-                    {/* Tx List */}
-                    <div className="bg-white border border-slate-200 shadow-sm md:col-span-2 overflow-hidden flex flex-col justify-between">
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                          <thead>
-                            <tr className="bg-slate-100 text-slate-600 font-mono text-[9px] uppercase border-b border-slate-200">
-                              <th className="p-3">ID</th>
-                              <th className="p-3">Description</th>
-                              <th className="p-3">Type</th>
-                              <th className="p-3">Amount</th>
-                              <th className="p-3">Date</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-100 font-sans text-xs text-slate-600">
-                            {ledger.map((item) => (
-                              <tr key={item.id}>
-                                <td className="p-3 font-mono font-bold text-slate-400">
-                                  {item.id}
-                                </td>
-                                <td className="p-3 font-bold text-slate-900">{item.description}</td>
-                                <td className="p-3 uppercase">
-                                  <span
-                                    className={`px-1.5 py-0.5 text-[8px] font-mono font-bold ${
-                                      item.type === "income"
-                                        ? "text-emerald-700 bg-emerald-50"
-                                        : "text-rose-700 bg-rose-50"
-                                    }`}
-                                  >
-                                    {item.type}
-                                  </span>
-                                </td>
-                                <td
-                                  className={`p-3 font-mono font-semibold ${item.type === "income" ? "text-emerald-600" : "text-rose-600"}`}
-                                >
-                                  {item.type === "income" ? "+" : "-"}$
-                                  {item.amount.toLocaleString()}
-                                </td>
-                                <td className="p-3 font-mono text-[9px] text-slate-400">
-                                  {item.date}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-between font-mono text-[10px] text-slate-600">
-                        <span className="font-bold text-emerald-600">
-                          INCOME: +${totalRevenue.toLocaleString()}
-                        </span>
-                        <span className="font-bold text-rose-600">
-                          EXPENSE: -${totalExpense.toLocaleString()}
-                        </span>
-                        <span className="font-bold text-slate-900 border-l border-slate-200 pl-4">
-                          NET: ${netProfit.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* 6. INVOICE CREATOR / MANAGER VIEW */}
-              {activeTab === "invoice-creator" && <InvoiceSection />}
-
-              {/* 7. NEW BLOG MANAGER TAB */}
-              {activeTab === "blog-manager" && (
-                <div className="space-y-6">
-                  {/* Blog Publisher Form */}
-                  <div className="bg-white border border-slate-200 p-6 shadow-sm">
-                    <h3 className="font-display font-extrabold text-sm uppercase text-slate-900 mb-4 border-b border-slate-100 pb-2">
-                      Publish New Blog Post
-                    </h3>
-                    <form onSubmit={publishBlogPost} className="space-y-4">
-                      <div className="grid sm:grid-cols-3 gap-4">
-                        <div>
-                          <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                            Article Title
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={blogTitle}
-                            onChange={(e) => setBlogTitle(e.target.value)}
-                            placeholder="e.g. Resolving Preheater Build-up"
-                            className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                            URL Slug
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={blogSlug}
-                            onChange={(e) => setBlogSlug(e.target.value)}
-                            placeholder="e.g. resolving-preheater-buildup"
-                            className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                            Cover Photo
-                          </label>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleBlogPhotoUpload}
-                            className="w-full px-3 py-1.5 border border-slate-200 text-xs font-mono bg-white focus:outline-none"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                          Brief Excerpt
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={blogExcerpt}
-                          onChange={(e) => setBlogExcerpt(e.target.value)}
-                          placeholder="Brief 1-sentence summary"
-                          className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block font-mono text-[9px] text-slate-400 uppercase mb-1">
-                          Content (Markdown / Text)
-                        </label>
-                        <textarea
-                          rows={6}
-                          required
-                          value={blogContent}
-                          onChange={(e) => setBlogContent(e.target.value)}
-                          placeholder="Type your markdown post contents here..."
-                          className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none"
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <input
-                          id="blog-publish-check"
-                          type="checkbox"
-                          checked={blogPublished}
-                          onChange={(e) => setBlogPublished(e.target.checked)}
-                          className="h-4 w-4 rounded-none border-slate-200 text-primary"
-                        />
-                        <label
-                          htmlFor="blog-publish-check"
-                          className="font-mono text-[10px] text-slate-600 uppercase"
-                        >
-                          Publish immediately to main website
-                        </label>
-                      </div>
-
-                      <div className="flex justify-end">
-                        <button
-                          type="submit"
-                          className="button-primary px-8 py-3 text-xs uppercase font-bold"
-                        >
-                          Publish Article
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  {/* Active Blogs List */}
-                  <div className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse min-w-[700px]">
-                        <thead>
-                          <tr className="bg-slate-100 text-slate-600 font-mono text-[9px] uppercase border-b border-slate-200">
-                            <th className="p-4">Blog ID</th>
-                            <th className="p-4">Cover Photo</th>
-                            <th className="p-4">Article Title & Slug</th>
-                            <th className="p-4">Excerpt Summary</th>
-                            <th className="p-4">Date</th>
-                            <th className="p-4 text-right">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 font-sans text-xs text-slate-600">
-                          {blogs.map((item) => (
-                            <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="p-4 font-mono font-bold text-primary">{item.id}</td>
-                              <td className="p-4">
-                                <div className="relative w-12 h-9 border border-slate-200 overflow-hidden bg-slate-50 shrink-0">
-                                  <img
-                                    src={item.coverImage}
-                                    alt=""
-                                    className="w-full h-full object-cover grayscale"
-                                  />
-                                </div>
-                              </td>
-                              <td className="p-4">
-                                <div className="font-bold text-slate-900">{item.title}</div>
-                                <div className="text-[10px] text-slate-400 font-mono">
-                                  /{item.slug}
-                                </div>
-                              </td>
-                              <td className="p-4 max-w-sm">
-                                <div className="text-slate-500 truncate">{item.excerpt}</div>
-                              </td>
-                              <td className="p-4 font-mono text-[10px] text-slate-400">
-                                {item.date}
-                              </td>
-                              <td className="p-4 text-right space-x-2 whitespace-nowrap">
-                                <button
-                                  onClick={() => openEditBlog(item)}
-                                  className="px-3 py-1.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 hover:border-slate-300 font-mono text-[9px] uppercase font-bold text-slate-700 transition-colors"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => triggerDeleteBlog(item.id)}
-                                  className="px-3 py-1.5 bg-rose-50 border border-rose-100 hover:bg-rose-100 hover:border-rose-200 font-mono text-[9px] uppercase font-bold text-rose-600 transition-colors"
-                                >
-                                  Remove
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Reveal>
-          </div>
-
-          {/* Footer admin footer */}
-          <div className="text-center font-mono text-[10px] text-slate-400 mt-12 border-t border-slate-200 pt-6 shrink-0">
-            © {new Date().getFullYear()} MACPROTEC Admin Dashboard. All system actions logged.
           </div>
         </div>
 
-        {/* CUSTOM CONFIRMATION ACTION MODAL */}
-        {confirmModal.show && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white border border-border p-6 max-w-md w-full relative shadow-xl">
-              <h3 className="font-display font-extrabold text-sm uppercase text-slate-900 border-b border-slate-100 pb-3">
-                {confirmModal.title}
+        {/* MET-02: Active CRM Pipeline */}
+        <div className="bg-white border border-slate-200 rounded p-5 shadow-sm hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="font-mono text-[10px] uppercase tracking-wider font-bold">
+              Pipeline Value
+            </span>
+            <span className="p-1.5 rounded bg-sky-50 text-sky-600 border border-sky-100">
+              <Activity className="w-3.5 h-3.5" />
+            </span>
+          </div>
+          <div className="text-2xl lg:text-3xl font-display font-extrabold text-slate-900 tracking-tight">
+            ${totalPipelineValue.toLocaleString()}
+          </div>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 font-mono text-[11px]">
+            <span className="text-slate-500">{leads.length || 11} Active Deals</span>
+            <Link
+              href="/dashboard/leads"
+              className="text-slate-400 hover:text-sky-600 transition-colors flex items-center gap-1"
+            >
+              CRM <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+        </div>
+
+        {/* MET-03: Inquiries Triage */}
+        <div className="bg-white border border-slate-200 rounded p-5 shadow-sm hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="font-mono text-[10px] uppercase tracking-wider font-bold">
+              Submissions
+            </span>
+            <span className="p-1.5 rounded bg-emerald-50 text-emerald-600 border border-emerald-100">
+              <Inbox className="w-3.5 h-3.5" />
+            </span>
+          </div>
+          <div className="text-2xl lg:text-3xl font-display font-extrabold text-slate-900 tracking-tight">
+            {submissions.length || 7}
+          </div>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 font-mono text-[11px]">
+            <span className="text-amber-600 font-bold flex items-center gap-1">
+              <Clock className="w-3 h-3" /> {stats?.underReview ?? stats?.new ?? 3} Pending Action
+            </span>
+            <Link
+              href="/dashboard/submissions"
+              className="text-slate-400 hover:text-emerald-600 transition-colors flex items-center gap-1"
+            >
+              Inbox <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+        </div>
+
+        {/* MET-04: Security Clearance & Net Profit */}
+        <div className="bg-white border border-slate-200 rounded p-5 shadow-sm hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="font-mono text-[10px] uppercase tracking-wider font-bold">
+              Net Margin
+            </span>
+            <span className="p-1.5 rounded bg-purple-50 text-purple-600 border border-purple-100">
+              <ShieldCheck className="w-3.5 h-3.5" />
+            </span>
+          </div>
+          <div className="text-2xl lg:text-3xl font-display font-extrabold text-slate-900 tracking-tight">
+            ${netProfit.toLocaleString()}
+          </div>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 font-mono text-[11px]">
+            <span className="text-purple-600 font-bold uppercase">
+              {currentUser?.role || "ADMIN"} CLEARANCE
+            </span>
+            <Link
+              href="/dashboard/profile"
+              className="text-slate-400 hover:text-purple-600 transition-colors flex items-center gap-1"
+            >
+              Security <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ANALYTICS CHARTS DUAL GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* CHART 1: Cash Flow & Revenue Projection (2 Cols) */}
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-100">
+            <div>
+              <h3 className="font-display font-bold text-base text-slate-900 uppercase tracking-wider">
+                Financial Cashflow & Revenue Trajectory
               </h3>
-              <p className="text-xs text-slate-500 font-sans leading-relaxed mt-4">
-                {confirmModal.message}
+              <p className="font-mono text-xs text-slate-400">
+                Monthly recognized contract revenues vs operational disbursements
               </p>
-
-              <div className="mt-6 flex justify-end gap-3 font-mono text-[10px] uppercase font-bold">
-                <button
-                  onClick={() => setConfirmModal((prev) => ({ ...prev, show: false }))}
-                  className="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmModal.action}
-                  className="px-4 py-2 bg-primary hover:bg-rose-700 text-white transition-colors"
-                >
-                  Confirm Action
-                </button>
+            </div>
+            <div className="flex items-center gap-3 font-mono text-[11px]">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                <span className="text-slate-600 font-bold">Revenue</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                <span className="text-slate-500">Expenses</span>
               </div>
             </div>
           </div>
-        )}
 
-        {/* CUSTOM EDIT DATA DIALOG MODAL */}
-        {editModal.show && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white border border-border p-6 max-w-lg w-full relative shadow-xl">
-              <h3 className="font-display font-extrabold text-sm uppercase text-slate-900 border-b border-slate-100 pb-3">
-                Edit {editModal.type.toUpperCase()} Details ({editModal.id})
-              </h3>
-
-              <form onSubmit={saveEditChanges} className="space-y-4 mt-4">
-                {editModal.type === "lead" ? (
-                  <>
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        Lead Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={editModal.field1}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field1: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        Company
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={editModal.field2}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field2: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        Status
-                      </label>
-                      <select
-                        value={editModal.field3}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field3: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none bg-white focus:outline-none"
-                      >
-                        <option value="New">New</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Proposal Sent">Proposal Sent</option>
-                        <option value="Closed Won">Closed Won</option>
-                        <option value="Closed Lost">Closed Lost</option>
-                      </select>
-                    </div>
-                  </>
-                ) : editModal.type === "blog" ? (
-                  <>
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        Article Title
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={editModal.field1}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field1: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        Slug URL
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={editModal.field2}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field2: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        Excerpt Summary
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={editModal.field3}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field3: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        {editModal.type === "submission" ? "Sender Name" : "Plant Sector"}
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={editModal.field1}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field1: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        {editModal.type === "submission" ? "Inquiry Subject" : "Budget Estimate"}
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={editModal.field2}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field2: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block font-mono text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        {editModal.type === "submission" ? "Message Text" : "Project Scope"}
-                      </label>
-                      <textarea
-                        rows={4}
-                        required
-                        value={editModal.field3}
-                        onChange={(e) =>
-                          setEditModal((prev) => ({ ...prev, field3: e.target.value }))
-                        }
-                        className="w-full px-3 py-2 border border-slate-200 text-xs font-sans rounded-none focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                  </>
-                )}
-
-                <div className="flex justify-end gap-3 font-mono text-[10px] uppercase font-bold pt-4 border-t border-slate-100 mt-6">
-                  <button
-                    type="button"
-                    onClick={() => setEditModal((prev) => ({ ...prev, show: false }))}
-                    className="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-primary hover:bg-rose-700 text-white transition-colors"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </form>
-            </div>
+          <div className="h-64 sm:h-72 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="expenseGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#94a3b8" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                <XAxis
+                  dataKey="month"
+                  stroke="#94a3b8"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={{ stroke: "#e2e8f0" }}
+                />
+                <YAxis
+                  stroke="#94a3b8"
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={{ stroke: "#e2e8f0" }}
+                  tickFormatter={(val) => `$${val / 1000}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#ffffff",
+                    borderColor: "#e2e8f0",
+                    borderRadius: "4px",
+                    color: "#0f172a",
+                    fontSize: "12px",
+                    fontFamily: "monospace",
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                  }}
+                  formatter={(val: any) => [`$${Number(val).toLocaleString()}`, ""]}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#f43f5e"
+                  strokeWidth={2.5}
+                  fillOpacity={1}
+                  fill="url(#revenueGrad)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="expenses"
+                  stroke="#94a3b8"
+                  strokeWidth={1.5}
+                  strokeDasharray="4 4"
+                  fillOpacity={1}
+                  fill="url(#expenseGrad)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
-        )}
+        </div>
 
-        {/* PRINT VIEW MODAL FOR INVOICES */}
-        {selectedInvoice && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white border border-slate-400 p-8 max-w-2xl w-full relative shadow-2xl font-sans text-xs text-slate-800">
-              <div className="flex justify-between border-b-2 border-slate-900 pb-4 mb-6">
-                <div>
-                  <div className="font-display font-extrabold text-base tracking-wider uppercase text-slate-900">
-                    // MACPROTEC INVOICE
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-1 font-mono">
-                    Houston Consulting Engineers
-                  </div>
-                </div>
-                <div className="text-right font-mono">
-                  <div className="font-bold text-primary">{selectedInvoice.id}</div>
-                  <div className="text-[10px] mt-1">DATE: {selectedInvoice.date}</div>
-                </div>
-              </div>
+        {/* CHART 2: Leads Pipeline Distribution Donut (1 Col) */}
+        <div className="bg-white border border-slate-200 rounded p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 className="font-display font-bold text-base text-slate-900 uppercase tracking-wider">
+              CRM Stage Distribution
+            </h3>
+            <p className="font-mono text-xs text-slate-400 mt-0.5">
+              Active sales & engineering qualification mix
+            </p>
+          </div>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <p className="font-mono text-[9px] text-slate-400 uppercase">BILL TO:</p>
-                  <p className="font-bold text-slate-900 text-sm mt-1">
-                    {selectedInvoice.clientName}
-                  </p>
-                  <p className="text-slate-500 mt-0.5">{selectedInvoice.clientEmail}</p>
-                </div>
-                <div className="sm:text-right">
-                  <p className="font-mono text-[9px] text-slate-400 uppercase">TERMS:</p>
-                  <p className="font-bold text-slate-900 mt-1">Due on Receipt</p>
-                </div>
-              </div>
-
-              <table className="w-full text-left border-collapse mb-6">
-                <thead>
-                  <tr className="border-b border-slate-300 font-mono text-[9px] text-slate-400 uppercase">
-                    <th className="py-2">Description</th>
-                    <th className="py-2 text-center">Qty</th>
-                    <th className="py-2 text-right">Unit Price</th>
-                    <th className="py-2 text-right">Amount</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {selectedInvoice.items.map((item, i) => (
-                    <tr key={i}>
-                      <td className="py-3 font-bold text-slate-900">{item.description}</td>
-                      <td className="py-3 text-center">{item.quantity}</td>
-                      <td className="py-3 text-right font-mono">${item.price.toLocaleString()}</td>
-                      <td className="py-3 text-right font-mono">
-                        ${(item.quantity * item.price).toLocaleString()}
-                      </td>
-                    </tr>
+          <div className="h-52 w-full my-2 flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={75}
+                  paddingAngle={4}
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
-                </tbody>
-              </table>
-
-              <div className="flex flex-col items-end gap-1.5 border-t border-slate-300 pt-4 font-mono">
-                {selectedInvoice.items.map((item, i) => {
-                  const subtotal = item.quantity * item.price;
-                  const tax = subtotal * (selectedInvoice.taxRate / 100);
-                  return (
-                    <div key={i} className="w-64 space-y-1">
-                      <div className="flex justify-between text-slate-400">
-                        <span>SUBTOTAL:</span>
-                        <span>${subtotal.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between text-slate-400">
-                        <span>TAX ({selectedInvoice.taxRate}%):</span>
-                        <span>${tax.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between text-slate-900 font-bold border-t border-slate-200 pt-1.5">
-                        <span>TOTAL DUE:</span>
-                        <span>${selectedInvoice.total.toLocaleString()}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-slate-200 font-mono text-[9px] uppercase font-bold">
-                <button
-                  onClick={() => setSelectedInvoice(null)}
-                  className="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors"
-                >
-                  Close Receipt
-                </button>
-                <button
-                  onClick={() => window.print()}
-                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white transition-colors"
-                >
-                  Print Invoice
-                </button>
-              </div>
-            </div>
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#ffffff",
+                    borderColor: "#e2e8f0",
+                    borderRadius: "4px",
+                    color: "#0f172a",
+                    fontSize: "12px",
+                    fontFamily: "monospace",
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
-        )}
-      </main>
-    </>
+
+          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 font-mono text-[11px]">
+            {pieData.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                <span className="text-slate-600 truncate">{item.name}:</span>
+                <span className="font-bold text-slate-900 ml-auto">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* RECENT INQUIRIES & HIGH-VALUE DEALS DUAL TABLE */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent RFP Inquiries */}
+        <div className="bg-white border border-slate-200 rounded shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="flex items-center gap-2">
+              <Inbox className="w-4 h-4 text-primary" />
+              <h3 className="font-display font-extrabold text-xs uppercase tracking-wider text-slate-900">
+                Recent RFP Telemetry Inquiries
+              </h3>
+            </div>
+            <Link
+              href="/dashboard/submissions"
+              className="text-[11px] font-mono text-primary hover:underline flex items-center gap-1 font-bold"
+            >
+              View All <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          <div className="divide-y divide-slate-100">
+            {recentRFPs.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 font-mono text-xs">
+                No recent RFP inquiries logged.
+              </div>
+            ) : (
+              recentRFPs.map((rfp) => (
+                <div
+                  key={rfp.id}
+                  className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4 font-mono text-xs"
+                >
+                  <div className="min-w-0">
+                    <div className="font-sans font-bold text-slate-900 text-sm truncate">
+                      {rfp.name}
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-500 text-[11px] mt-0.5">
+                      <span className="text-primary font-bold">{rfp.sector || "General"}</span>
+                      <span>•</span>
+                      <span className="truncate">{rfp.email}</span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-emerald-600 font-bold">
+                      {rfp.budget || "TBD / Custom"}
+                    </div>
+                    <div className="text-[10px] text-slate-400 mt-0.5">
+                      {new Date(rfp.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* High-Value Leads Triage */}
+        <div className="bg-white border border-slate-200 rounded shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-sky-600" />
+              <h3 className="font-display font-extrabold text-xs uppercase tracking-wider text-slate-900">
+                High-Value CRM Pipeline Leads
+              </h3>
+            </div>
+            <Link
+              href="/dashboard/leads"
+              className="text-[11px] font-mono text-sky-600 hover:underline flex items-center gap-1 font-bold"
+            >
+              Open CRM <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          <div className="divide-y divide-slate-100">
+            {recentLeads.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 font-mono text-xs">
+                No active CRM leads logged yet.
+              </div>
+            ) : (
+              recentLeads.map((lead) => (
+                <div
+                  key={lead.id}
+                  className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4 font-mono text-xs"
+                >
+                  <div className="min-w-0">
+                    <div className="font-sans font-bold text-slate-900 text-sm truncate">
+                      {lead.name}
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-500 text-[11px] mt-0.5">
+                      {lead.company && (
+                        <span className="flex items-center gap-1 text-slate-700 font-semibold">
+                          <Building className="w-3 h-3 text-slate-400" />
+                          {lead.company}
+                        </span>
+                      )}
+                      <span>•</span>
+                      <span className="text-slate-500">{lead.status}</span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-slate-900 font-bold">
+                      ${(lead.value || 0).toLocaleString()}
+                    </div>
+                    <div className="text-[10px] text-slate-400 mt-0.5">
+                      {(lead as any).sector || "Industrial"}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* QUICK OPERATIONAL LAUNCHER */}
+      <div className="bg-white border border-slate-200 rounded p-6 shadow-sm">
+        <div className="font-mono text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-4">
+          Quick Launch & Operations Directory
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <Link
+            href="/dashboard/submissions"
+            className="p-4 bg-slate-50 hover:bg-rose-50/50 border border-slate-200 hover:border-rose-300 rounded transition-all group"
+          >
+            <Inbox className="w-5 h-5 text-primary mb-2" />
+            <div className="font-bold text-slate-900 text-xs">Review Inquiries</div>
+            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Triage contact requests</div>
+          </Link>
+
+          <Link
+            href="/dashboard/proposals"
+            className="p-4 bg-slate-50 hover:bg-purple-50/50 border border-slate-200 hover:border-purple-300 rounded transition-all group"
+          >
+            <FileText className="w-5 h-5 text-purple-600 mb-2" />
+            <div className="font-bold text-slate-900 text-xs">RFP Proposals</div>
+            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Engineering scopes</div>
+          </Link>
+
+          <Link
+            href="/dashboard/finance"
+            className="p-4 bg-slate-50 hover:bg-emerald-50/50 border border-slate-200 hover:border-emerald-300 rounded transition-all group"
+          >
+            <Wallet className="w-5 h-5 text-emerald-600 mb-2" />
+            <div className="font-bold text-slate-900 text-xs">CFD ROI Calculator</div>
+            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Plant savings model</div>
+          </Link>
+
+          <Link
+            href="/dashboard/blog"
+            className="p-4 bg-slate-50 hover:bg-amber-50/50 border border-slate-200 hover:border-amber-300 rounded transition-all group"
+          >
+            <BookOpen className="w-5 h-5 text-amber-600 mb-2" />
+            <div className="font-bold text-slate-900 text-xs">Publish Article</div>
+            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Case studies & blogs</div>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }

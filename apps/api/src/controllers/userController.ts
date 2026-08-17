@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { userService } from "../services/userService";
 import { createSuccessResponse, asyncHandler } from "@repo/utils";
 import { HTTP_STATUS } from "@repo/constants";
+import { ApiError } from "../middleware/errorHandler";
 
 export const getUsersHandler = asyncHandler(async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string, 10) || 1;
@@ -25,7 +26,10 @@ export const updateProfileHandler = asyncHandler(async (req: any, res: Response)
 });
 
 export const changePasswordHandler = asyncHandler(async (req: any, res: Response) => {
-  const userId = req.user.id;
+  const userId = req.user?.id || req.user?.userId;
+  if (!userId) {
+    throw new ApiError(HTTP_STATUS.UNAUTHORIZED, "Authentication required");
+  }
   const { currentPassword, newPassword } = req.body;
   if (!currentPassword || !newPassword) {
     res.status(HTTP_STATUS.BAD_REQUEST).json({

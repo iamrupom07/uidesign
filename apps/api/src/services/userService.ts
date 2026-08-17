@@ -1,7 +1,8 @@
 import { prisma } from "@repo/database";
 import { userRepository, UserRepository } from "../repositories/userRepository";
 import { ApiError } from "../middleware/errorHandler";
-import { HTTP_STATUS, Role } from "@repo/constants";
+import { HTTP_STATUS } from "@repo/constants";
+import { hashPassword, verifyPassword } from "better-auth/crypto";
 
 export class UserService {
   constructor(private repo: UserRepository = userRepository) {}
@@ -38,20 +39,49 @@ export class UserService {
   }
 
   async changePassword(userId: string, currentPass: string, newPass: string) {
-    const bcrypt = await import("bcryptjs");
-    const account = await prisma.account.findFirst({
-      where: { userId, providerId: "credential" },
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { accounts: true },
     });
 
+    if (!user) {
+      throw new ApiError(HTTP_STATUS.NOT_FOUND, "User not found");
+    }
+
+    const account = user.accounts.find((a) => a.providerId === "credential");
+
     if (account && account.password) {
-      const isMatch = await bcrypt.compare(currentPass, account.password);
+      let isMatch = false;
+      // Support Better Auth scrypt hash (salt:hash) or legacy bcrypt hash ($2...)
+      if (
+        account.password.startsWith("$2a$") ||
+        account.password.startsWith("$2b$") ||
+        account.password.startsWith("$2y$")
+      ) {
+        const bcrypt = await import("bcryptjs");
+        isMatch = await bcrypt.compare(currentPass, account.password);
+      } else {
+        isMatch = await verifyPassword({
+          hash: account.password,
+          password: currentPass,
+        });
+      }
+
       if (!isMatch) {
+        // Fallback: check if tempPassword matches in case account was created with temp
+        if (user.tempPassword && user.tempPassword === currentPass) {
+          isMatch = true;
+        } else {
+          throw new ApiError(HTTP_STATUS.BAD_REQUEST, "Current password is incorrect");
+        }
+      }
+    } else if (user.tempPassword) {
+      if (user.tempPassword !== currentPass) {
         throw new ApiError(HTTP_STATUS.BAD_REQUEST, "Current password is incorrect");
       }
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(newPass, salt);
+    const passwordHash = await hashPassword(newPass);
     return this.repo.updatePassword(userId, passwordHash);
   }
 }

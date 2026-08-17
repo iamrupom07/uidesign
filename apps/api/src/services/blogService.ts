@@ -121,8 +121,12 @@ export class BlogService {
     }
 
     const readTime = data.readTime || this.calculateReadTime(data.content);
+    const excerpt =
+      data.excerpt && data.excerpt.trim().length > 0
+        ? data.excerpt
+        : data.content.replace(/[#*`_]/g, "").slice(0, 160).trim() + "...";
 
-    return blogRepository.create(data, slug, readTime);
+    return blogRepository.create({ ...data, excerpt }, slug, readTime);
   }
 
   async updateBlogPost(id: string, data: UpdateBlogPostInput) {

@@ -97,22 +97,22 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         "Our rigorous CFD workflow guarantees validated solver outcomes for heavy process plants.",
       lifecycleSteps: [
         {
-          step: "Phase 01",
+          step: "01",
           label: "Geometry Definition",
           desc: "Construct exact fluid domain volumes from laser scan point clouds.",
         },
         {
-          step: "Phase 02",
+          step: "02",
           label: "Mesh & Mesh Tuning",
           desc: "Generate multi-million cell hex-dominant meshes with boundary layer sizing.",
         },
         {
-          step: "Phase 03",
+          step: "03",
           label: "Boundary Boundary Setups",
           desc: "Define mass flow rates, fuel chemistries, and wall temperatures from site sensors.",
         },
         {
-          step: "Phase 04",
+          step: "04",
           label: "Solver & Validation",
           desc: "Run multi-phase Euler-Lagrangian models to reach strict convergence thresholds.",
         },
@@ -298,7 +298,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
 
       <main className="bg-background min-h-screen blueprint-mesh space-y-24 pt-24 pb-20">
         {/* Section 1: Hero Banner (Blueprint Frame Theme) */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="absolute top-8 left-8 right-8 bottom-8 border border-slate-200/55 pointer-events-none" />
           <div className="absolute top-10 left-10 font-mono text-[8px] text-slate-400">
             DRAFTING / SOLUTION REPORT
@@ -322,7 +322,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 2: Sub-Services Dossier (Hexagonal Card Style) */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="mb-10">
             <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> CAPABILITIES CHECKLIST
@@ -362,7 +362,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 3: Simulation & Optimization Grid (Details with Graphic) */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-lg items-center">
             {/* Checklist */}
             <Reveal>
@@ -409,7 +409,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 4: Simulation Life Cycle (Flow Steps) */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <Reveal className="mb-12">
             <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> WORKFLOW DOSSIER
@@ -438,7 +438,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 5: Circular Loop Diagram */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <div className="grid lg:grid-cols-2 gap-lg items-center">
             <Reveal>
               <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
@@ -503,7 +503,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 6: Detailed Comparison & Diagram */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <div className="grid lg:grid-cols-2 gap-lg">
             <Reveal>
               <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
@@ -562,7 +562,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 7: Contact Us & Industries Matrix */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <div className="grid lg:grid-cols-2 gap-lg items-stretch">
             {/* Quick Contact Form */}
             <Reveal>
@@ -678,7 +678,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
         </section>
 
         {/* Section 8: Related Resources Grid */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-20">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-border pt-20">
           <Reveal className="mb-10">
             <div className="font-mono text-[10px] font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> KNOWLEDGE BANK
@@ -703,7 +703,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
                   </p>
                 </div>
                 <Link
-                  href="/resources/blogs"
+                  href="/resources/blog"
                   className="font-mono text-[9px] font-bold text-primary uppercase mt-6 tracking-widest hover:text-rose-700"
                 >
                   Read File →
@@ -759,7 +759,7 @@ export default function SolutionDetailPage({ params }: { params: Promise<{ slug:
 
         {/* Section 9: Partner Logo Band */}
         <section className="bg-white border-t border-b border-border py-12">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap gap-8 items-center justify-around opacity-60 grayscale">
               {partnerLogos.map((partner) => (
                 <span

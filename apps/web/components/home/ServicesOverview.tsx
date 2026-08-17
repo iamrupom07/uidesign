@@ -18,7 +18,7 @@ const expertiseCards = [
     title: "Engineering Design",
     description: "Complete engineering solutions from concept to detailed design.",
     icon: IconDesignSupport,
-    code: "EXP-01",
+    code: "01",
     slug: "engineering-design",
     image: "/images/card_engineering_design.png",
   },
@@ -26,7 +26,7 @@ const expertiseCards = [
     title: "Simulation & Analysis",
     description: "Advanced simulations for better engineering decisions.",
     icon: IconProcessEngineering,
-    code: "EXP-02",
+    code: "02",
     slug: "simulation-and-analysis",
     image: "/images/card_cfd_simulation.png",
   },
@@ -34,7 +34,7 @@ const expertiseCards = [
     title: "Digital Twin & Smart Plant",
     description: "Transforming plant data into intelligent operational insights.",
     icon: IconSystemIntegration,
-    code: "EXP-03",
+    code: "03",
     slug: "digital-twin-smart-plant",
     image: "/images/card_digital_twin.png",
   },
@@ -42,7 +42,7 @@ const expertiseCards = [
     title: "Plant Performance Optimization",
     description: "Improving efficiency, reliability, and plant performance.",
     icon: IconOperationalSupport,
-    code: "EXP-04",
+    code: "04",
     slug: "plant-performance-optimization",
     image: "/images/card_plant_optimization.png",
   },
@@ -50,7 +50,7 @@ const expertiseCards = [
     title: "3D Laser Scanning",
     description: "Accurate digital capture for retrofit and engineering projects.",
     icon: IconProjectManagement,
-    code: "EXP-05",
+    code: "05",
     slug: "3d-laser-scanning",
     image: "/images/card_laser_scanning.png",
   },
@@ -58,7 +58,7 @@ const expertiseCards = [
     title: "Training & Knowledge Transfer",
     description: "Developing engineering capability through practical learning.",
     icon: IconTraining,
-    code: "EXP-06",
+    code: "06",
     slug: "training-knowledge-transfer",
     image: "/images/card_training.png",
   },
@@ -68,19 +68,19 @@ export default function ServicesOverview() {
   return (
     <section
       id="our-services"
-      className="py-xl bg-background blueprint-mesh border-t border-border"
+      className="py-12 sm:py-xl bg-background blueprint-mesh border-t border-border"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-2xl mb-14">
+        <div className="max-w-2xl mb-12 sm:mb-14">
           <Reveal>
-            <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> OUR ENGINEERING EXPERTISE
             </div>
-            <h2 className="mb-4 font-display font-extrabold text-3xl text-foreground uppercase">
+            <h2 className="mb-4 font-display font-extrabold text-2xl sm:text-3xl text-foreground uppercase">
               Engineering Excellence. Digital Advantage.
             </h2>
-            <p className="body-md text-secondary mt-2">
+            <p className="body-md text-secondary mt-2 text-sm sm:text-base">
               Delivering multidisciplinary engineering expertise to design, optimize, digitalize,
               and improve industrial plants.
             </p>
@@ -88,7 +88,7 @@ export default function ServicesOverview() {
         </div>
 
         {/* 6 Cards Grid */}
-        <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-lg" stagger={0.06}>
+        <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-lg" stagger={0.06}>
           {expertiseCards.map((card) => {
             const Icon = card.icon;
             return (
@@ -113,11 +113,11 @@ export default function ServicesOverview() {
                       </div>
 
                       {/* Card Content Body */}
-                      <div className="p-6">
+                      <div className="p-5 sm:p-6">
                         <h3 className="font-display font-extrabold text-base text-foreground group-hover/card:text-primary transition-colors leading-snug uppercase">
                           {card.title}
                         </h3>
-                        <p className="text-xs text-secondary mt-2.5 leading-relaxed font-sans">
+                        <p className="text-sm text-secondary mt-2.5 leading-relaxed font-sans">
                           {card.description}
                         </p>
                       </div>

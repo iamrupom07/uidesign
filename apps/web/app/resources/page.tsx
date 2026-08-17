@@ -30,12 +30,16 @@ import {
   Building2,
   MonitorCheck,
   Filter,
-  ArrowUpRight,
   HardHat,
   Cpu,
+  Clock,
+  User,
+  ChevronRight,
 } from "lucide-react";
 import { useCreateSubmissionMutation } from "@/redux/api/submissionApi";
+import { useGetBlogPostsQuery } from "@/redux/api/blogApi";
 import { downloadResourcePdf } from "@/lib/resourcePdfGenerator";
+import { BlogPost } from "@repo/types";
 
 // Resource category interface
 interface ResourceItem {
@@ -65,6 +69,66 @@ interface ResourceItem {
   }[];
 }
 
+// Static fallback articles in case API is loading or offline
+const FALLBACK_ARTICLES: Partial<BlogPost>[] = [
+  {
+    id: "fb-1",
+    title: "Pyroprocessing Optimization & Alternative Fuel Combustion in Cement Kilns",
+    excerpt:
+      "Discover how CFD flow modeling and thermal heat balances increase alternative fuel substitution rates up to 65% while preserving kiln shell integrity.",
+    category: "Engineering Insights",
+    sector: "Cement",
+    coverImage: "/images/cement_industry.png",
+    authorName: "MacProtec Technical Desk",
+    authorTitle: "Chief Pyroprocessing Engineer",
+    readTime: "6 min read",
+    slug: "pyroprocessing-optimization-alternative-fuel",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "fb-2",
+    title: "3D Laser Scanning & Reverse Engineering for Brownfield Plant Revamps",
+    excerpt:
+      "Capturing high-density point cloud spatial data eliminates clash errors during brownfield equipment replacements and piping retrofits.",
+    category: "3D Laser Scanning",
+    sector: "Heavy Engineering",
+    coverImage: "/images/card_laser_scanning.png",
+    authorName: "MacProtec Spatial Desk",
+    authorTitle: "Lead Laser Scanning Specialist",
+    readTime: "5 min read",
+    slug: "3d-laser-scanning-reverse-engineering",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "fb-3",
+    title: "Predictive Telemetry & AI Digital Twins for Heavy Industrial Equipment",
+    excerpt:
+      "Connecting real-time SCADA sensor streams to virtual digital twin replicas enables early detection of bearing defects and thermal anomalies.",
+    category: "CFD & Thermal Simulation",
+    sector: "Mining",
+    coverImage: "/images/industry_40.png",
+    authorName: "Chief Automation Engineer",
+    authorTitle: "Digital Twin Solutions Director",
+    readTime: "7 min read",
+    slug: "predictive-telemetry-ai-digital-twins",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "fb-4",
+    title: "High-Density Mine Tailing Dewatering & Paste Backfill Pipeline Hydraulics",
+    excerpt:
+      "Optimizing non-Newtonian slurry rheology, underflow density, and pipeline friction losses in high-pressure paste pumping lines.",
+    category: "Case Study",
+    sector: "Mining",
+    coverImage: "/images/tailings_management.png",
+    authorName: "Senior Process Engineer",
+    authorTitle: "Mining Operations Specialist",
+    readTime: "8 min read",
+    slug: "high-density-mine-tailing-dewatering-paste-backfill-pipeline-hydraulics",
+    createdAt: new Date().toISOString(),
+  },
+];
+
 export default function ResourcesPage() {
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -80,6 +144,11 @@ export default function ResourcesPage() {
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [resForm, setResForm] = useState({ name: "", email: "", interest: "Company Profile & Credentials" });
   const [createSubmission, { isLoading: isSubmittingDocReq }] = useCreateSubmissionMutation();
+
+  // RTK Query hook for dynamic publications from backend database
+  const { data: blogResponse } = useGetBlogPostsQuery({ published: true });
+  const liveArticles: BlogPost[] = blogResponse?.data || [];
+  const publishedArticles = liveArticles.length > 0 ? liveArticles : (FALLBACK_ARTICLES as BlogPost[]);
 
   // Document Preview Modal state
   const [previewModalDoc, setPreviewModalDoc] = useState<{
@@ -125,7 +194,7 @@ export default function ResourcesPage() {
         "Comprehensive technical brochure of MACPROTEC Engineering, our multidisciplinary EPC expertise, global codes (ASME, API, NFPA, ASHRAE, ASTM), verified achievements (1300MW power, 1.43M Sft MEP, 47,000m³ storage), and international references (Saint Gobain, Arkema, Heurtey, Beacon).",
       image: "/images/resources/company_profile.png",
       imageAlt: "MACPROTEC Engineers reviewing blueprints around table",
-      tag: "01 // DOSSIER",
+      tag: "01",
       downloads: [
         {
           title: "1. MacProtec Company Brochure (PDF)",
@@ -158,7 +227,7 @@ export default function ResourcesPage() {
         "Explore our multidisciplinary engineering services, digital solutions, CFD modeling (MacFlow Vision), 3D laser scanning (Scan2Value), FEED studies, and end-to-end plant delivery capabilities.",
       image: "/images/resources/engineering_services.png",
       imageAlt: "Dual-monitor workstation displaying 3D CAD mesh model",
-      tag: "02 // SERVICES",
+      tag: "02",
       downloads: [
         {
           title: "Engineering Services Master Brochure",
@@ -266,7 +335,7 @@ export default function ResourcesPage() {
         "Hands-on technical training programs and custom plant-focused case studies designed for plant managers, process engineers, and control room operators. We don't just transfer knowledge—we build capability.",
       image: "/images/resources/training_catalogue.png",
       imageAlt: "Technical classroom presentation seminar on LC3 process",
-      tag: "03 // LEARNING",
+      tag: "03",
       downloads: [
         {
           title: "1. MacProtec Master Training Catalog 2026",
@@ -306,7 +375,7 @@ export default function ResourcesPage() {
         "Discover how MACPROTEC combines process expertise and intelligent telemetry to improve equipment reliability. Featuring Smart Up Time and the Kiln Online Condition Monitoring System (Kiln OCMS).",
       image: "/images/resources/predictive_solutions.png",
       imageAlt: "Dark monitoring interface displaying 3D digital twin and Drive Bearing Defect alert",
-      tag: "04 // ANALYTICS",
+      tag: "04",
       downloads: [
         {
           title: "1. Kiln OCMS — Technical Specification",
@@ -339,12 +408,28 @@ export default function ResourcesPage() {
 
   // Category Filter Options
   const categories = [
-    { id: "all", label: "All Resources" },
+    { id: "all", label: "All Resources & Publications" },
+    { id: "publications", label: "Technical Publications & Case Studies" },
     { id: "company-profile", label: "Company Profile" },
     { id: "engineering-services", label: "Engineering Services" },
     { id: "training", label: "Training Catalogue" },
     { id: "predictive-solutions", label: "Predictive Solutions" },
   ];
+
+  // Filtered Dynamic Publications based on search
+  const filteredArticles = useMemo(() => {
+    return publishedArticles.filter((art) => {
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      return (
+        art.title?.toLowerCase().includes(q) ||
+        art.excerpt?.toLowerCase().includes(q) ||
+        art.category?.toLowerCase().includes(q) ||
+        art.sector?.toLowerCase().includes(q) ||
+        art.authorName?.toLowerCase().includes(q)
+      );
+    });
+  }, [publishedArticles, searchQuery]);
 
   // Filtered Items based on category and search query
   const filteredResources = useMemo(() => {
@@ -544,7 +629,7 @@ export default function ResourcesPage() {
       <main className="bg-background min-h-screen blueprint-mesh pb-16 space-y-12">
         
         {/* 1. FULL-WIDTH HERO SECTION WITH ROTARY KILN BACKGROUND */}
-        <section className="w-full relative bg-neutral-550 border-b-2 border-primary/30 py-16 sm:py-20 lg:py-24 overflow-hidden group">
+        <section className="w-full relative bg-neutral-950 border-b-2 border-primary/30 py-16 sm:py-20 lg:py-24 overflow-hidden group">
           {/* Kiln Hero Background Image - Full Width Edge-to-Edge */}
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             <Image
@@ -563,45 +648,47 @@ export default function ResourcesPage() {
           <div className="absolute inset-0 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
 
           {/* Content overlay container - Middle Aligned */}
-          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Reveal>
               <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
                 
                 {/* Category Badge Ticker */}
-                <div className="inline-flex items-center gap-2 bg-neutral-900/90 border border-primary/40 px-4 py-1.5 font-mono text-[11px] font-extrabold text-primary tracking-widest uppercase shadow-md backdrop-blur-xs">
+                <div className="inline-flex items-center gap-2 bg-neutral-900/90 border border-primary/40 px-3.5 sm:px-4 py-1.5 font-mono text-[10px] sm:text-[11px] font-extrabold text-primary tracking-widest uppercase shadow-md backdrop-blur-xs">
                   <span className="w-2.5 h-2.5 bg-primary animate-pulse" />
                   <span>MACPROTEC TECHNICAL KNOWLEDGE DIRECTORY</span>
                 </div>
                 
                 {/* Hero Title - Clean White Text */}
                 <div className="flex justify-center w-full">
-                  <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-black uppercase tracking-tight text-white drop-shadow-2xl">
-                    Resources Center
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-black uppercase tracking-tight text-white drop-shadow-2xl">
+                    Publications & Resources
                   </h1>
                 </div>
 
                 {/* Subtitle Description */}
-                <p className="text-neutral-200 font-sans text-base sm:text-lg leading-relaxed max-w-2xl mx-auto drop-shadow-md">
-                  Access MACPROTEC Engineering&apos;s technical documentation, engineering service brochures, training catalogues, and predictive cement plant solutions.
+                <p className="text-neutral-200 font-sans text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto drop-shadow-md">
+                  Explore published engineering case studies, CFD whitepapers, 3D laser scanning portfolios, and downloadable technical master brochures.
                 </p>
 
                 {/* Quick Stats Ticker */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 max-w-3xl mx-auto w-full border-t border-white/20 pt-6 font-mono text-xs text-neutral-200">
-                  <div className="flex items-center justify-center gap-2.5 bg-neutral-900/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 max-w-3xl mx-auto w-full border-t border-white/20 pt-6 font-mono text-xs text-neutral-200">
+                  <div className="flex items-center justify-center gap-2 bg-neutral-900/80 border border-white/10 px-2.5 sm:px-3.5 py-2.5 shadow-sm">
                     <BookOpen className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">4 Core Dossiers</span>
+                    <span className="font-semibold whitespace-nowrap text-xs">
+                      {publishedArticles.length} Technical Articles
+                    </span>
                   </div>
-                  <div className="flex items-center justify-center gap-2.5 bg-neutral-900/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                  <div className="flex items-center justify-center gap-2 bg-neutral-900/80 border border-white/10 px-2.5 sm:px-3.5 py-2.5 shadow-sm">
                     <FileText className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">12+ Downloads</span>
+                    <span className="font-semibold whitespace-nowrap text-xs">12+ PDF Dossiers</span>
                   </div>
-                  <div className="flex items-center justify-center gap-2.5 bg-neutral-900/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                  <div className="flex items-center justify-center gap-2 bg-neutral-900/80 border border-white/10 px-2.5 sm:px-3.5 py-2.5 shadow-sm">
                     <MonitorCheck className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">Instant Access</span>
+                    <span className="font-semibold whitespace-nowrap text-xs">Instant Access</span>
                   </div>
-                  <div className="flex items-center justify-center gap-2.5 bg-neutral-900/80 border border-white/10 px-3.5 py-2.5 shadow-sm">
+                  <div className="flex items-center justify-center gap-2 bg-neutral-900/80 border border-white/10 px-2.5 sm:px-3.5 py-2.5 shadow-sm">
                     <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-semibold whitespace-nowrap">Verified Specs</span>
+                    <span className="font-semibold whitespace-nowrap text-xs">Verified Specs</span>
                   </div>
                 </div>
 
@@ -611,9 +698,9 @@ export default function ResourcesPage() {
         </section>
 
         {/* 2. SEARCH & INTERACTIVE CATEGORY FILTER BAR */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="bg-white border border-border p-6 shadow-sm space-y-6">
+            <div className="bg-white border border-border p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-6">
               
               {/* Top Controls: Search Bar + Filter Header */}
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -623,8 +710,8 @@ export default function ResourcesPage() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search resources, CFD, Kiln, scans..."
-                    className="w-full bg-neutral-50 border border-neutral-200 pl-10 pr-4 py-2.5 font-mono text-xs text-neutral-900 focus:outline-none focus:border-primary transition-colors"
+                    placeholder="Search articles, CFD, Kiln, scans..."
+                    className="w-full bg-neutral-50 border border-neutral-200 pl-10 pr-4 py-2.5 font-mono text-xs sm:text-sm text-neutral-900 focus:outline-none focus:border-primary transition-colors"
                   />
                   {searchQuery && (
                     <button
@@ -638,7 +725,10 @@ export default function ResourcesPage() {
 
                 <div className="font-mono text-xs text-neutral-500 flex items-center gap-2">
                   <Filter className="w-3.5 h-3.5 text-primary" />
-                  <span>Showing <strong>{filteredResources.length}</strong> featured resource sections</span>
+                  <span>
+                    Showing <strong>{filteredArticles.length}</strong> publications &{" "}
+                    <strong>{filteredResources.length}</strong> brochure dossiers
+                  </span>
                 </div>
               </div>
 
@@ -648,7 +738,7 @@ export default function ResourcesPage() {
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-4 py-2 uppercase font-bold text-[11px] whitespace-nowrap transition-colors border ${
+                    className={`px-3.5 sm:px-4 py-2 uppercase font-bold text-[11px] sm:text-xs whitespace-nowrap transition-colors border ${
                       selectedCategory === cat.id
                         ? "bg-primary text-white border-primary shadow-sm"
                         : "bg-neutral-50 text-neutral-700 border-neutral-200 hover:border-primary/40 hover:bg-neutral-100"
@@ -663,363 +753,498 @@ export default function ResourcesPage() {
           </Reveal>
         </section>
 
-        {/* 3. FEATURED RESOURCE CARDS */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 space-y-12">
+        {/* 3. DYNAMIC TECHNICAL PUBLICATIONS & CASE STUDIES DIRECTORY */}
+        {(selectedCategory === "all" || selectedCategory === "publications") && (
+          <section id="publications" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 scroll-mt-28">
+            <Reveal>
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-4">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 text-primary font-mono text-[10px] font-extrabold uppercase tracking-widest">
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>LATEST PUBLISHED CASE STUDIES & WHITEPAPERS</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-display font-extrabold uppercase tracking-tight text-slate-900">
+                    Technical Publications ({filteredArticles.length})
+                  </h2>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/resources/blog"
+                    className="inline-flex items-center gap-2 bg-slate-900 hover:bg-primary text-white font-mono text-xs font-bold uppercase tracking-wider px-4 py-2 transition-colors shadow-xs"
+                  >
+                    <span>View All Blog Articles</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </Reveal>
 
-          {/* CARD 1: COMPANY PROFILE */}
-          {(selectedCategory === "all" || selectedCategory === "company-profile") && (
-            <div id="company-profile" className="scroll-mt-28">
-              <Reveal>
-                <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
-                  <div className="grid lg:grid-cols-12 gap-8 items-center">
-                    
-                    {/* Picture 1: Company Profile Original Image */}
-                    <div className="lg:col-span-5 relative h-72 sm:h-80 w-full overflow-hidden border border-neutral-200 shadow-inner">
-                      <Image
-                        src="/images/resources/company_profile.jpg"
-                        alt="MACPROTEC Company Profile - Engineers reviewing blueprints"
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
-                        01 // DOSSIER
+            {filteredArticles.length === 0 ? (
+              <div className="bg-white border border-slate-200 p-12 text-center font-mono text-xs text-slate-500 space-y-2">
+                <BookOpen className="w-8 h-8 mx-auto text-slate-300" />
+                <div className="font-bold text-slate-800">No publications match your search criteria.</div>
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="text-primary hover:underline font-bold"
+                >
+                  Clear search filters
+                </button>
+              </div>
+            ) : (
+              <RevealGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" stagger={0.06}>
+                {filteredArticles.map((art) => (
+                  <RevealItem key={art.id || art.slug}>
+                    <div className="bg-white border border-slate-200 rounded-none overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/60 transition-all duration-300 flex flex-col justify-between h-full group">
+                      <div>
+                        {/* Cover Image */}
+                        <div className="relative h-48 w-full overflow-hidden bg-slate-950">
+                          {art.coverImage ? (
+                            <Image
+                              src={art.coverImage}
+                              alt={art.title || "Technical Publication"}
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-slate-900 flex items-center justify-center text-slate-600">
+                              <BookOpen className="w-8 h-8" />
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+
+                          {/* Category Badge Top Left */}
+                          <div className="absolute top-3 left-3 bg-primary text-white font-mono text-[9px] font-extrabold uppercase px-2.5 py-1 tracking-wider shadow-md border border-white/20">
+                            {art.category || "Engineering Insights"}
+                          </div>
+
+                          {/* Sector Tag Top Right */}
+                          {art.sector && (
+                            <div className="absolute top-3 right-3 bg-slate-950/80 border border-slate-800 text-slate-200 font-mono text-[9px] font-bold uppercase px-2 py-0.5 backdrop-blur-xs">
+                              {art.sector}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Card Body Content */}
+                        <div className="p-5 sm:p-6 space-y-3">
+                          {/* Author & Read Time Meta */}
+                          <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 border-b border-slate-100 pb-2.5">
+                            <div className="flex items-center gap-1.5 truncate max-w-[170px]">
+                              <User className="w-3 h-3 text-primary shrink-0" />
+                              <span className="truncate">{art.authorName || "MacProtec Desk"}</span>
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0 text-slate-500">
+                              <Clock className="w-3 h-3 text-slate-400" />
+                              <span>{art.readTime || "5 min read"}</span>
+                            </div>
+                          </div>
+
+                          {/* Title */}
+                          <h3 className="font-display font-extrabold text-base sm:text-lg text-slate-900 uppercase tracking-tight group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                            {art.title}
+                          </h3>
+
+                          {/* Excerpt */}
+                          <p className="text-xs text-slate-600 font-sans leading-relaxed line-clamp-3">
+                            {art.excerpt}
+                          </p>
+                        </div>
                       </div>
-                      <div className="absolute bottom-3 left-3 bg-yellow-400 text-neutral-950 font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider">
-                        Company Profile
+
+                      {/* Footer Link */}
+                      <div className="p-5 sm:p-6 pt-0">
+                        <Link
+                          href={`/resources/blog/${art.slug}`}
+                          className="w-full py-2.5 bg-slate-50 hover:bg-primary text-slate-800 hover:text-white border border-slate-200 hover:border-primary font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 group/link"
+                        >
+                          <span>Read Full Publication</span>
+                          <ChevronRight className="w-3.5 h-3.5 text-primary group-hover/link:text-white group-hover/link:translate-x-1 transition-all" />
+                        </Link>
                       </div>
                     </div>
+                  </RevealItem>
+                ))}
+              </RevealGroup>
+            )}
+          </section>
+        )}
 
-                    {/* Content */}
-                    <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
-                      <div>
-                        <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
-                          <HardHat className="w-3.5 h-3.5" />
-                          <span>CORPORATE OVERVIEW & CAPABILITIES</span>
+        {/* 4. FEATURED BROCHURE DOSSIERS (DOWNLOADABLE PDFS) */}
+        {(selectedCategory === "all" ||
+          selectedCategory === "company-profile" ||
+          selectedCategory === "engineering-services" ||
+          selectedCategory === "training" ||
+          selectedCategory === "predictive-solutions") && (
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 text-primary font-mono text-[10px] font-extrabold uppercase tracking-widest">
+                  <Download className="w-3.5 h-3.5" />
+                  <span>OFFICIAL DOWNLOADABLE CORPORATE & ENGINEERING DOSSIERS</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-display font-extrabold uppercase tracking-tight text-slate-900">
+                  Engineering Brochures & Catalogues
+                </h2>
+              </div>
+              <div className="font-mono text-xs text-slate-500">
+                Vector-rendered high-resolution PDF downloads
+              </div>
+            </div>
+
+            {/* CARD 1: COMPANY PROFILE */}
+            {(selectedCategory === "all" || selectedCategory === "company-profile") && (
+              <div id="company-profile" className="scroll-mt-28">
+                <Reveal>
+                  <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
+                    <div className="grid lg:grid-cols-12 gap-8 items-center">
+                      
+                      {/* Picture 1: Company Profile Original Image */}
+                      <div className="lg:col-span-5 relative h-72 sm:h-80 w-full overflow-hidden border border-neutral-200 shadow-inner">
+                        <Image
+                          src="/images/resources/company_profile.jpg"
+                          alt="MACPROTEC Company Profile - Engineers reviewing blueprints"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
+                          01 // DOSSIER
                         </div>
-                        <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
+                        <div className="absolute bottom-3 left-3 bg-yellow-400 text-neutral-950 font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider">
                           Company Profile
-                        </h3>
-                        <p className="text-sm text-secondary font-sans leading-relaxed">
-                          A comprehensive overview of MACPROTEC Engineering, our multidisciplinary expertise, core competencies, global project track record, and technical capabilities in heavy process industries.
-                        </p>
-                      </div>
-
-                      {/* Download Buttons */}
-                      <div className="pt-4 border-t border-neutral-200 space-y-3 font-mono text-xs">
-                        <div className="text-[10px] text-neutral-400 uppercase font-extrabold tracking-wider">
-                          Official Corporate Downloads:
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-3">
-                          <button
-                            onClick={() => handleDownload("PDF-Macprotec Introductory.pdf")}
-                            className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <FileText className="w-4 h-4 text-primary group-hover/btn:text-white" />
-                              <span>1. Introductory PDF</span>
-                            </div>
-                            <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
-                          </button>
-
-                          <button
-                            onClick={() => handleDownload("PPTX-(Macprotec Business Introduction).pptx")}
-                            className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-300 font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-xs group/btn"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <Presentation className="w-4 h-4 text-rose-600" />
-                              <span>2. Business Intro (PPTX)</span>
-                            </div>
-                            <Download className="w-4 h-4 text-neutral-500 group-hover/btn:text-neutral-900" />
-                          </button>
                         </div>
                       </div>
+
+                      {/* Content */}
+                      <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+                        <div>
+                          <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
+                            <HardHat className="w-3.5 h-3.5" />
+                            <span>CORPORATE OVERVIEW & CAPABILITIES</span>
+                          </div>
+                          <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
+                            Company Profile
+                          </h3>
+                          <p className="text-sm text-secondary font-sans leading-relaxed">
+                            A comprehensive overview of MACPROTEC Engineering, our multidisciplinary expertise, core competencies, global project track record, and technical capabilities in heavy process industries.
+                          </p>
+                        </div>
+
+                        {/* Download Buttons */}
+                        <div className="pt-4 border-t border-neutral-200 space-y-3 font-mono text-xs">
+                          <div className="text-[10px] text-neutral-400 uppercase font-extrabold tracking-wider">
+                            Official Corporate Downloads:
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <button
+                              onClick={() => handleDownload("PDF-Macprotec Introductory.pdf")}
+                              className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <FileText className="w-4 h-4 text-primary group-hover/btn:text-white" />
+                                <span>1. Introductory PDF</span>
+                              </div>
+                              <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
+                            </button>
+
+                            <button
+                              onClick={() => handleDownload("PPTX-(Macprotec Business Introduction).pptx")}
+                              className="bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border border-neutral-300 font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-xs group/btn"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <Presentation className="w-4 h-4 text-rose-600" />
+                                <span>2. Business Intro (PPTX)</span>
+                              </div>
+                              <Download className="w-4 h-4 text-neutral-500 group-hover/btn:text-neutral-900" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
+                  </SpotlightCard>
+                </Reveal>
+              </div>
+            )}
 
-                  </div>
-                </SpotlightCard>
-              </Reveal>
-            </div>
-          )}
-
-          {/* CARD 2: ENGINEERING SERVICES BROCHURE */}
-          {(selectedCategory === "all" || selectedCategory === "engineering-services") && (
-            <div id="engineering-services" className="scroll-mt-28">
-              <Reveal>
-                <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
-                  
-                  {/* Top Half: Main Overview & Master Brochure Download */}
-                  <div className="grid lg:grid-cols-12 gap-8 items-center mb-8 pb-8 border-b border-neutral-200">
-                    {/* Picture 2: CAD Workstation */}
-                    <div className="lg:col-span-5 relative h-64 sm:h-72 w-full overflow-hidden border border-neutral-200 shadow-inner">
-                      <Image
-                        src="/images/resources/engineering_services.jpg"
-                        alt="MACPROTEC Engineering Services - Dual CAD Workstation"
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
-                        02 // SERVICES
-                      </div>
-                      <div className="absolute bottom-3 left-3 bg-neutral-950 text-white font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider border border-primary/30">
-                        Engineering Services Brochure
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="lg:col-span-7 flex flex-col justify-between space-y-5">
-                      <div>
-                        <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
-                          <Cpu className="w-3.5 h-3.5" />
-                          <span>MULTIDISCIPLINARY SOLUTIONS</span>
+            {/* CARD 2: ENGINEERING SERVICES BROCHURE */}
+            {(selectedCategory === "all" || selectedCategory === "engineering-services") && (
+              <div id="engineering-services" className="scroll-mt-28">
+                <Reveal>
+                  <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
+                    
+                    {/* Top Half: Main Overview & Master Brochure Download */}
+                    <div className="grid lg:grid-cols-12 gap-8 items-center mb-8 pb-8 border-b border-neutral-200">
+                      {/* Picture 2: CAD Workstation */}
+                      <div className="lg:col-span-5 relative h-64 sm:h-72 w-full overflow-hidden border border-neutral-200 shadow-inner">
+                        <Image
+                          src="/images/resources/engineering_services.jpg"
+                          alt="MACPROTEC Engineering Services - Dual CAD Workstation"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
+                          02 // SERVICES
                         </div>
-                        <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
+                        <div className="absolute bottom-3 left-3 bg-neutral-950 text-white font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider border border-primary/30">
                           Engineering Services Brochure
-                        </h3>
-                        <p className="text-sm text-secondary font-sans leading-relaxed">
-                          Explore our multidisciplinary engineering services, digital solutions, CFD modeling, 3D laser scanning methodologies, and end-to-end project delivery capabilities.
-                        </p>
-                      </div>
-
-                      {/* Main Master Download Button */}
-                      <div className="pt-2 font-mono text-xs">
-                        <button
-                          onClick={() => handleDownload("Engineering Services Master Brochure.pdf")}
-                          className="bg-neutral-950 hover:bg-primary text-white font-bold px-6 py-3.5 flex items-center justify-between gap-4 transition-colors shadow-sm group/btn w-full sm:w-auto"
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <FileText className="w-4 h-4 text-primary group-hover/btn:text-white" />
-                            <span>1. Master Engineering Brochure (PDF)</span>
-                          </div>
-                          <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom Half: 6 Specialized Engineering Dossiers Grid */}
-                  <div className="space-y-4 font-mono text-xs">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-neutral-100/90 px-4 py-2.5 border-l-4 border-primary">
-                      <span className="font-bold text-neutral-900 uppercase text-[11px] tracking-wider flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-primary" />
-                        SPECIALIZED ENGINEERING DOSSIERS (6 AVAILABLE)
-                      </span>
-                      <span className="text-[10px] text-neutral-500">Direct PDF preview & instant download</span>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                      {resourceItems[1].subBrochures?.map((item) => (
-                        <div
-                          key={item.id}
-                          className="bg-neutral-50 border border-neutral-200 hover:border-primary/50 hover:bg-white p-4 flex flex-col justify-between transition-all duration-200 shadow-2xs hover:shadow-md group/sub"
-                        >
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="bg-neutral-950 text-white font-extrabold text-[10px] px-2 py-0.5 font-mono">
-                                DOSSIER #{item.id}
-                              </span>
-                              <span className="text-neutral-500 text-[10px] font-semibold">
-                                {item.format} · {item.size}
-                              </span>
-                            </div>
-                            <h4 className="font-bold text-neutral-900 text-xs group-hover/sub:text-primary transition-colors mb-1.5">
-                              {item.title}
-                            </h4>
-                            <p className="text-[11px] text-neutral-600 font-sans leading-relaxed line-clamp-2">
-                              {item.description}
-                            </p>
-                          </div>
-
-                          <div className="mt-4 pt-3 border-t border-neutral-200/80 flex items-center gap-2">
-                            <button
-                              onClick={() =>
-                                setPreviewModalDoc({
-                                  title: item.title,
-                                  format: item.format,
-                                  size: item.size,
-                                  category: "Engineering Services",
-                                  summary: item.description,
-                                  topics: item.topics || ["3D CAD Modeling", "Methodology breakdown", "Case studies"],
-                                  fileName: `${item.title}.pdf`,
-                                })
-                              }
-                              className="flex-1 bg-white hover:bg-neutral-200 text-neutral-800 border border-neutral-300 text-[10px] font-bold py-2 flex items-center justify-center gap-1 uppercase transition-colors"
-                            >
-                              <Eye className="w-3 h-3 text-neutral-500" />
-                              Preview
-                            </button>
-
-                            <button
-                              onClick={() => handleDownload(`${item.title}.pdf`)}
-                              className="flex-1 bg-primary hover:bg-rose-700 text-white text-[10px] font-bold py-2 flex items-center justify-center gap-1 uppercase transition-colors shadow-xs"
-                            >
-                              <Download className="w-3 h-3" />
-                              Download
-                            </button>
-                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                </SpotlightCard>
-              </Reveal>
-            </div>
-          )}
-
-          {/* CARD 3: TRAINING CATALOGUE */}
-          {(selectedCategory === "all" || selectedCategory === "training") && (
-            <div id="training-catalogue" className="scroll-mt-28">
-              <Reveal>
-                <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
-                  <div className="grid lg:grid-cols-12 gap-8 items-center">
-                    
-                    {/* Picture 3: Training Catalogue Original Image */}
-                    <div className="lg:col-span-5 relative h-72 sm:h-80 w-full overflow-hidden border border-neutral-200 shadow-inner">
-                      <Image
-                        src="/images/resources/training_catalogue.png"
-                        alt="MACPROTEC Technical Training Session"
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
-                        03 // LEARNING
                       </div>
-                      <div className="absolute bottom-3 left-3 bg-yellow-400 text-neutral-950 font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider">
-                        Training Catalogue
-                      </div>
-                    </div>
 
-                    {/* Content */}
-                    <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
-                      <div>
-                        <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
-                          <GraduationCap className="w-3.5 h-3.5" />
-                          <span>PROFESSIONAL DEVELOPMENT</span>
+                      {/* Content */}
+                      <div className="lg:col-span-7 flex flex-col justify-between space-y-5">
+                        <div>
+                          <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
+                            <Cpu className="w-3.5 h-3.5" />
+                            <span>MULTIDISCIPLINARY SOLUTIONS</span>
+                          </div>
+                          <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
+                            Engineering Services Brochure
+                          </h3>
+                          <p className="text-sm text-secondary font-sans leading-relaxed">
+                            Explore our multidisciplinary engineering services, digital solutions, CFD modeling, 3D laser scanning methodologies, and end-to-end project delivery capabilities.
+                          </p>
                         </div>
-                        <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
-                          Training Catalogue
-                        </h3>
-                        <p className="text-sm text-secondary font-sans leading-relaxed">
-                          Complete catalogue of technical training programs, professional courses, and customized learning solutions for plant engineers and operating teams.
-                        </p>
-                      </div>
 
-                      {/* Download Buttons */}
-                      <div className="pt-4 border-t border-neutral-200 space-y-3 font-mono text-xs">
-                        <div className="text-[10px] text-neutral-400 uppercase font-extrabold tracking-wider">
-                          Download Training Program Catalogues:
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-3">
+                        {/* Main Master Download Button */}
+                        <div className="pt-2 font-mono text-xs">
                           <button
-                            onClick={() => handleDownload("Macprotec Training Catalogue 2026.pdf")}
-                            className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
+                            onClick={() => handleDownload("Engineering Services Master Brochure.pdf")}
+                            className="bg-neutral-950 hover:bg-primary text-white font-bold px-6 py-3.5 flex items-center justify-between gap-4 transition-colors shadow-sm group/btn w-full sm:w-auto"
                           >
                             <div className="flex items-center gap-2.5">
                               <FileText className="w-4 h-4 text-primary group-hover/btn:text-white" />
-                              <span>1. Training Catalogue 2026</span>
+                              <span>1. Master Engineering Brochure (PDF)</span>
                             </div>
                             <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
                           </button>
+                        </div>
+                      </div>
+                    </div>
 
-                          <button
-                            onClick={() => handleDownload("CementX training for smart plants.pdf")}
-                            className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
+                    {/* Bottom Half: 6 Specialized Engineering Dossiers Grid */}
+                    <div className="space-y-4 font-mono text-xs">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-neutral-100/90 px-4 py-2.5 border-l-4 border-primary">
+                        <span className="font-bold text-neutral-900 uppercase text-[11px] tracking-wider flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-primary" />
+                          SPECIALIZED ENGINEERING DOSSIERS (6 AVAILABLE)
+                        </span>
+                        <span className="text-[10px] text-neutral-500">Direct PDF preview & instant download</span>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        {resourceItems[1].subBrochures?.map((item) => (
+                          <div
+                            key={item.id}
+                            className="bg-neutral-50 border border-neutral-200 hover:border-primary/50 hover:bg-white p-4 flex flex-col justify-between transition-all duration-200 shadow-2xs hover:shadow-md group/sub"
                           >
-                            <div className="flex items-center gap-2.5">
-                              <Sparkles className="w-4 h-4 text-primary group-hover/btn:text-white" />
-                              <span>2. CementX Training</span>
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="bg-neutral-950 text-white font-extrabold text-[10px] px-2 py-0.5 font-mono">
+                                  DOSSIER #{item.id}
+                                </span>
+                                <span className="text-neutral-500 text-[10px] font-semibold">
+                                  {item.format} · {item.size}
+                                </span>
+                              </div>
+                              <h4 className="font-bold text-neutral-900 text-xs group-hover/sub:text-primary transition-colors mb-1.5">
+                                {item.title}
+                              </h4>
+                              <p className="text-[11px] text-neutral-600 font-sans leading-relaxed line-clamp-2">
+                                {item.description}
+                              </p>
                             </div>
-                            <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
-                          </button>
-                        </div>
+
+                            <div className="mt-4 pt-3 border-t border-neutral-200/80 flex items-center gap-2">
+                              <button
+                                onClick={() =>
+                                  setPreviewModalDoc({
+                                    title: item.title,
+                                    format: item.format,
+                                    size: item.size,
+                                    category: "Engineering Services",
+                                    summary: item.description,
+                                    topics: item.topics || ["3D CAD Modeling", "Methodology breakdown", "Case studies"],
+                                    fileName: `${item.title}.pdf`,
+                                  })
+                                }
+                                className="flex-1 bg-white hover:bg-neutral-200 text-neutral-800 border border-neutral-300 text-[10px] font-bold py-2 flex items-center justify-center gap-1 uppercase transition-colors"
+                              >
+                                <Eye className="w-3 h-3 text-neutral-500" />
+                                Preview
+                              </button>
+
+                              <button
+                                onClick={() => handleDownload(`${item.title}.pdf`)}
+                                className="flex-1 bg-primary hover:bg-rose-700 text-white text-[10px] font-bold py-2 flex items-center justify-center gap-1 uppercase transition-colors shadow-xs"
+                              >
+                                <Download className="w-3 h-3" />
+                                Download
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
-                  </div>
-                </SpotlightCard>
-              </Reveal>
-            </div>
-          )}
+                  </SpotlightCard>
+                </Reveal>
+              </div>
+            )}
 
-          {/* CARD 4: PREDICTIVE SOLUTIONS FOR CEMENT PLANTS */}
-          {(selectedCategory === "all" || selectedCategory === "predictive-solutions") && (
-            <div id="predictive-solutions" className="scroll-mt-28">
-              <Reveal>
-                <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
-                  <div className="grid lg:grid-cols-12 gap-8 items-center">
-                    
-                    {/* Picture 4: Predictive Solutions Original Image */}
-                    <div className="lg:col-span-5 relative h-72 sm:h-80 w-full overflow-hidden border border-neutral-200 shadow-inner">
-                      <Image
-                        src="/images/resources/predictive_solutions.jpg"
-                        alt="MACPROTEC Predictive Solutions & Kiln OCMS Screen"
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
-                        04 // ANALYTICS
-                      </div>
-                      <div className="absolute bottom-3 left-3 bg-yellow-400 text-neutral-950 font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider">
-                        Predictive Solutions for Cement Plants
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
-                      <div>
-                        <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
-                          <Activity className="w-3.5 h-3.5" />
-                          <span>PREDICTIVE ANALYTICS & MONITORING</span>
+            {/* CARD 3: TRAINING CATALOGUE */}
+            {(selectedCategory === "all" || selectedCategory === "training") && (
+              <div id="training-catalogue" className="scroll-mt-28">
+                <Reveal>
+                  <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
+                    <div className="grid lg:grid-cols-12 gap-8 items-center">
+                      
+                      {/* Picture 3: Training Catalogue Original Image */}
+                      <div className="lg:col-span-5 relative h-72 sm:h-80 w-full overflow-hidden border border-neutral-200 shadow-inner">
+                        <Image
+                          src="/images/resources/training_catalogue.png"
+                          alt="MACPROTEC Technical Training Session"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
+                          03 // LEARNING
                         </div>
-                        <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
+                        <div className="absolute bottom-3 left-3 bg-yellow-400 text-neutral-950 font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider">
+                          Training Catalogue
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+                        <div>
+                          <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
+                            <GraduationCap className="w-3.5 h-3.5" />
+                            <span>PROFESSIONAL DEVELOPMENT</span>
+                          </div>
+                          <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
+                            Training Catalogue
+                          </h3>
+                          <p className="text-sm text-secondary font-sans leading-relaxed">
+                            Complete catalogue of technical training programs, professional courses, and customized learning solutions for plant engineers and operating teams.
+                          </p>
+                        </div>
+
+                        {/* Download Buttons */}
+                        <div className="pt-4 border-t border-neutral-200 space-y-3 font-mono text-xs">
+                          <div className="text-[10px] text-neutral-400 uppercase font-extrabold tracking-wider">
+                            Download Training Program Catalogues:
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <button
+                              onClick={() => handleDownload("Macprotec Training Catalogue 2026.pdf")}
+                              className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <FileText className="w-4 h-4 text-primary group-hover/btn:text-white" />
+                                <span>1. Training Catalogue 2026</span>
+                              </div>
+                              <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
+                            </button>
+
+                            <button
+                              onClick={() => handleDownload("CementX training for smart plants.pdf")}
+                              className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <Sparkles className="w-4 h-4 text-primary group-hover/btn:text-white" />
+                                <span>2. CementX Training</span>
+                              </div>
+                              <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </SpotlightCard>
+                </Reveal>
+              </div>
+            )}
+
+            {/* CARD 4: PREDICTIVE SOLUTIONS FOR CEMENT PLANTS */}
+            {(selectedCategory === "all" || selectedCategory === "predictive-solutions") && (
+              <div id="predictive-solutions" className="scroll-mt-28">
+                <Reveal>
+                  <SpotlightCard className="bg-white border-2 border-border p-6 sm:p-10 hover:border-primary/60 transition-all duration-300 shadow-md group">
+                    <div className="grid lg:grid-cols-12 gap-8 items-center">
+                      
+                      {/* Picture 4: Predictive Solutions Original Image */}
+                      <div className="lg:col-span-5 relative h-72 sm:h-80 w-full overflow-hidden border border-neutral-200 shadow-inner">
+                        <Image
+                          src="/images/resources/predictive_solutions.jpg"
+                          alt="MACPROTEC Predictive Solutions & Kiln OCMS Screen"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute top-3 left-3 bg-neutral-950 text-white border border-primary/40 font-mono text-[10px] font-extrabold px-3 py-1 uppercase tracking-widest">
+                          04 // ANALYTICS
+                        </div>
+                        <div className="absolute bottom-3 left-3 bg-yellow-400 text-neutral-950 font-mono text-[10px] font-bold px-2.5 py-1 uppercase tracking-wider">
                           Predictive Solutions for Cement Plants
-                        </h3>
-                        <p className="text-sm text-secondary font-sans leading-relaxed">
-                          Discover how MACPROTEC combines process expertise, predictive analytics, and intelligent monitoring technologies to improve equipment reliability, optimize plant performance, and reduce unplanned downtime.
-                        </p>
-                      </div>
-
-                      {/* Download Buttons */}
-                      <div className="pt-4 border-t border-neutral-200 space-y-3 font-mono text-xs">
-                        <div className="text-[10px] text-neutral-400 uppercase font-extrabold tracking-wider">
-                          Technical Whitepapers & Data Sheets:
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-3">
-                          <button
-                            onClick={() => handleDownload("Predictive Solutions for Cement Plants.pdf")}
-                            className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <Activity className="w-4 h-4 text-primary group-hover/btn:text-white" />
-                              <span>1. Predictive Solutions</span>
-                            </div>
-                            <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
-                          </button>
-
-                          <button
-                            onClick={() => handleDownload("Kiln OCMS Technical Spec.pdf")}
-                            className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <ShieldCheck className="w-4 h-4 text-primary group-hover/btn:text-white" />
-                              <span>2. Kiln OCMS</span>
-                            </div>
-                            <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
-                          </button>
                         </div>
                       </div>
+
+                      {/* Content */}
+                      <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+                        <div>
+                          <div className="font-mono text-[10px] text-primary font-extrabold tracking-widest uppercase mb-1.5 flex items-center gap-1.5">
+                            <Activity className="w-3.5 h-3.5" />
+                            <span>PREDICTIVE ANALYTICS & MONITORING</span>
+                          </div>
+                          <h3 className="text-3xl font-display font-extrabold uppercase text-foreground mb-3 group-hover:text-primary transition-colors">
+                            Predictive Solutions for Cement Plants
+                          </h3>
+                          <p className="text-sm text-secondary font-sans leading-relaxed">
+                            Discover how MACPROTEC combines process expertise, predictive analytics, and intelligent monitoring technologies to improve equipment reliability, optimize plant performance, and reduce unplanned downtime.
+                          </p>
+                        </div>
+
+                        {/* Download Buttons */}
+                        <div className="pt-4 border-t border-neutral-200 space-y-3 font-mono text-xs">
+                          <div className="text-[10px] text-neutral-400 uppercase font-extrabold tracking-wider">
+                            Technical Whitepapers & Data Sheets:
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <button
+                              onClick={() => handleDownload("Predictive Solutions for Cement Plants.pdf")}
+                              className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <Activity className="w-4 h-4 text-primary group-hover/btn:text-white" />
+                                <span>1. Predictive Solutions</span>
+                              </div>
+                              <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
+                            </button>
+
+                            <button
+                              onClick={() => handleDownload("Kiln OCMS Technical Spec.pdf")}
+                              className="bg-neutral-950 hover:bg-primary text-white font-bold px-5 py-3 flex items-center justify-between gap-3 transition-colors shadow-sm group/btn"
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <ShieldCheck className="w-4 h-4 text-primary group-hover/btn:text-white" />
+                                <span>2. Kiln OCMS</span>
+                              </div>
+                              <Download className="w-4 h-4 opacity-70 group-hover/btn:opacity-100" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
+                  </SpotlightCard>
+                </Reveal>
+              </div>
+            )}
+          </section>
+        )}
 
-                  </div>
-                </SpotlightCard>
-              </Reveal>
-            </div>
-          )}
-
-
-        </section>
-
-        {/* 4. FREQUENTLY ASKED QUESTIONS */}
+        {/* 5. FREQUENTLY ASKED QUESTIONS */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-border pt-16">
           <Reveal className="mb-10">
             <div className="font-mono text-[10px] font-extrabold text-primary tracking-widest uppercase mb-2">
@@ -1059,7 +1284,7 @@ export default function ResourcesPage() {
           </div>
         </section>
 
-        {/* 5. CONTACT US BANNER */}
+        {/* 6. CONTACT US BANNER */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8">
           <Reveal>
             <div className="bg-[#2d1b47] text-white p-10 sm:p-14 text-center relative overflow-hidden border-2 border-purple-500/40 shadow-2xl">

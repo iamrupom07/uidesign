@@ -6,21 +6,21 @@ import { ArrowRight } from "lucide-react";
 
 export default function IndustriesGrid() {
   return (
-    <section className="py-xl bg-background blueprint-mesh border-t border-border">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <Reveal className="max-w-2xl mb-14">
-          <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+    <section className="py-12 sm:py-xl bg-background blueprint-mesh border-t border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Reveal className="max-w-2xl mb-12 sm:mb-14">
+          <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3">
             <span className="text-primary font-bold mr-1">┌</span> INDUSTRIES
           </div>
-          <h2 className="mb-4 font-display font-extrabold text-3xl sm:text-4xl text-foreground uppercase tracking-tight">
+          <h2 className="mb-4 font-display font-extrabold text-2xl sm:text-4xl text-foreground uppercase tracking-tight">
             Deep experience across <span className="text-primary">heavy-process</span> sectors
           </h2>
-          <p className="text-secondary text-sm font-sans leading-relaxed">
+          <p className="text-secondary text-sm sm:text-base font-sans leading-relaxed">
             Select any industry below to explore engineering capabilities, optimization audits, and process solutions.
           </p>
         </Reveal>
 
-        <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-lg" stagger={0.06}>
+        <RevealGroup className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-lg" stagger={0.06}>
           {expertiseAreas.map((area, i) => (
             <RevealItem key={area.slug}>
               <div className="bg-white border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full group hover:border-primary/60 relative overflow-hidden">
@@ -43,19 +43,19 @@ export default function IndustriesGrid() {
                   </div>
 
                   {/* Card Content */}
-                  <div className="p-6 space-y-3">
+                  <div className="p-5 sm:p-6 space-y-3">
                     <h3 className="font-display font-extrabold text-lg text-slate-900 uppercase tracking-tight group-hover:text-primary transition-colors leading-snug">
                       {area.title}
                     </h3>
 
-                    <p className="text-xs text-slate-600 font-sans leading-relaxed line-clamp-3 font-medium">
+                    <p className="text-sm text-slate-600 font-sans leading-relaxed line-clamp-3 font-medium">
                       {area.summary}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Action Link */}
-                <div className="p-6 pt-0">
+                <div className="p-5 sm:p-6 pt-0">
                   <Link
                     href={`/industries/${area.slug}`}
                     className="w-full py-3 bg-slate-50 hover:bg-primary text-slate-900 hover:text-white border border-slate-200 hover:border-primary font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 group/btn"

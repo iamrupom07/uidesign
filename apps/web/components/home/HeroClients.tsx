@@ -33,6 +33,15 @@ const clients: ClientItem[] = [
     imgClass: "h-16 sm:h-20 max-w-[90%]",
   },
   {
+    id: "union-cement",
+    name: "Union Cement Company",
+    category: "Cement & Clinker Manufacturing (UAE)",
+    logo: "/images/clients/union-cement.png",
+    layer1: "bg-red-100/80 border-red-300",
+    layer2: "bg-orange-50 border-orange-200",
+    imgClass: "h-20 sm:h-24 max-w-[96%] scale-120 sm:scale-130",
+  },
+  {
     id: "quikrete",
     name: "QUIKRETE",
     category: "Packaged Concrete Solutions",

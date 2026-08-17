@@ -37,16 +37,16 @@ function PercentCounter({ value }: { value: number }) {
 
 export default function WelcomeSection() {
   return (
-    <section className="py-xl bg-background overflow-hidden blueprint-mesh border-t border-border">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-lg lg:gap-xl items-stretch">
+    <section className="py-12 sm:py-xl bg-background overflow-hidden blueprint-mesh border-t border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 lg:gap-xl items-stretch">
         <Reveal>
-          <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+          <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3">
             <span className="text-primary font-bold mr-1">┌</span> ABOUT MACPROTEC
           </div>
-          <h2 className="mb-4 font-display font-extrabold text-3xl sm:text-4xl text-foreground leading-[1.15] uppercase">
+          <h2 className="mb-4 font-display font-extrabold text-2xl sm:text-4xl text-foreground leading-[1.15] uppercase">
             Where Cement Expertise Meets Digital Engineering
           </h2>
-          <p className="body-md mt-5 max-w-xl text-secondary">
+          <p className="body-md mt-5 max-w-xl text-secondary text-sm sm:text-base">
             MACPROTEC is a Houston-based engineering consulting and systems integration company
             serving the cement, aggregates, mining, chemicals, petrochemicals, and other heavy
             process industries. With over 65 years of combined experience, we deliver innovative
@@ -54,14 +54,14 @@ export default function WelcomeSection() {
           </p>
           <Link
             href="/about-us"
-            className="button-outline inline-block mt-8 text-center text-xs uppercase font-bold"
+            className="button-outline inline-block mt-8 text-center text-xs sm:text-sm uppercase font-bold"
           >
             Explore More
           </Link>
         </Reveal>
 
         <Reveal delay={0.15} className="h-full">
-          <div className="relative h-full rounded-none bg-white border border-border p-8 flex flex-col justify-between">
+          <div className="relative h-full rounded-none bg-white border border-border p-5 sm:p-8 flex flex-col justify-between">
             <div className="grain" />
             <div>
               <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">

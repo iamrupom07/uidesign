@@ -5,25 +5,25 @@ import { Reveal } from "@/components/ui/Reveal";
 export default function ProcessFlow() {
   const steps = [
     {
-      step: "STEP 01",
+      step: "01",
       title: "Assess & Analyze",
       description:
         "Perform detailed plant process audits, energy assessments, and 3D laser scanning scans to identify operational bottlenecks.",
     },
     {
-      step: "STEP 02",
+      step: "02",
       title: "Simulate & Design",
       description:
         "Develop FEED engineering and basic designs, validating flow and thermal states using advanced CFD and FEA simulation solvers.",
     },
     {
-      step: "STEP 03",
+      step: "03",
       title: "Commission & Integrate",
       description:
         "Integrate control systems, handle instrumentation commissioning, and optimize equipment performance on-site.",
     },
     {
-      step: "STEP 04",
+      step: "04",
       title: "Predict & Monitor",
       description:
         "Deploy digital twin dashboards and AI-based predictive maintenance monitoring to track plant KPIs in real time.",
@@ -31,18 +31,18 @@ export default function ProcessFlow() {
   ];
 
   return (
-    <section className="py-xl bg-background border-t border-border blueprint-mesh">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-lg lg:gap-xl items-center">
+    <section className="py-12 sm:py-xl bg-background border-t border-border blueprint-mesh">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 lg:gap-xl items-center">
         {/* Left Column: Heading and Blueprint drawing */}
         <div>
           <Reveal>
-            <div className="font-mono text-[11px] font-bold text-primary tracking-widest uppercase mb-4">
+            <div className="font-mono text-xs font-bold text-primary tracking-widest uppercase mb-3">
               <span className="text-primary font-bold mr-1">┌</span> OUR PROCESS
             </div>
-            <h2 className="mb-4 font-display font-extrabold text-3xl text-foreground uppercase leading-tight">
+            <h2 className="mb-4 font-display font-extrabold text-2xl sm:text-3xl text-foreground uppercase leading-tight">
               How MACPROTEC <span className="text-primary">Works</span>
             </h2>
-            <p className="body-md text-secondary max-w-md mb-8">
+            <p className="body-md text-secondary max-w-md mb-8 text-sm sm:text-base">
               A structured, transparent engineering process that keeps heavy-process plants secure,
               stable, and running at maximum thermal and material efficiency.
             </p>
