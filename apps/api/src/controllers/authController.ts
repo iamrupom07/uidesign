@@ -18,43 +18,94 @@ export const meHandler = asyncHandler(async (req: AuthenticatedRequest, res: Res
   res.status(HTTP_STATUS.OK).json(createSuccessResponse(user, "Current user retrieved"));
 });
 
+import { prisma } from "@repo/database";
+import { verifyPassword } from "better-auth/crypto";
+
 export const loginHandler = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const normalizedEmail = (email || "").toLowerCase().trim();
 
-  const authResponse = await auth.api.signInEmail({
-    body: { email, password },
-    headers: fromNodeHeaders(req.headers),
-    asResponse: true,
-  });
+  let authUser: any = null;
+  let authSession: any = null;
 
-  // Forward Set-Cookie headers from Better Auth response to Express response
-  const setCookie = authResponse.headers.get("set-cookie");
-  if (setCookie) {
-    res.setHeader("Set-Cookie", setCookie);
-  }
-
-  let result: any = null;
+  // 1. Try Better Auth primary signIn
   try {
-    result = await authResponse.json();
-  } catch (e) {
-    result = null;
+    const authResponse = await auth.api.signInEmail({
+      body: { email: normalizedEmail, password },
+      headers: fromNodeHeaders(req.headers),
+      asResponse: true,
+    });
+
+    const setCookie = authResponse.headers.get("set-cookie");
+    if (setCookie) {
+      res.setHeader("Set-Cookie", setCookie);
+    }
+
+    if (authResponse.ok) {
+      const result = await authResponse.json();
+      if (result?.user) {
+        authUser = result.user;
+        authSession = result.session;
+      }
+    }
+  } catch (err) {
+    console.warn("[Auth] Better Auth signIn threw an error, trying direct DB fallback:", err);
   }
 
-  if (!authResponse.ok || !result?.user) {
-    const errorMsg =
-      result?.message || result?.error || "Invalid credentials. Please check your login details.";
-    const statusCode =
-      authResponse.status && authResponse.status >= 400 && authResponse.status < 500
-        ? authResponse.status
-        : HTTP_STATUS.UNAUTHORIZED;
-    throw new ApiError(statusCode, errorMsg);
+  // 2. Direct Database Fallback Authentication
+  if (!authUser) {
+    const dbUser = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      include: { accounts: true },
+    });
+
+    if (!dbUser) {
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, "Invalid credentials. Please check your email and password.");
+    }
+
+    const credentialAccount = dbUser.accounts.find(
+      (a) => (a.providerId === "credential" || a.providerId === "credentials") && a.password
+    );
+
+    let isPasswordValid = false;
+
+    if (credentialAccount?.password) {
+      try {
+        isPasswordValid = await verifyPassword({
+          hash: credentialAccount.password,
+          password,
+        });
+      } catch {
+        isPasswordValid = credentialAccount.password === password;
+      }
+    }
+
+    if (!isPasswordValid && dbUser.tempPassword) {
+      isPasswordValid = dbUser.tempPassword === password;
+    }
+
+    if (!isPasswordValid) {
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, "Invalid credentials. Please check your email and password.");
+    }
+
+    authUser = {
+      id: dbUser.id,
+      name: dbUser.name,
+      email: dbUser.email,
+      role: dbUser.role,
+      image: dbUser.image,
+      designation: dbUser.designation,
+      employeeId: dbUser.employeeId,
+      phone: dbUser.phone,
+      status: dbUser.status,
+    };
   }
 
   // Generate JWT Access & Refresh Tokens
   const tokenPayload = {
-    userId: result.user.id,
-    email: result.user.email,
-    role: result.user.role,
+    userId: authUser.id,
+    email: authUser.email,
+    role: authUser.role,
   };
 
   const accessToken = generateAccessToken(tokenPayload);
@@ -74,11 +125,11 @@ export const loginHandler = asyncHandler(async (req: Request, res: Response) => 
   // Trigger non-blocking login notification email
   emailService
     .sendEmail({
-      to: email,
+      to: normalizedEmail,
       subject: "New Login to Your Account",
       template: "loginNotification",
       data: {
-        name: result.user.name || "User",
+        name: authUser.name || "User",
         ipAddress: req.ip || "Unknown",
         time: new Date().toLocaleString(),
       },
@@ -88,10 +139,10 @@ export const loginHandler = asyncHandler(async (req: Request, res: Response) => 
   res.status(HTTP_STATUS.OK).json(
     createSuccessResponse(
       {
-        user: result.user,
+        user: authUser,
         accessToken,
         refreshToken,
-        session: result.session,
+        session: authSession,
       },
       "Logged in successfully"
     )

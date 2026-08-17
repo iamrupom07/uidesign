@@ -1,13 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const getApiBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
   if (typeof window !== "undefined") {
-    return window.location.origin;
+    // In browser, relative URL ensures same-origin requests on any domain/IP
+    return "";
   }
-  return "http://localhost:5000";
+  return process.env.INTERNAL_API_URL || "http://127.0.0.1:5000";
 };
 
 export const baseApi = createApi({
