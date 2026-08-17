@@ -389,12 +389,11 @@ export default function BlogListingPage() {
 
     try {
       await createSubmission({
-        formType: "newsletter",
-        data: {
-          email: newsletterEmail,
-          source: "/resources/blog",
-          timestamp: new Date().toISOString(),
-        },
+        type: "RESOURCE",
+        name: "Newsletter Subscriber",
+        email: newsletterEmail,
+        subject: "Technical Bulletin & Whitepaper Subscription",
+        message: "Subscriber requested monthly technical whitepapers and engineering dossiers from /resources/blog",
       }).unwrap();
     } catch {
       // Fallback silently to client success state
