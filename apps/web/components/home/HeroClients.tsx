@@ -18,9 +18,9 @@ const clients: ClientItem[] = [
     id: "ash-grove",
     name: "Ash Grove",
     category: "Cement & Building Materials (CRH)",
-    logo: "/images/clients/ash-grove.svg",
-    layer1: "bg-emerald-100/80 border-emerald-300",
-    layer2: "bg-teal-50 border-teal-200",
+    logo: "/images/clients/ash-grove.png",
+    layer1: "bg-blue-100/80 border-blue-300",
+    layer2: "bg-indigo-50 border-indigo-200",
     imgClass: "h-16 sm:h-20 max-w-[90%]",
   },
   {
