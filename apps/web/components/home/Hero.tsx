@@ -100,9 +100,9 @@ export default function Hero() {
 
               {/* Subtitle Description */}
               <p className="text-slate-200 font-sans text-base sm:text-lg leading-relaxed max-w-2xl mx-auto drop-shadow-md">
-                Houston-based process engineering consulting and system integration for cement,
-                mining, aggregate, and petrochemical plants — from concept design through
-                commissioning.
+                Houston-based engineering and services company delivering multidisciplinary solutions
+                for heavy process industries from engineering and simulation to optimization,
+                digitalization, and plant commissioning.
               </p>
 
               {/* Hero Action Buttons */}

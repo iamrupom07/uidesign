@@ -282,8 +282,7 @@ export default function ContactPage() {
                   Houston Office
                 </h3>
                 <p className="text-sm text-secondary leading-relaxed font-sans mb-6">
-                  Houston-based process engineering consulting and system integration for heavy
-                  process industries.
+                  Houston based Engineering and Service Company for the heavy process industries.
                 </p>
                 <div className="space-y-2.5 font-mono text-xs text-secondary">
                   <div>EMAIL: {companyInfo.email}</div>

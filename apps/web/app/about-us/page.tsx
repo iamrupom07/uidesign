@@ -92,7 +92,9 @@ export default function AboutUs() {
                   </h1>
 
                   <p className="body-md text-secondary max-w-2xl leading-relaxed font-sans mt-4">
-                    MACPROTEC Engineering is a premier engineering consulting firm specializing in advanced process modeling, Computational Fluid Dynamics (CFD), structural FEA, and industrial plant optimization.
+                    MACPROTEC Engineering is a Houston-based engineering and services company
+                    providing multidisciplinary engineering, consulting, advanced simulation, and
+                    plant optimization solutions for heavy process industries.
                   </p>
                 </Reveal>
               </div>
@@ -132,12 +134,11 @@ export default function AboutUs() {
             <Reveal delay={0.08}>
               <div className="space-y-6 body-md text-secondary leading-relaxed font-sans bg-white border border-border p-8 rounded-none h-full shadow-sm">
                 <p>
-                  MACPROTEC Engineering provides specialized engineering consulting services to the
-                  cement and heavy process industries, supporting clients from concept development
-                  through plant operation and performance optimization. Our multidisciplinary
-                  expertise spans process engineering, Computational Fluid Dynamics (CFD), process
-                  simulation, Digital Twin development, engineering analysis, and industrial
-                  optimization.
+                  MACPROTEC Engineering provides specialized engineering, consulting, and project
+                  services for cement and heavy process industries, supporting clients from
+                  concept development through plant operation and performance optimization. Our
+                  capabilities span process engineering, CFD, process simulation, digital twin
+                  development, engineering analysis, and industrial plant optimization.
                 </p>
                 <p>
                   Rather than providing isolated engineering studies, we develop integrated engineering
@@ -169,7 +170,7 @@ export default function AboutUs() {
                     </div>
                     <div className="flex justify-between border-b border-[#3e2663] pb-3">
                       <span>METHODOLOGY:</span>
-                      <span className="text-white font-bold">CFD + FEA + DIGITAL TWIN</span>
+                      <span className="text-white font-bold">ENGINEERING + SIMULATION + SERVICES</span>
                     </div>
                     <div className="flex justify-between border-b border-[#3e2663] pb-3">
                       <span>PROJECT LIFECYCLE:</span>

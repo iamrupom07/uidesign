@@ -3,12 +3,16 @@
 import { Reveal } from "@/components/ui/Reveal";
 
 const tools = [
-  "AeroSolve CFD",
-  "SimuLink Suite",
-  "TwinLogic OS",
-  "OptiPlant V4",
-  "Scannex 3D",
-  "Intellect-PM",
+  "Aspen",
+  "Ansys",
+  "Star CCM",
+  "AutoCad",
+  "SolidWorks",
+  "Revit",
+  "Geomagic",
+  "Faro",
+  "Comsol",
+  "Tekla",
 ];
 
 export default function CapabilitiesStrip() {

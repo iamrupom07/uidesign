@@ -47,10 +47,11 @@ export default function WelcomeSection() {
             Where Cement Expertise Meets Digital Engineering
           </h2>
           <p className="body-md mt-5 max-w-xl text-secondary text-sm sm:text-base">
-            MACPROTEC is a Houston-based engineering consulting and systems integration company
-            serving the cement, aggregates, mining, chemicals, petrochemicals, and other heavy
-            process industries. With over 65 years of combined experience, we deliver innovative
-            solutions that improve plant performance and operational efficiency.
+            MACPROTEC Engineering is a Houston-based engineering and services company providing
+            multidisciplinary engineering, consulting, and project solutions for heavy process
+            industries. Our expertise spans engineering design, advanced simulation, project
+            management, EPC/EPCM support, procurement, plant optimization, and commissioning from
+            concept development through implementation and operation.
           </p>
           <Link
             href="/about-us"

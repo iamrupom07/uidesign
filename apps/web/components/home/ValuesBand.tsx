@@ -28,9 +28,8 @@ export default function ValuesBand() {
             {/* Right column: Large blockquote statement */}
             <div>
               <p className="text-foreground text-sm sm:text-lg font-semibold leading-relaxed font-sans text-secondary">
-                MACPROTEC is known for exceptional engineering consulting services for the heavy
-                industries. Our expertise in the field is unmatched, and our team of experts is
-                dedicated to providing the best in class engineering service.
+                MACPROTEC is known for exceptional engineering and consulting services for heavy
+                process industries.
               </p>
             </div>
           </div>

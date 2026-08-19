@@ -103,47 +103,6 @@ export default function WhyChooseUs() {
             );
           })}
         </RevealGroup>
-
-        {/* Extra Engineering Articles / Insights */}
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-lg border-t border-border pt-12 sm:pt-16">
-          <Reveal>
-            <div className="bg-white border border-border p-5 sm:p-8 h-full flex flex-col justify-between">
-              <div>
-                <span className="font-mono text-xs text-primary font-bold uppercase tracking-wider">
-                  // EXPERT INSIGHTS
-                </span>
-                <h3 className="font-display font-extrabold text-lg uppercase text-foreground mt-3 mb-4">
-                  Enhancing Efficiency in Cement and Mining Industries
-                </h3>
-                <p className="text-sm text-secondary leading-relaxed font-sans">
-                  Discover the latest trends and strategies for optimizing operations in cement,
-                  mining, and petrochemical industries. Learn from our experienced team at macprotec
-                  and stay ahead in the competitive market. Join us for valuable insights and
-                  innovative solutions to drive your business forward.
-                </p>
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.08}>
-            <div className="bg-white border border-border p-5 sm:p-8 h-full flex flex-col justify-between">
-              <div>
-                <span className="font-mono text-xs text-primary font-bold uppercase tracking-wider">
-                  // SYSTEM INTEGRATION
-                </span>
-                <h3 className="font-display font-extrabold text-lg uppercase text-foreground mt-3 mb-4">
-                  Exploring the Latest Innovations in Cement and Mining Industries
-                </h3>
-                <p className="text-sm text-secondary leading-relaxed font-sans">
-                  Discover the cutting-edge solutions and technologies revolutionizing the cement,
-                  mining, and petrochemical sectors. Learn from our 65 years of industry expertise
-                  in engineering consulting and system integration. Dive into the world of critical
-                  decision-making and innovative solutions to elevate your industrial operations.
-                </p>
-              </div>
-            </div>
-          </Reveal>
-        </div>
       </div>
     </section>
   );

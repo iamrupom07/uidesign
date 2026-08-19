@@ -15,6 +15,15 @@ interface ClientItem {
 
 const clients: ClientItem[] = [
   {
+    id: "ash-grove",
+    name: "Ash Grove",
+    category: "Cement & Building Materials (CRH)",
+    logo: "/images/clients/ash-grove.svg",
+    layer1: "bg-emerald-100/80 border-emerald-300",
+    layer2: "bg-teal-50 border-teal-200",
+    imgClass: "h-16 sm:h-20 max-w-[90%]",
+  },
+  {
     id: "gcc",
     name: "GCC",
     category: "Cement & Building Materials",
